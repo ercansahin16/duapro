@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Bir Dua Kadar Yakın - Kalbine İyi Gelecek Dualar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === GENEL AYARLAR === */
+        :root {
+            --spring-green: #4CAF50;
+            --spring-light: #A5D6A7;
+            --spring-lighter: #E8F5E9;
+            --spring-dark: #2E7D32;
+            --spring-bloom: #FFAB91;
+            --spring-sky: #81D4FA;
+            --spring-earth: #8D6E63;
+            --text-primary: #2E3A3A;
+            --text-secondary: #5D6D6D;
+            --shadow-soft: 0 8px 32px rgba(76, 175, 80, 0.08);
+            --shadow-medium: 0 12px 40px rgba(76, 175, 80, 0.12);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 50%, #F9FBE7 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(165, 214, 167, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 10%, rgba(129, 212, 250, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 80%, rgba(255, 171, 145, 0.1) 0%, transparent 20%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        /* === DEKORASYON ELEMENTLERİ === */
+        .leaf-decoration {
+            position: fixed;
+            font-size: 2.5rem;
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        .leaf-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .leaf-2 { top: 15%; right: 8%; animation-delay: -5s; animation-duration: 25s; }
+        .leaf-3 { bottom: 20%; left: 7%; animation-delay: -10s; animation-duration: 30s; }
+        .leaf-4 { bottom: 10%; right: 5%; animation-delay: -15s; }
+        .leaf-5 { top: 40%; left: 10%; animation-delay: -7s; animation-duration: 22s; }
+        .leaf-6 { top: 50%; right: 12%; animation-delay: -12s; animation-duration: 28s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-3deg); }
+            75% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        /* === HEADER === */
+        header {
+            background: linear-gradient(135deg, var(--spring-dark) 0%, var(--spring-green) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 40px;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header-flower {
+            display: inline-block;
+            animation: bloom 3s infinite alternate;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* === ARAMA BÖLÜMÜ === */
+        .search-container {
+            background: white;
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(165, 214, 167, 0.3);
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--spring-green), var(--spring-sky));
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            font-size: 1.1rem;
+            border: 2px solid var(--spring-light);
+            border-radius: 15px;
+            transition: var(--transition);
+            background-color: var(--spring-lighter);
+            color: var(--text-primary);
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--spring-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            background-color: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--spring-green);
+            font-size: 1.2rem;
+        }
+
+        .search-hint {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* === ANA İÇERİK === */
+        .main-content {
+            display: flex;
+            gap: 35px;
+            margin: 40px 0;
+        }
+
+        /* === İNDEX BÖLÜMÜ === */
+        #index {
+            flex: 0 0 320px;
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(165, 214, 167, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+            overflow: hidden;
+        }
+
+        #index::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--spring-green), var(--spring-sky));
+        }
+
+        .index-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            color: var(--spring-dark);
+        }
+
+        .index-header i {
+            font-size: 1.8rem;
+            color: var(--spring-green);
+        }
+
+        .index-header h2 {
+            font-size: 1.6rem;
+        }
+
+        #indexList {
+            max-height: 550px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Scrollbar Stili */
+        #indexList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #indexList::-webkit-scrollbar-track {
+            background: var(--spring-lighter);
+            border-radius: 10px;
+        }
+
+        #indexList::-webkit-scrollbar-thumb {
+            background: var(--spring-light);
+            border-radius: 10px;
+        }
+
+        #indexList::-webkit-scrollbar-thumb:hover {
+            background: var(--spring-green);
+        }
+
+        .index-item {
+            padding: 8px 10px;
+            margin-bottom: 3px;
+            background-color: var(--spring-lighter);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 5px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .index-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        .index-item:hover::before {
+            left: 100%;
+        }
+
+        .index-item:hover {
+            background-color: white;
+            border-left-color: var(--spring-green);
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
+        }
+
+        .index-item.active {
+            background: linear-gradient(135deg, var(--spring-light) 0%, white 100%);
+            border-left-color: var(--spring-dark);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.15);
+        }
+
+        .index-number {
+		font-size:8px;
+            background-color: var(--spring-green);
+            color: white;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .index-title {
+			font-size:11px;
+            font-weight: 300;
+            color: var(--text-primary);
+        }
+
+        .index-buttons {
+            margin-top: 25px;
+        }
+
+        /* === DUA BÖLÜMÜ === */
+        #duaContainer {
+            flex: 1;
+        }
+
+        .dua-section {
+            background: white;
+            margin-bottom: 35px;
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(165, 214, 167, 0.3);
+            scroll-margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .dua-section:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-5px);
+        }
+
+        .dua-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--spring-green), var(--spring-sky));
+            opacity: 0.7;
+        }
+
+        .dua-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--spring-lighter);
+        }
+
+        .dua-icon {
+            
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            
+        }
+
+        .dua-title-content h2 {
+            font-size: 1.8rem;
+            color: var(--spring-dark);
+            margin-bottom: 5px;
+        }
+
+        .dua-title-content .dua-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .dua-content {
+            font-size: 0.9rem;
+            line-height: 1.9;
+            color: var(--text-primary);
+        }
+
+        .dua-content p {
+            margin-bottom: 25px;
+            text-align: justify;
+            position: relative;
+            padding-left: 25px;
+            white-space: pre-line;
+        }
+
+        .dua-content p::before {
+            content: "🌸";
+            position: absolute;
+            left: 0;
+            top: 5px;
+            opacity: 0.5;
+        }
+
+        .dua-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        /* === BUTONLAR === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--spring-green) 0%, var(--spring-dark) 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 15px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+            background: linear-gradient(135deg, var(--spring-dark) 0%, var(--spring-green) 100%);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--spring-green);
+            border: 2px solid var(--spring-light);
+        }
+
+        .btn-outline:hover {
+            background: var(--spring-lighter);
+            color: var(--spring-dark);
+        }
+
+        .btn-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--spring-green), var(--spring-sky));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+            z-index: 100;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .btn-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-top:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        /* === SONUÇ BULUNAMADI === */
+        .no-results {
+            background: linear-gradient(135deg, #FFF9C4, #FFECB3);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--spring-earth);
+            border: 2px dashed #FFD54F;
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        .no-results::before {
+            content: "🍃";
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--spring-dark);
+        }
+
+        /* === FOOTER === */
+        footer {
+            background: linear-gradient(135deg, var(--spring-dark) 0%, #1B5E20 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 20%);
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-flower {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: spin 20s infinite linear;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer p {
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--spring-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            #index {
+                position: static;
+                flex: none;
+                width: 100%;
+            }
+            
+            #indexList {
+                max-height: 300px;
+            }
+            
+            header h1 {
+                font-size: 2.3rem;
+            }
+            
+            .leaf-decoration {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            header {
+                padding: 30px 0;
+                border-bottom-left-radius: 30px;
+                border-bottom-right-radius: 30px;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .dua-section {
+                padding: 25px 20px;
+            }
+            
+            .dua-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .dua-title-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .dua-content p {
+                padding-left: 0;
+            }
+            
+            .dua-content p::before {
+                display: none;
+            }
+            
+            .btn-top {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .leaf-decoration {
+                display: none;
+            }
+        }
+
+        /* === SEÇİLİ METİN VURGULAMA === */
+        ::selection {
+            background-color: rgba(165, 214, 167, 0.5);
+            color: var(--text-primary);
+        }
+
+        /* === YÜKLEME ANİMASYONU === */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* === YÜKLEME EKRANI === */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--spring-lighter);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--spring-light);
+            border-top: 5px solid var(--spring-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+		
+		
+		
+		/* === YAPRAK BUTONLAR === */
+.leaf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* ÖNCEKİ: 8px */
+    background: linear-gradient(135deg, var(--spring-light), var(--spring-green));
+    color: var(--spring-dark);
+    padding: 8px 16px; /* ÖNCEKİ: 12px 24px */
+    border-radius: 20px 8px 20px 8px; /* ÖNCEKİ: 25px 10px 25px 10px */
+    border: 1.5px solid var(--spring-light); /* ÖNCEKİ: 2px */
+    cursor: pointer;
+    font-size: 0.85rem; /* ÖNCEKİ: 0.95rem */
+    font-weight: 500;
+    transition: var(--transition);
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.15); /* ÖNCEKİ: 0 4px 12px */
+    position: relative;
+    overflow: hidden;
+    min-width: 100px; /* ÖNCEKİ: 120px */
+    justify-content: center;
+    height: 36px; /* Sabit yükseklik ekleyelim */
+}
+
+.leaf-btn::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.leaf-btn:hover::before {
+    opacity: 1;
+}
+
+.leaf-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.25);
+    background: linear-gradient(135deg, var(--spring-green), var(--spring-dark));
+    color: white;
+    border-color: var(--spring-green);
+}
+
+.leaf-btn:active {
+    transform: translateY(0) scale(1.01); /* ÖNCEKİ: -1px scale(1.02) */
+}
+
+.leaf-btn-icon {
+    font-size: 1rem; /* ÖNCEKİ: 1.2rem */
+    transition: transform 0.3s;
+}
+
+.leaf-btn:hover .leaf-btn-icon {
+    transform: rotate(15deg) scale(1.2);
+}
+
+.leaf-btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* Paylaş butonu için farklı bir yaprak */
+.share-btn {
+    background: linear-gradient(135deg, var(--spring-sky), #4FC3F7);
+    border-color: #81D4FA;
+}
+
+.share-btn:hover {
+    background: linear-gradient(135deg, #29B6F6, #0288D1);
+    border-color: #29B6F6;
+}
+
+/* Buton konteynerini güncelle */
+.dua-actions {
+    margin-top: 25px; /* ÖNCEKİ: 30px */
+    display: flex;
+    gap: 10px; /* ÖNCEKİ: 15px */
+    justify-content: flex-end;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .leaf-btn {
+        padding: 6px 12px; /* Daha küçük */
+        font-size: 0.8rem;
+        min-width: 90px;
+        height: 32px;
+        gap: 4px;
+    }
+    
+    .leaf-btn-icon {
+        font-size: 0.9rem;
+    }
+    
+    .dua-actions {
+        gap: 8px;
+        margin-top: 20px;
+    }
+}
+
+
+/* === ÇİÇEKLİ ALERT MODAL === */
+.flower-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(76, 175, 80, 0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.flower-alert.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.flower-alert-content {
+    background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+    border-radius: 25px;
+    padding: 40px 30px 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 
+        0 20px 60px rgba(76, 175, 80, 0.3),
+        0 0 0 1px rgba(165, 214, 167, 0.5),
+        inset 0 0 30px rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+    transform: scale(0.8) translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    text-align: center;
+}
+
+.flower-alert.active .flower-alert-content {
+    transform: scale(1) translateY(0);
+}
+
+.flower-alert-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, 
+        #FFAB91, #FFCC80, #FFF176, #A5D6A7, #80DEEA, #B39DDB);
+    border-radius: 25px 25px 0 0;
+}
+
+.flower-alert-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    animation: gentleFloat 3s infinite ease-in-out;
+    display: inline-block;
+}
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.flower-alert-title {
+    color: var(--spring-dark);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.flower-alert-message {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+
+.flower-alert-footer {
+    margin-top: 20px;
+}
+
+.flower-alert-btn {
+    background: linear-gradient(135deg, var(--spring-green), var(--spring-dark));
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.flower-alert-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+}
+
+.flower-alert-btn:active {
+    transform: translateY(0);
+}
+
+/* Dekorasyon elementleri */
+.flower-alert-decoration {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.flower-alert-decoration span {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: floatAround 15s infinite linear;
+    opacity: 0.7;
+}
+
+.decoration-1 { top: 15%; left: 10%; animation-delay: 0s; animation-duration: 20s; }
+.decoration-2 { top: 20%; right: 15%; animation-delay: -5s; animation-duration: 25s; }
+.decoration-3 { bottom: 25%; left: 15%; animation-delay: -10s; animation-duration: 18s; }
+.decoration-4 { bottom: 15%; right: 10%; animation-delay: -15s; animation-duration: 22s; }
+.decoration-5 { top: 50%; left: 50%; transform: translate(-50%, -50%); animation: gentleFloat 4s infinite ease-in-out; }
+
+@keyframes floatAround {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, -15px) rotate(90deg); }
+    50% { transform: translate(15px, 20px) rotate(180deg); }
+    75% { transform: translate(-20px, 10px) rotate(270deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* Alert çeşitleri */
+.flower-alert.success .flower-alert-icon {
+    color: #4CAF50;
+}
+
+.flower-alert.warning .flower-alert-icon {
+    color: #FF9800;
+}
+
+.flower-alert.error .flower-alert-icon {
+    color: #F44336;
+}
+
+.flower-alert.info .flower-alert-icon {
+    color: #2196F3;
+}
+
+/* Mobil uyum */
+@media (max-width: 768px) {
+    .flower-alert-content {
+        padding: 30px 20px 25px;
+        width: 85%;
+    }
+    
+    .flower-alert-icon {
+        font-size: 3.5rem;
+    }
+    
+    .flower-alert-title {
+        font-size: 1.3rem;
+    }
+    
+    .flower-alert-message {
+        font-size: 0.95rem;
+    }
+    
+    .flower-alert-decoration span {
+        font-size: 1.2rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Yükleme Ekranı -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Dekoratif Yapraklar -->
+    <div class="leaf-decoration leaf-1">🍃</div>
+    <div class="leaf-decoration leaf-2">🌿</div>
+    <div class="leaf-decoration leaf-3">🍂</div>
+    <div class="leaf-decoration leaf-4">🌱</div>
+    <div class="leaf-decoration leaf-5">🌸</div>
+    <div class="leaf-decoration leaf-6">🌼</div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <h1>
+                <span class="header-flower">🌸</span>
+                Bir Dua Kadar Yakın
+                <span class="header-flower">🌼</span>
+            </h1>
+            <p>Kalbine İyi Gelecek Dualar • <i class="fas fa-feather-alt"></i> İlknur Turan</p>
+        </div>
+    </header>
+
+    <!-- Arama -->
+    <div class="container">
+        <div class="search-container fade-in">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Kalbinin ihtiyacı olan duayı ara...">
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Ana İçerik -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Index -->
+            <div id="index" class="fade-in">
+                <div class="index-header">
+                    <span style="font-size: 2rem;">🍃</span>
+                </div>
+                <div id="indexList">
+                    <!-- JavaScript ile dolacak -->
+                </div>
+                <div class="index-buttons">
+                    <button class="btn" onclick="scrollToTop()" style="width: 100%;">
+                        <i class="fas fa-arrow-up"></i> Başa Dön
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dua İçerikleri -->
+            <div id="duaContainer" class="fade-in">
+                <!-- JavaScript ile dolacak -->
+            </div>
+            
+            <!-- Sonuç Bulunamadı -->
+            <div id="noResults" class="no-results">
+                <h3>🥀 Aradığınız Dua Bulunamadı</h3>
+                <p>Lütfen farklı bir kelime ile arama yapmayı deneyin.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-flower">🌺</div>
+            <p>© 2024 Bir Dua Kadar Yakın - Tüm hakları saklıdır.</p>
+            <p>Her dua, kalbin bir bahçesinde açan çiçek gibidir.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-heart"></i> Kalbinize Dokunan Dualar</a>
+                <a href="#"><i class="fas fa-seedling"></i> Manevi Bahçeniz</a>
+                <a href="#"><i class="fas fa-pray"></i> Dua Rehberi</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Yukarı Çık Butonu -->
+    <a href="#" class="btn-top" onclick="scrollToTop(); return false;">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- JavaScript Dosyaları -->
+    <script src="dualar.js"></script>
+  <script>
+        // Ana JavaScript Kodu
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM yüklendi, dualar.js'yi bekliyor...");
+            
+            // Duaların yüklenmesini bekle
+            if (typeof window.dualar === 'undefined') {
+                console.error("Dualar yüklenemedi! dualar.js dosyasını kontrol edin.");
+                return;
+            }
+            
+            console.log("Dualar yüklendi:", window.dualar.length);
+            
+            // Yükleme ekranını gizle
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.body.style.opacity = '1';
+                initApp();
+            }, 800);
+        });
+
+        function initApp() {
+            const dualar = window.dualar;
+            const indexList = document.getElementById('indexList');
+            const duaContainer = document.getElementById('duaContainer');
+            const searchInput = document.getElementById('searchInput');
+            const noResults = document.getElementById('noResults');
+            const btnTop = document.querySelector('.btn-top');
+            
+            let currentActiveIndex = 0;
+            
+            // Index listesini oluştur
+            function createIndexList() {
+                indexList.innerHTML = '';
+                dualar.forEach((dua, index) => {
+                    const indexItem = document.createElement('div');
+                    indexItem.className = 'index-item';
+                    if (index === 0) indexItem.classList.add('active');
+                    
+                    indexItem.innerHTML = `
+                        <div class="index-number">${index + 1}</div>
+                        <div class="index-title">${dua.title}</div>
+                    `;
+                    
+                    indexItem.addEventListener('click', () => {
+                        scrollToDua(dua.id);
+                        setActiveIndex(index);
+                    });
+                    
+                    indexList.appendChild(indexItem);
+                });
+            }
+            
+            // Dua içeriklerini oluştur
+            function createDuaContents() {
+                duaContainer.innerHTML = '';
+                dualar.forEach((dua, index) => {
+                    const duaSection = document.createElement('div');
+                    duaSection.className = 'dua-section';
+                    duaSection.id = `dua-${dua.id}`;
+                    
+                    // Dua içeriğindeki yeni satırları <br> ile değiştir
+                    const formattedContent = dua.content.replace(/\n/g, '');
+                    
+                    duaSection.innerHTML = `
+                        <div class="dua-header">
+                            <div class="dua-icon">
+                                🍂
+                            </div>
+                            <div class="dua-title-content">
+                                <h2>${dua.title}</h2>
+                                <div class="dua-subtitle">«Dua ${index + 1}»</div>
+                            </div>
+                        </div>
+                        <div class="dua-content">
+                            <p>${formattedContent}</p>
+                        </div>
+                        <div class="dua-actions">
+                            <button class="leaf-btn copy-btn" onclick="copyDua(${dua.id})" title="Dua'yı Kopyala">
+                                <span class="leaf-btn-icon">🍃</span>
+                                <span class="leaf-btn-text">Kopyala</span>
+                            </button>
+                            <button class="leaf-btn share-btn" onclick="shareDua(${dua.id})" title="Dua'yı Paylaş">
+                                <span class="leaf-btn-icon">🌿</span>
+                                <span class="leaf-btn-text">Paylaş</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Scroll gözlemcisi için data attribute ekle
+                    duaSection.dataset.index = index;
+                    
+                    duaContainer.appendChild(duaSection);
+                });
+            }
+            
+            // Aktif index'i güncelle
+            function setActiveIndex(index) {
+                const indexItems = document.querySelectorAll('.index-item');
+                indexItems.forEach(item => item.classList.remove('active'));
+                
+                if (indexItems[index]) {
+                    indexItems[index].classList.add('active');
+                    currentActiveIndex = index;
+                }
+            }
+            
+            // Belirli bir dua'ya kaydır
+            function scrollToDua(id) {
+                const duaElement = document.getElementById(`dua-${id}`);
+                if (duaElement) {
+                    duaElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Aktif index'i güncelle
+                    const index = dualar.findIndex(dua => dua.id === id);
+                    if (index !== -1) {
+                        setActiveIndex(index);
+                    }
+                }
+            }
+            
+            // Arama fonksiyonu
+            function searchDualar(keyword) {
+                const normalizedKeyword = keyword.toLowerCase().trim();
+                
+                if (normalizedKeyword === '') {
+                    // Tüm duaları göster
+                    document.querySelectorAll('.dua-section').forEach(section => {
+                        section.style.display = 'block';
+                    });
+                    document.querySelectorAll('.index-item').forEach(item => {
+                        item.style.display = 'flex';
+                    });
+                    noResults.style.display = 'none';
+                    return;
+                }
+                
+                let foundAny = false;
+                
+                // Dua içeriklerinde ara
+                document.querySelectorAll('.dua-section').forEach(section => {
+                    const title = section.querySelector('h2').textContent.toLowerCase();
+                    const content = section.querySelector('.dua-content').textContent.toLowerCase();
+                    
+                    if (title.includes(normalizedKeyword) || content.includes(normalizedKeyword)) {
+                        section.style.display = 'block';
+                        foundAny = true;
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                // Index'te ara
+                document.querySelectorAll('.index-item').forEach((item, index) => {
+                    const title = item.querySelector('.index-title').textContent.toLowerCase();
+                    const dua = dualar[index];
+                    const content = dua.content.toLowerCase();
+                    
+                    if (title.includes(normalizedKeyword) || content.includes(normalizedKeyword)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Sonuç yoksa mesaj göster
+                if (!foundAny) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+            
+            // Scroll gözlemcisi
+            function initIntersectionObserver() {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.3
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const index = parseInt(entry.target.dataset.index);
+                            setActiveIndex(index);
+                        }
+                    });
+                }, observerOptions);
+                
+                document.querySelectorAll('.dua-section').forEach(section => {
+                    observer.observe(section);
+                });
+            }
+            
+            // Yukarı çık butonu kontrolü
+            function initScrollTopButton() {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 300) {
+                        btnTop.classList.add('visible');
+                    } else {
+                        btnTop.classList.remove('visible');
+                    }
+                });
+            }
+            
+            // Dua paylaşma
+            window.shareDua = function(id) {
+                const dua = dualar.find(d => d.id === id);
+                if (dua && navigator.share) {
+                    navigator.share({
+                        title: dua.title,
+                        text: dua.content.substring(0, 100) + '...',
+                        url: window.location.href + `#dua-${id}`
+                    })
+                    .catch(err => console.log('Paylaşım iptal edildi:', err));
+                } else {
+                    // Paylaşım desteklenmiyorsa kopyala butonuna benzer bir alert göster
+                    showFlowerAlert(
+                        "Paylaşım Desteklenmiyor",
+                        "Bu tarayıcı paylaşımı desteklemiyor. Dua'yı kopyalayıp paylaşabilirsiniz.",
+                        "info"
+                    );
+                }
+            };
+            
+            // Yukarı kaydır
+            window.scrollToTop = function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            };
+            
+            // Event listener'ları bağla
+            searchInput.addEventListener('input', (e) => {
+                searchDualar(e.target.value);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchDualar(e.target.value);
+                }
+            });
+            
+            // Uygulamayı başlat
+            createIndexList();
+            createDuaContents();
+            initIntersectionObserver();
+            initScrollTopButton();
+            
+            console.log("Uygulama başarıyla başlatıldı!");
+        }
+        
+        // Çiçekli Alert Fonksiyonları
+        function showFlowerAlert(title = "Dua Kopyalandı!", message = "Dua başarıyla panonuza kopyalandı.", type = "success") {
+            const alert = document.getElementById('flowerAlert');
+            const alertIcon = alert.querySelector('.flower-alert-icon');
+            const alertTitle = alert.querySelector('.flower-alert-title');
+            const alertMessage = alert.querySelector('.flower-alert-message');
+            
+            // Alert tipine göre icon değiştir
+            const icons = {
+                success: '🌸',
+                warning: '⚠️',
+                error: '❌',
+                info: '💡'
+            };
+            
+            alertIcon.textContent = icons[type] || '🌸';
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+            
+            // Önceki class'ları temizle
+            alert.className = 'flower-alert';
+            // Yeni class'ları ekle
+            alert.classList.add('active', type);
+            
+            // 3 saniye sonra otomatik kapanma
+            setTimeout(() => {
+                closeFlowerAlert();
+            }, 3000);
+        }
+
+        function closeFlowerAlert() {
+            const alert = document.getElementById('flowerAlert');
+            alert.classList.remove('active');
+        }
+
+        // Dua kopyalama fonksiyonu
+        window.copyDua = function(id) {
+            const dua = window.dualar.find(d => d.id === id);
+            if (dua) {
+                const textToCopy = `${dua.title}\n\n${dua.content}`;
+                
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        // Çiçekli alert göster
+                        showFlowerAlert(
+                            "Dua Kopyalandı! 🍃",
+                            `"${dua.title}" duası panonuza kopyalandı.`,
+                            "success"
+                        );
+                    })
+                    .catch(err => {
+                        console.error('Kopyalama başarısız:', err);
+                        showFlowerAlert(
+                            "Kopyalama Başarısız 😔",
+                            "Dua kopyalanırken bir hata oluştu. Lütfen tekrar deneyin.",
+                            "error"
+                        );
+                    });
+            }
+        };
+
+        // Dışarı tıklayınca kapatma
+        document.addEventListener('click', function(e) {
+            const alert = document.getElementById('flowerAlert');
+            if (alert && alert.classList.contains('active') && 
+                e.target === alert && 
+                !e.target.closest('.flower-alert-content')) {
+                closeFlowerAlert();
+            }
+        });
+
+        // ESC tuşu ile kapatma
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFlowerAlert();
+            }
+        });
+    </script>
+	<!-- Çiçekli Alert Modal -->
+<div id="flowerAlert" class="flower-alert">
+    <div class="flower-alert-content">
+        <div class="flower-alert-icon">🌸</div>
+        <h3 class="flower-alert-title">Dua Kopyalandı!</h3>
+        <p class="flower-alert-message">Dua başarıyla panonuza kopyalandı.</p>
+        <div class="flower-alert-footer">
+            <button class="flower-alert-btn" onclick="closeFlowerAlert()">
+                <span class="leaf-btn-icon">🌿</span> Tamam
+            </button>
+        </div>
+        <div class="flower-alert-decoration">
+            <span class="decoration-1">🐞</span>
+            <span class="decoration-2">🦋</span>
+            <span class="decoration-3">🐝</span>
+            <span class="decoration-4">🌼</span>
+            <span class="decoration-5">🍃</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

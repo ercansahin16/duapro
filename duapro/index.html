@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dualarım</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+
+:root{
+  --bg:#f5f5f7;
+  --card:#fff;
+  --text:#1d1d1f;
+  --sub:#6e6e73;
+  --accent:#ff6b81;
+}
+body.dark{
+  --bg:#0f0f12;
+  --card:#1c1c1e;
+  --text:#fff;
+  --sub:#a1a1a6;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:.4s;
+}
+
+/* INTRO */
+#intro{
+  position:fixed; inset:0;
+  background:linear-gradient(180deg,#000,#111);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Playfair Display",serif;
+  font-size:26px;
+  z-index:20;
+  animation:fadeOut 2s ease forwards;
+  animation-delay:2s;
+}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  padding:20px;
+}
+.menu-btn span{
+  display:block;
+  width:30px;height:3px;
+  background:var(--text);
+  margin:6px 0;
+  border-radius:10px;
+}
+
+/* MENU */
+.menu{
+  position:fixed;
+  right:-260px; top:0;
+  width:260px;height:100%;
+  background:var(--card);
+  padding:30px 20px;
+  transition:.4s;
+  z-index:15;
+}
+.menu.active{right:0}
+.menu .close{
+  text-align:right;
+  font-size:22px;
+  cursor:pointer;
+}
+.menu button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border-radius:999px;
+  border:none;
+  background:var(--text);
+  color:var(--bg);
+}
+
+/* CONTENT */
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:30px 20px;
+}
+.card{
+  background:var(--card);
+  padding:28px;
+  border-radius:24px;
+  margin-bottom:25px;
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+.card h2{
+  font-family:"Playfair Display",serif;
+}
+.card pre{
+  white-space:pre-wrap;
+  line-height:1.8;
+  font-family:"Playfair Display",serif;
+}
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+.actions button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:999px;
+  cursor:pointer;
+}
+.actions .edit{background:#ffd166}
+.actions .del{background:#ef476f;color:#fff}
+
+/* MODALS */
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:30;
+}
+.modal-bg.active{display:flex}
+.modal{
+  background:var(--card);
+  padding:30px;
+  border-radius:26px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+}
+.modal h3{
+  font-family:"Playfair Display",serif;
+}
+.modal textarea,input{
+  width:100%;
+  margin-top:15px;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:var(--bg);
+  color:var(--text);
+}
+.modal .btns{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+.modal .btns button{
+  flex:1;
+  padding:12px;
+  border-radius:999px;
+  border:none;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--text);
+  color:var(--bg);
+  padding:14px 22px;
+  border-radius:999px;
+  opacity:0;
+  transition:.4s;
+  z-index:40;
+}
+.toast.show{opacity:1}
+
+
+/* 🍎 Apple style buttons */
+.actions button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-right: 6px;
+}
+
+/* Düzenle */
+.actions button:first-child {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+.actions button:first-child:hover {
+  background: #d2e3fc;
+}
+
+/* Sil */
+.actions button:last-child {
+  background: #fdecea;
+  color: #d93025;
+}
+.actions button:last-child:hover {
+  background: #f9d7d5;
+}
+
+/* 🧿 Sürpriz modu */
+body.surprise .actions {
+  display: none !important;
+}
+
+/* 📖 Dua fontu */
+.card pre {
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* 🔔 Apple tarzı alert */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1e;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  opacity: 0;
+  animation: toast 2.5s ease forwards;
+  z-index: 9999;
+}
+
+@keyframes toast {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  15% { opacity: 1; transform: translate(-50%, 0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+</style>
+</head>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then(() => console.log("✅ Service Worker kayıtlı"))
+      .catch(err => console.log("❌ SW hata:", err));
+  });
+}
+</script>
+
+<body>
+
+<div id="intro">Kalpten Gelen Dualar…</div>
+
+<div class="topbar">
+  <strong>Dualarım</strong>
+  <div class="menu-btn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="menu" id="menu">
+
+  <div class="close" onclick="toggleMenu()">x</div>
+<button onclick="toggleSurprise()" class="surprise-btn">
+  🧿 Güncelleme Modu
+</button>
+  <button onclick="openAdd()">➕ Yeni Dua</button>
+  <button onclick="toggleDark()">🌙 Gece Modu</button>
+</div>
+
+<div class="container" id="siirler"></div>
+
+<!-- ADD MODAL -->
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <h3>Yeni Dua 🤍</h3>
+    <input id="baslik" placeholder="Dua Başlığı">
+    <textarea id="icerik" placeholder="Duan..."></textarea>
+    <div class="btns">
+      <button onclick="closeAdd()">Vazgeç</button>
+      <button onclick="ekle()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM / EDIT MODAL -->
+<div class="modal-bg" id="alertModal">
+  <div class="modal">
+    <h3 id="alertTitle"></h3>
+    <textarea id="alertInput" style="display:none"></textarea>
+    <div class="btns">
+      <button onclick="alertCancel()">İptal</button>
+      <button id="alertOk">Tamam</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const menu = document.getElementById("menu");
+const addModal = document.getElementById("addModal");
+const alertModal = document.getElementById("alertModal");
+const alertTitle = document.getElementById("alertTitle");
+const alertInput = document.getElementById("alertInput");
+const alertOk = document.getElementById("alertOk");
+
+function toggleMenu(){menu.classList.toggle("active")}
+function openAdd(){addModal.classList.add("active");toggleMenu()}
+function closeAdd(){addModal.classList.remove("active")}
+
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("dark",document.body.classList.contains("dark"));
+}
+if(localStorage.getItem("dark")==="true")document.body.classList.add("dark");
+
+/* ALERT SKELETON (JS’te dolduracağız) */
+function alertCancel(){
+  alertModal.classList.remove("active");
+  alertInput.style.display="none";
+}
+</script>
+
+<script type="module" src="firebase.js"></script>
+</body>
+</html>

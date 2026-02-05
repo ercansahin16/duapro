@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arapça Gündelik Kelime Öğren - Kur'an Odaklı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Hamburger Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+        <div class="menu-header">
+            <h3><i class="fas fa-book-quran"></i> Kur'an Arapçası</h3>
+            <button class="menu-close" id="menuClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-items">
+            <div class="menu-section">
+			<h4><i class="fas fa-thumbtack"></i> Köşemiz💕</h4>
+                <a href="duapro/index.html" class="menu-item">
+					<i class="fas fa-hands-praying"></i>
+					<span>Bizim Dualarımız ❤️</span>
+				</a>
+				<a href="https://cocuk.diyanet.gov.tr/" target="_blank" class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Diyanet Çocuk </span>
+                </a>
+				
+				
+                <h4><i class="fas fa-link"></i> Faydalı Bağlantılar</h4>
+                <a href="https://mealikerim.com" target="_blank" class="menu-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Kur'an Meali</span>
+                </a>
+                
+                <a href="https://www.diyanet.gov.tr/tr-TR/Kuran/Sayfa/default" target="_blank" class="menu-item">
+                    <i class="fas fa-mosque"></i>
+                    <span>Diyanet Sayfası</span>
+                </a>
+				<a href="https://kuran.diyanet.gov.tr/" target="_blank" class="menu-item">
+                    <i class="fas fa-mosque"></i>
+                    <span>Diyanet Kur'an Oku</span>
+                </a>
+                <a href="https://mylittleoffice.github.io/zaman/" target="_blank" class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Ezan Vakitleri</span>
+                </a>
+				
+            </div>
+            
+      
+            
+            <div class="menu-section">
+                <h4><i class="fas fa-cog"></i> Ayarlar</h4>
+                <button class="menu-item" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <span>Tema Değiştir</span>
+                </button>
+                <button class="menu-item" onclick="resetProgress()">
+                    <i class="fas fa-redo"></i>
+                    <span>İlerlemeyi Sıfırla</span>
+                </button>
+               
+            </div>
+            
+            <div class="menu-footer">
+                <p>Her gün 5 Kur'an kelimesi öğrenerek Allah'ın kelamını anlamaya bir adım daha yaklaşın.</p>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <div class="header-top">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1><i class="fas fa-book-quran"></i> Kur'an Arapçası Öğren</h1>
+        </div>
+        
+        <p class="subtitle">Her gün 5 Kur'an kelimesi öğrenin, İlahi Kelam'ı anlayın</p>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="date-selector">
+                <button class="btn" id="prevDay"><i class="fas fa-chevron-left"></i> Önceki Gün</button>
+                <span id="currentDate">Gün 1</span>
+                <button class="btn" id="nextDay">Sonraki Gün <i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="stats">
+                <span id="stats">Toplam <span id="totalWords">0</span> kelime öğrenildi</span>
+            </div>
+            
+            <div class="theme-toggle">
+                <button class="btn btn-outline" id="themeToggle">
+                    <i class="fas fa-moon"></i> Tema Değiştir
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    
+    <main>
+        <section class="today-words">
+            <h2 class="section-title"><i class="fas fa-calendar-day"></i> Bugünün Kelimeleri</h2>
+            <div class="words-grid" id="todayWords">
+                <!-- Kelimeler JavaScript ile buraya eklenecek -->
+            </div>
+        </section>
+        
+        <section class="learned-words">
+            <h2 class="section-title"><i class="fas fa-history"></i> Öğrenilen Kelimeler</h2>
+            <div id="learnedWordsList">
+                <!-- Öğrenilen kelimeler JavaScript ile buraya eklenecek -->
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="motivation-section">
+            <div class="motivation-item">
+                <i class="fas fa-star"></i>
+                <p class="motivation-text">“İlim maldan hayırlıdır; ilim seni korur, sense malı korursun. Mal, vermekle azalır, ilim öğretmekle çoğalır.”</p>
+                <p class="motivation-source">Hz. Ali (r.a.)</p>
+            </div>
+            
+            <div class="motivation-item">
+                <i class="fas fa-star"></i>
+                <p class="motivation-text">"Hiç bilenlerle bilmeyenler bir olur mu?"</p>
+                <p class="motivation-source">Zümer Suresi, 9. Ayet</p>
+            </div>
+            
+            <div class="motivation-item">
+                <i class="fas fa-star"></i>
+                <p class="motivation-text">"Allah, içinizden iman edenlerin ve kendilerine ilim verilenlerin derecelerini yükseltir."</p>
+                <p class="motivation-source">Mücadele Suresi, 11. Ayet</p>
+            </div>
+        </div>
+        
+        <div class="gift-message">
+            <!-- <div class="heart">i❤️E</div>-->
+            <p class="gift-text">Sevgili İlknur Hanım'a Hediye Olsun</p>
+            <p class="prayer">Allah bizden razı olsun, ilim öğrenme yolunda muvaffak eylesin.</p>
+            
+        </div>
+    </footer>
+
+    <!-- Kelime veritabanını yükle -->
+    <script src="words-database.js"></script>
+    <!-- Ana JavaScript dosyası -->
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+

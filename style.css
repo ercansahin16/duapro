@@ -1,0 +1,994 @@
+:root {
+    --apple-bg: #f5f5f7;
+    --apple-text: #1d1d1f;
+    --apple-gray: #86868b;
+    --apple-light-gray: #d2d2d7;
+    --apple-blue: #0071e3;
+    --apple-green: #34c759;
+    --card-bg: #ffffff;
+    --border-color: #e5e5e7;
+}
+
+.dark-mode {
+    --apple-bg: #1d1d1f;
+    --apple-text: #f5f5f7;
+    --apple-gray: #86868b;
+    --apple-light-gray: #424245;
+    --apple-blue: #0071e3;
+    --apple-green: #30d158;
+    --card-bg: #2c2c2e;
+    --border-color: #424245;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+body {
+    background-color: var(--apple-bg);
+    color: var(--apple-text);
+    transition: all 0.3s ease;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 14px;
+}
+
+header {
+    text-align: center;
+    padding: 20px 0 30px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--apple-text);
+}
+
+.subtitle {
+    color: var(--apple-gray);
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.date-selector, .stats, .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn {
+    background-color: var(--apple-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--apple-blue);
+    color: var(--apple-blue);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: var(--apple-light-gray);
+    border-radius: 3px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--apple-green);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.today-words {
+    background-color: var(--card-bg);
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.section-title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: var(--apple-blue);
+}
+
+.words-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.word-card {
+    background-color: var(--apple-bg);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.word-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.word-card.learned {
+    border-color: var(--apple-green);
+}
+
+.arabic-word {
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-align: right;
+    margin-bottom: 15px;
+    color: var(--apple-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.transcription {
+    color: var(--apple-blue);
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.meaning {
+    color: var(--apple-gray);
+    font-size: 1.1rem;
+    height: 0;
+    opacity: 0;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.meaning.show {
+    height: auto;
+    opacity: 1;
+    margin-top: 10px;
+}
+
+.word-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: var(--apple-gray);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s;
+}
+
+.action-btn:hover {
+    color: var(--apple-blue);
+}
+
+.action-btn.learned {
+    color: var(--apple-green);
+}
+
+.learned-words {
+    background-color: var(--card-bg);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+.day-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.day-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: var(--apple-blue);
+    display: flex;
+    justify-content: space-between;
+}
+
+.day-words {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.learned-word-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--apple-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.learned-arabic {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: right;
+}
+
+.learned-meaning {
+    color: var(--apple-gray);
+    font-size: 0.9rem;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--apple-gray);
+    font-size: 0.9rem;
+}
+
+
+
+/* Aylık ilerleme barı */
+.monthly-progress {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    margin-top: 20px;
+}
+
+
+/* style.css dosyasına bu stilleri ekleyin */
+
+/* HAMBURGER MENÜ STİLLERİ */
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.hamburger-btn {
+    background: none;
+    border: none;
+    color: var(--apple-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+}
+
+.hamburger-btn:hover {
+    background-color: var(--apple-light-gray);
+}
+
+.hamburger-menu {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 320px;
+    height: 100%;
+    background-color: var(--card-bg);
+    z-index: 1001;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 5px 0 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.hamburger-menu.open {
+    left: 0;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-header {
+    padding: 20px;
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-green));
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.menu-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.menu-items {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.menu-section {
+    margin-bottom: 25px;
+}
+
+.menu-section h4 {
+    font-size: 0.9rem;
+    color: var(--apple-gray);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: var(--apple-bg);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: var(--apple-text);
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.menu-item:hover {
+    background-color: var(--apple-light-gray);
+    transform: translateX(5px);
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--apple-blue);
+    font-size: 1.1rem;
+}
+
+.menu-item span {
+    flex: 1;
+}
+
+.menu-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--apple-gray);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Arama Çubuğu (opsiyonel) */
+.menu-search {
+    padding: 0 20px 20px;
+}
+
+.menu-search input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--apple-bg);
+    color: var(--apple-text);
+    font-size: 0.9rem;
+}
+
+.menu-search input:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+}
+
+/* Responsive arama ayarları */
+@media (max-width: 768px) {
+    .menu-search {
+        padding: 0 15px 15px;
+    }
+    
+    .menu-search input {
+        padding: 10px 15px 10px 35px;
+        background-position: 12px center;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-search {
+        padding: 0 12px 12px;
+    }
+    
+    .menu-search input {
+        padding: 10px 12px 10px 35px;
+        font-size: 0.85rem;
+    }
+}
+
+
+
+/* Responsive ayarlar */
+@media (max-width: 768px) {
+    .month-title {
+        padding: 12px 15px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .month-info {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .month-words {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-card {
+        padding: 12px;
+    }
+    
+    /* Hamburger Menü Responsive */
+    .hamburger-menu {
+        width: 85%;
+        max-width: 300px;
+        left: -100%;
+    }
+    
+    .hamburger-menu.open {
+        left: 0;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    .header-top {
+        gap: 10px;
+    }
+    
+    .hamburger-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .today-words, .learned-words {
+        padding: 15px;
+    }
+    
+    .arabic-word {
+        font-size: 1.6rem;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    /* Hamburger Menü Responsive */
+    .hamburger-menu {
+        width: 90%;
+        max-width: 280px;
+    }
+    
+    .menu-header {
+        padding: 15px;
+    }
+    
+    .menu-item {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .menu-header h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* style.css dosyasına bu stilleri ekleyin */
+
+/* MOTİVASYON BÖLÜMÜ */
+.motivation-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.1) 0%, rgba(52, 199, 89, 0.1) 100%);
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+}
+
+.motivation-item {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    padding: 20px;
+    background-color: var(--card-bg);
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.motivation-item:hover {
+    transform: translateY(-5px);
+}
+
+.motivation-item i {
+    font-size: 1.8rem;
+    color: var(--apple-blue);
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.motivation-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--apple-text);
+    margin-bottom: 12px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.motivation-source {
+    font-size: 0.9rem;
+    color: var(--apple-gray);
+    font-weight: 500;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* HEDİYE MESAJI */
+.gift-message {
+    text-align: center;
+    padding: 30px 20px;
+    background-color: var(--card-bg);
+    border-radius: 18px;
+    border: 2px solid var(--apple-blue);
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.gift-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--apple-blue), var(--apple-green));
+}
+
+.heart {
+    font-size: 3.5rem;
+    color: #ff2e63;
+    margin-bottom: 15px;
+    animation: heartbeat 1.5s infinite;
+    text-shadow: 0 0 20px rgba(255, 46, 99, 0.3);
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    5% { transform: scale(1.1); }
+    10% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    20% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+.gift-text {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--apple-blue);
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.prayer {
+    font-size: 1.3rem;
+    color: var(--apple-text);
+    margin-bottom: 20px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.footer-note {
+    font-size: 0.9rem;
+    color: var(--apple-gray);
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* style.css dosyasına ekleyin */
+
+/* Akordeon sistem için stiller */
+.day-section {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-title {
+    cursor: pointer;
+    padding: 12px 15px;
+    background-color: var(--apple-bg);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.day-title:hover {
+    background-color: var(--apple-light-gray);
+}
+
+.day-title::after {
+    content: '▼';
+    font-size: 0.8rem;
+    color: var(--apple-blue);
+    transition: transform 0.3s ease;
+}
+
+.day-title.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.day-words {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.day-words.collapsed {
+    max-height: 0;
+    padding: 0 15px;
+    overflow: hidden;
+}
+
+
+/* RESPONSIVE AYARLAR */
+@media (max-width: 768px) {
+    .motivation-section {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .motivation-item {
+        min-width: 100%;
+    }
+    
+    .gift-text {
+        font-size: 1.5rem;
+    }
+    
+    .prayer {
+        font-size: 1.1rem;
+    }
+    
+    .heart {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .motivation-section {
+        padding: 15px;
+    }
+    
+    .motivation-item {
+        padding: 15px;
+    }
+    
+    .gift-message {
+        padding: 25px 15px;
+    }
+    
+    .gift-text {
+        font-size: 1.3rem;
+    }
+    
+    .prayer {
+        font-size: 1rem;
+    }
+}
+
+
+/* style.css dosyasına ekleyin */
+
+/* Ay bazlı sistem için stiller */
+.month-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.month-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.month-title {
+    cursor: pointer;
+    padding: 15px 20px;
+    background-color: var(--apple-bg);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.month-title:hover {
+    background-color: var(--apple-light-gray);
+    transform: translateY(-2px);
+}
+
+.month-title::after {
+    content: '▼';
+    font-size: 0.9rem;
+    color: var(--apple-blue);
+    transition: transform 0.3s ease;
+}
+
+.month-title.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.month-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--apple-gray);
+}
+
+.month-words {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.month-words.collapsed {
+    max-height: 0;
+    padding: 0 15px;
+    overflow: hidden;
+    border: none;
+}
+
+/* Gün kartları içinde */
+.day-card {
+    background-color: var(--apple-bg);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.day-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-number {
+    font-weight: 600;
+    color: var(--apple-blue);
+}
+
+.day-word-count {
+    font-size: 0.8rem;
+    color: var(--apple-green);
+    background-color: rgba(52, 199, 89, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.day-words-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+
+
+/* Arama Çubuğu Stilleri */
+.menu-search {
+    padding: 0 20px 20px;
+    margin-bottom: 10px;
+}
+
+.menu-search input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--apple-bg);
+    color: var(--apple-text);
+    font-size: 0.9rem;
+    position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    background-size: 16px;
+}
+
+.menu-search input:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+.menu-search input::placeholder {
+    color: var(--apple-gray);
+}
+
+/* Arama temizleme butonu */
+.menu-search .clear-search {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--apple-gray);
+    cursor: pointer;
+    display: none;
+    padding: 5px;
+}
+
+.menu-search input:not(:placeholder-shown) + .clear-search {
+    display: block;
+}
+
