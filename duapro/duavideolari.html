@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>📺 Video Arşivi</title>
-
+<title>📺 Dua Videoları</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -22,8 +21,6 @@ body{
   background:var(--bg);
   color:var(--text);
 }
-
-/* HEADER */
 header{
   display:flex;
   align-items:center;
@@ -32,30 +29,12 @@ header{
   font-size:20px;
   font-weight:600;
 }
-.menu-btn{
-  font-size:22px;
-  background:none;
-  border:none;
-  cursor:pointer;
-}
-
-/* LAYOUT */
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
+.menu-btn{font-size:22px;background:none;border:none;cursor:pointer}
+.container{max-width:900px;margin:auto;padding:20px}
 
 /* ADD AREA */
-.add-area{
-  background:var(--card);
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-  margin-bottom:20px;
-}
-.add-area input,
-.add-area select{
+.add-area{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);margin-bottom:20px}
+.add-area input, .add-area select{
   width:100%;
   padding:12px;
   margin-top:10px;
@@ -72,11 +51,9 @@ header{
   color:#fff;
   font-size:15px;
   cursor:pointer;
-  opacity:.4;
+  opacity:.5;
 }
-.add-area button.active{
-  opacity:1;
-}
+.add-area button.active{opacity:1}
 
 /* CATEGORY */
 .category{
@@ -93,62 +70,24 @@ header{
   display:flex;
   justify-content:space-between;
 }
-.videos{
-  display:none;
-  padding:12px;
-}
-
-/* VIDEO */
-.video-card{
-  margin-bottom:16px;
-}
-.video-card iframe{
-  width:100%;
-  height:220px;
-  border-radius:14px;
-  border:none;
-}
-.video-title{
-  margin:8px 0;
-  font-weight:500;
-}
-.video-card button{
-  background:#fdecea;
-  color:var(--danger);
-  border:none;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer;
-}
+.videos{display:none;padding:12px}
+.video-card{margin-bottom:16px}
+.video-card iframe{width:100%;height:220px;border-radius:14px;border:none}
+.video-title{margin:8px 0;font-weight:500}
+.video-card button{background:#fdecea;color:var(--danger);border:none;padding:6px 12px;border-radius:999px;cursor:pointer}
 
 /* MODAL */
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center}
 .modal{
   background:#fff;
-  width:90%;
-  max-width:420px;
+  width:90%;max-width:420px;
   border-radius:20px;
   padding:20px;
 }
-.modal h4{
-  margin-top:0;
-}
-.deleted-item{
-  font-size:13px;
-  margin-bottom:14px;
-}
-.deleted-item button{
-  margin-top:6px;
-}
+.modal h4{margin-top:0}
+.deleted-item{font-size:13px;margin-bottom:12px}
+.deleted-item button{margin-top:4px}
 
-/* RESPONSIVE */
 @media(max-width:600px){
   .video-card iframe{height:190px}
 }
@@ -156,7 +95,6 @@ header{
 </head>
 
 <body>
-
 <header>
   <button class="menu-btn" onclick="openDeleted()">☰</button>
   📺 Video Arşivi
@@ -164,23 +102,22 @@ header{
 
 <div class="container">
 
-  <!-- ADD -->
-  <div class="add-area">
-    <input id="url" placeholder="Video linki" />
-    <input id="title" placeholder="Örn: Sabah Duası – Huzur Veren Okuma" disabled />
-    <select id="category" disabled>
-      <option value="">Kategori seç</option>
-      <option value="dua">Dua Videoları</option>
-      <option value="sohbet">Sohbet Videoları</option>
-      <option value="film">Filmler</option>
-      <option value="cocuk">Çocuk Videoları</option>
-    </select>
-    <button id="addBtn" onclick="ekle()">Ekle</button>
-  </div>
+<!-- ADD -->
+<div class="add-area">
+  <input id="url" placeholder="Video linki" />
+  <input id="title" placeholder="Örn: Sabah Duası – Huzur Veren Okuma" disabled />
+  <select id="category" disabled>
+    <option value="">Kategori seç</option>
+    <option value="dua">Dua Videoları</option>
+    <option value="sohbet">Sohbet Videoları</option>
+    <option value="film">Filmler</option>
+    <option value="cocuk">Çocuk Videoları</option>
+  </select>
+  <button id="addBtn" onclick="ekle()">Ekle</button>
+</div>
 
-  <!-- LIST -->
-  <div id="lists"></div>
-
+<!-- LIST -->
+<div id="lists"></div>
 </div>
 
 <!-- MODAL -->
@@ -194,19 +131,9 @@ header{
 
 <script type="module">
 import { db } from './firebase-core.js';
-import {
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-  doc,
-  query,
-  where,
-  orderBy
-} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 const col = collection(db,'videolar');
-
 const urlI = document.getElementById('url');
 const titleI = document.getElementById('title');
 const catI = document.getElementById('category');
@@ -215,31 +142,23 @@ const modal = document.getElementById('modal');
 const deletedList = document.getElementById('deletedList');
 const lists = document.getElementById('lists');
 
-/* 🔓 OPEN DELETED */
+/* OPEN DELETED – defined early and attached to window */
 window.openDeleted = async () => {
   modal.style.display='flex';
   deletedList.innerHTML='';
-
-  const q = query(col, where('deleted','==',true));
-  const s = await getDocs(q);
-
+  const q=query(col,where('deleted','==',true));
+  const s=await getDocs(q);
   s.forEach(d=>{
-    const div = document.createElement('div');
+    const div=document.createElement('div');
     div.className='deleted-item';
-    div.innerHTML = `
-      <b>${d.data().title}</b><br>
-      ${d.data().url}<br>
-      ${d.data().category}
-    `;
-
-    const r = document.createElement('button');
+    div.innerHTML=`<b>${d.data().title}</b><br>${d.data().url}<br>${d.data().category}`;
+    const r=document.createElement('button');
     r.textContent='Geri Yükle';
-    r.onclick = async ()=>{
+    r.onclick=async()=>{
       await updateDoc(doc(db,'videolar',d.id),{deleted:false});
       openDeleted();
       listele();
     };
-
     div.appendChild(r);
     deletedList.appendChild(div);
   });
@@ -247,22 +166,15 @@ window.openDeleted = async () => {
 
 window.closeModal = () => modal.style.display='none';
 
-/* INPUT FLOW */
-urlI.oninput = () => {
-  titleI.disabled=false;
-  catI.disabled=false;
-  check();
-};
+urlI.oninput = () => { titleI.disabled=false; catI.disabled=false; check(); };
 titleI.oninput = catI.onchange = check;
 
 function check(){
   addBtn.classList.toggle('active', titleI.value && catI.value);
 }
 
-/* ➕ ADD */
 window.ekle = async () =>{
   if(!titleI.value || !catI.value) return;
-
   await addDoc(col,{
     url:urlI.value,
     title:titleI.value,
@@ -270,7 +182,6 @@ window.ekle = async () =>{
     deleted:false,
     createdAt:new Date()
   });
-
   urlI.value='';
   titleI.value='';
   catI.value='';
@@ -280,56 +191,27 @@ window.ekle = async () =>{
   listele();
 };
 
-/* 📖 LIST */
 async function listele(){
   lists.innerHTML='';
-
-  const cats={
-    dua:'Dua Videoları',
-    sohbet:'Sohbet Videoları',
-    film:'Filmler',
-    cocuk:'Çocuk Videoları'
-  };
-
+  const cats={dua:'Dua Videoları',sohbet:'Sohbet Videoları',film:'Filmler',cocuk:'Çocuk Videoları'};
   for(const k in cats){
     const box=document.createElement('div');
     box.className='category';
-    box.innerHTML=`
-      <h3 onclick="this.nextElementSibling.style.display =
-      this.nextElementSibling.style.display==='block'?'none':'block'">
-      ${cats[k]} <span>▼</span></h3>
-      <div class="videos"></div>
-    `;
-
+    box.innerHTML=`<h3 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">${cats[k]} <span>▼</span></h3><div class="videos"></div>`;
     const v=box.querySelector('.videos');
-    const q=query(col,
-      where('category','==',k),
-      where('deleted','==',false),
-      orderBy('createdAt','desc')
-    );
-
+    const q=query(col,where('category','==',k),where('deleted','==',false),orderBy('createdAt','desc'));
     const s=await getDocs(q);
-
     s.forEach(d=>{
       const c=document.createElement('div');
       c.className='video-card';
-
-      const id = d.data().url.split('v=')[1]?.split('&')[0]
-        || d.data().url.split('/').pop();
-
-      c.innerHTML=`
-        <iframe src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen></iframe>
-        <div class="video-title">${d.data().title}</div>
-      `;
-
+      const id=d.data().url.split('v=')[1]?.split('&')[0] || d.data().url.split('/').pop();
+      c.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen></iframe><div class="video-title">${d.data().title}</div>`;
       const b=document.createElement('button');
       b.textContent='Sil';
       b.onclick=()=>sil(d.id);
-
       c.appendChild(b);
       v.appendChild(c);
     });
-
     lists.appendChild(box);
   }
 }
@@ -341,6 +223,5 @@ async function sil(id){
 
 listele();
 </script>
-
 </body>
 </html>
