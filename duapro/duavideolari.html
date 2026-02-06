@@ -1284,7 +1284,7 @@ window.ekle = async function() {
   }
 };
     
-    console.log('Video eklendi, ID:', docRef.id); // Debug
+    console.log('Video eklendi, ID:', docRef.id);
     
     // Success
     showToast('✅ Video başarıyla eklendi!', 'success');
@@ -1309,7 +1309,7 @@ window.ekle = async function() {
     addBtn.innerHTML = originalText;
     validateForm();
   }
-};
+};  // <-- BU KADAR! Bundan sonra başka } OLMAMALI
 
 // Load videos
 async function loadVideos(highlightId = null, openCategory = null) {
@@ -1897,6 +1897,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
