@@ -1223,7 +1223,8 @@ async function loadVideos(highlightId = null, openCategory = null) {
   videoLists.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Videolar yükleniyor...</h3></div>';
   
   try {
-    const q = query(videosCol, where('deleted', '==', false), orderBy('createdAt', 'desc'));
+    // Index hatasını önlemek için sadece deleted filtresi
+    const q = query(videosCol, where('deleted', '==', false));
     const snapshot = await getDocs(q);
     
     if (snapshot.empty) {
@@ -1237,36 +1238,51 @@ async function loadVideos(highlightId = null, openCategory = null) {
       return;
     }
     
+    // Client tarafında sıralama yap
+    const videos = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      videos.push({
+        id: doc.id,
+        ...data,
+        // createdAt yoksa geçmiş tarih ata
+        createdAt: data.createdAt || { toDate: () => new Date(0) }
+      });
+    });
+    
+    // Tarihe göre sırala (yeniden eskiye)
+    videos.sort((a, b) => {
+      const dateA = a.createdAt.toDate();
+      const dateB = b.createdAt.toDate();
+      return dateB - dateA; // Yeniden eskiye
+    });
+    
     // Group videos by category
     const videosByCategory = { dua: [], sohbet: [], film: [], cocuk: [] };
     
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      videosByCategory[data.category].push({
-        id: doc.id,
-        ...data
-      });
+    videos.forEach(video => {
+      videosByCategory[video.category].push(video);
     });
     
     // Render categories
     videoLists.innerHTML = '';
     
     for (const [catId, catConfig] of Object.entries(categories)) {
-      const videos = videosByCategory[catId];
-      if (videos.length === 0 && currentFilter !== 'all' && currentFilter !== catId) continue;
+      const catVideos = videosByCategory[catId];
+      if (catVideos.length === 0 && currentFilter !== 'all' && currentFilter !== catId) continue;
       
       const isOpen = openCategory === catId || catConfig.open;
       
       const categoryHTML = `
         <div class="category ${isOpen ? 'open' : ''}" data-category="${catId}">
           <div class="category-header" onclick="toggleCategory('${catId}')">
-            <h3><i class="${catConfig.icon}"></i> ${catConfig.name} (${videos.length})</h3>
+            <h3><i class="${catConfig.icon}"></i> ${catConfig.name} (${catVideos.length})</h3>
             <span class="category-icon"><i class="fas fa-chevron-down"></i></span>
           </div>
           <div class="videos-container" style="display: ${isOpen ? 'block' : 'none'}">
-            ${videos.length > 0 ? `
+            ${catVideos.length > 0 ? `
               <div class="videos-grid">
-                ${videos.map(video => `
+                ${catVideos.map(video => `
                   <div class="video-card ${highlightId === video.id ? 'highlight' : ''}" id="video-${video.id}">
                     <iframe 
                       class="video-player" 
@@ -1279,7 +1295,7 @@ async function loadVideos(highlightId = null, openCategory = null) {
                     <div class="video-info">
                       <div class="video-title">${video.title}</div>
                       <div class="video-meta">
-                        <span>${formatDate(video.createdAt?.toDate())}</span>
+                        <span>${formatDate(video.createdAt.toDate())}</span>
                         <div class="video-actions">
                           <button class="action-btn edit" onclick="editVideo('${video.id}', '${escapeHtml(video.title)}')" title="Düzenle">
                             <i class="fas fa-edit"></i>
@@ -1432,12 +1448,14 @@ async function restoreVideo(videoId) {
 }
 
 // Open deleted modal
+// Open deleted modal
 async function openDeletedModal() {
   deletedList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Yükleniyor...</h3></div>';
   openModal('deletedModal');
   
   try {
-    const q = query(videosCol, where('deleted', '==', true), orderBy('deletedAt', 'desc'));
+    // Index hatasını önlemek için sadece deleted filtresi
+    const q = query(videosCol, where('deleted', '==', true));
     const snapshot = await getDocs(q);
     
     if (snapshot.empty) {
@@ -1451,23 +1469,40 @@ async function openDeletedModal() {
       return;
     }
     
-    deletedList.innerHTML = '';
-    
+    // Client tarafında sıralama
+    const deletedVideos = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      const categoryName = categories[data.category]?.name || data.category;
+      deletedVideos.push({
+        id: doc.id,
+        ...data,
+        deletedAt: data.deletedAt || { toDate: () => new Date(0) }
+      });
+    });
+    
+    // Silinme tarihine göre sırala
+    deletedVideos.sort((a, b) => {
+      const dateA = a.deletedAt.toDate();
+      const dateB = b.deletedAt.toDate();
+      return dateB - dateA; // Yeniden eskiye
+    });
+    
+    deletedList.innerHTML = '';
+    
+    deletedVideos.forEach(video => {
+      const categoryName = categories[video.category]?.name || video.category;
       
       deletedList.innerHTML += `
         <div class="deleted-item">
-          <h4>${data.title}</h4>
+          <h4>${video.title}</h4>
           <p><strong>Kategori:</strong> ${categoryName}</p>
-          <p><strong>URL:</strong> ${data.url}</p>
-          <p><strong>Silinme Tarihi:</strong> ${formatDate(data.deletedAt?.toDate())}</p>
+          <p><strong>URL:</strong> ${video.url}</p>
+          <p><strong>Silinme Tarihi:</strong> ${formatDate(video.deletedAt.toDate())}</p>
           <div class="deleted-actions">
-            <button class="modal-btn secondary" onclick="restoreVideo('${doc.id}'); closeModal('deletedModal');">
+            <button class="modal-btn secondary" onclick="restoreVideo('${video.id}'); closeModal('deletedModal');">
               <i class="fas fa-undo"></i> Geri Yükle
             </button>
-            <button class="modal-btn primary" onclick="permanentlyDelete('${doc.id}')">
+            <button class="modal-btn primary" onclick="permanentlyDelete('${video.id}')">
               <i class="fas fa-trash-alt"></i> Kalıcı Sil
             </button>
           </div>
@@ -1610,3 +1645,4 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
