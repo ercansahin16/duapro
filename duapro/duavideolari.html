@@ -120,7 +120,10 @@ const videoList = document.getElementById("videoList");
 function getEmbed(url){
   if(url.includes("youtube.com") || url.includes("youtu.be")){
     const id = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
-    return `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+    return `<iframe 
+  src="https://www.youtube-nocookie.com/embed/${id}"
+  allowfullscreen
+></iframe>`;
   }
 
   if(url.includes("x.com") || url.includes("twitter.com")){
@@ -199,4 +202,5 @@ listele();
 
 </body>
 </html>
+
 
