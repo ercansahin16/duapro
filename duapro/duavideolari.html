@@ -4,284 +4,1609 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>📺 Video Arşivi</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#f5f5f7;
-  --card:#fff;
-  --text:#1d1d1f;
-  --primary:#1c1c1e;
-  --danger:#d93025;
-  --success:#16a34a;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:16px 20px;
-  font-size:20px;
-  font-weight:600;
-}
-.menu-btn{font-size:22px;background:none;border:none;cursor:pointer}
-.container{max-width:900px;margin:auto;padding:20px}
-
-/* ADD */
-.add-area{
-  background:var(--card);
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-  margin-bottom:20px
-}
-.add-area input,.add-area select{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:12px;
-  border:1px solid #ddd
-}
-.add-area button{
-  margin-top:12px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:#fff;
-  cursor:pointer;
-  opacity:.4
-}
-.add-area button.active{opacity:1}
-
-/* CATEGORY */
-.category{
-  background:var(--card);
-  border-radius:18px;
-  margin-bottom:16px;
-  overflow:hidden
-}
-.category h3{
-  margin:0;
-  padding:14px 16px;
-  font-size:16px;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between
-}
-.videos{display:none;padding:12px}
-.video-card{margin-bottom:16px}
-.video-card iframe{
-  width:100%;
-  height:220px;
-  border-radius:14px;
-  border:none
-}
-.video-title{margin:8px 0;font-weight:500}
-.video-card button{
-  background:#fdecea;
-  color:var(--danger);
-  border:none;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --text-secondary: #86868b;
+  --primary: #007aff;
+  --primary-dark: #0056cc;
+  --danger: #ff3b30;
+  --success: #34c759;
+  --warning: #ff9500;
+  --border: #d1d1d6;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 20px;
 }
 
-/* HIGHLIGHT */
-.highlight{
-  animation:pulse 2s ease;
-  box-shadow:0 0 0 2px rgba(22,163,74,.4)
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(22,163,74,.6)}
-  100%{box-shadow:0 0 0 12px rgba(22,163,74,0)}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 280px;
+  height: 100vh;
+  background: var(--card);
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 1000;
+  transition: left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow-y: auto;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-sidebar {
+  background: none;
+  border: none;
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.close-sidebar:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-section {
+  margin-bottom: 25px;
+}
+
+.sidebar-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+}
+
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 6px;
+}
+
+.sidebar-btn:hover {
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.sidebar-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.sidebar-btn i {
+  width: 20px;
+  text-align: center;
+}
+
+/* MAIN CONTENT */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ADD FORM */
+.add-area {
+  background: var(--card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.add-area h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.form-input:disabled {
+  background: #f9f9f9;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.add-btn {
+  width: 100%;
+  padding: 17px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+.add-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* CATEGORIES */
+.category-section {
+  margin-bottom: 30px;
+}
+
+.category {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.category-header:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.category-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.category-icon {
+  font-size: 14px;
+  transition: transform 0.3s;
+}
+
+.category.open .category-icon {
+  transform: rotate(180deg);
+}
+
+.videos-container {
+  display: none;
+  padding: 0 24px 24px;
+}
+
+.category.open .videos-container {
+  display: block;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* VIDEO CARD */
+.video-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.video-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.video-player {
+  width: 100%;
+  height: 200px;
+  border: none;
+  background: #000;
+}
+
+.video-info {
+  padding: 18px;
+}
+
+.video-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.video-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.video-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.action-btn.edit:hover {
+  color: var(--primary);
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.action-btn.delete:hover {
+  color: var(--danger);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+/* iOS MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--card);
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: modalSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  padding: 24px 24px 0;
+  text-align: center;
+}
+
+.modal-header h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.modal-header p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.modal-body {
+  padding: 0 24px 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 20px 24px;
+  background: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.modal-btn.primary {
+  background: var(--primary);
+  color: white;
+}
+
+.modal-btn.primary:hover {
+  background: var(--primary-dark);
+}
+
+.modal-btn.secondary {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text);
+}
+
+.modal-btn.secondary:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* DELETED ITEMS */
+.deleted-item {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: background 0.2s;
+}
+
+.deleted-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.deleted-item h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.deleted-item p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.deleted-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state i {
+  font-size: 60px;
+  color: var(--border);
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 auto 25px;
 }
 
 /* TOAST */
-.toast{
-  position:fixed;
-  top:20px;
-  right:20px;
-  background:#fff;
-  padding:14px 18px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
-  display:flex;
-  align-items:center;
-  gap:12px;
-  animation:slide .4s ease;
-  z-index:999
-}
-.toast button{
-  border:none;
-  background:none;
-  color:#2563eb;
-  cursor:pointer;
-  font-weight:500
-}
-@keyframes slide{
-  from{opacity:0;transform:translateY(-10px)}
-  to{opacity:1;transform:none}
+.toast {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: var(--card);
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 3000;
+  animation: toastSlideIn 0.3s ease;
+  max-width: 400px;
 }
 
-/* MODAL */
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  display:none;
-  align-items:center;
-  justify-content:center
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
-.modal{
-  background:#fff;
-  width:90%;
-  max-width:420px;
-  border-radius:20px;
-  padding:20px
-}
-.deleted-item{font-size:13px;margin-bottom:12px}
 
-@media(max-width:600px){
-  .video-card iframe{height:190px}
+.toast.success {
+  border-left: 4px solid var(--success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--danger);
+}
+
+.toast.warning {
+  border-left: 4px solid var(--warning);
+}
+
+.toast.info {
+  border-left: 4px solid var(--primary);
+}
+
+.toast-icon {
+  font-size: 20px;
+}
+
+.toast.success .toast-icon {
+  color: var(--success);
+}
+
+.toast.error .toast-icon {
+  color: var(--danger);
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.toast-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* CONFIRM DIALOG */
+.confirm-dialog {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2001;
+  padding: 20px;
+}
+
+.confirm-dialog.active {
+  display: flex;
+}
+
+.confirm-content {
+  background: var(--card);
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+  animation: modalSlideIn 0.3s;
+}
+
+.confirm-icon {
+  text-align: center;
+  font-size: 48px;
+  color: var(--danger);
+  margin-bottom: 20px;
+}
+
+.confirm-title {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.confirm-message {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* LOADING */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .videos-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-player {
+    height: 180px;
+  }
+  
+  .modal-content {
+    max-width: 100%;
+  }
+  
+  .sidebar {
+    width: 260px;
+  }
+  
+  .toast {
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 14px 16px;
+  }
+  
+  .add-area {
+    padding: 20px;
+  }
+  
+  .category-header {
+    padding: 16px 20px;
+  }
+  
+  .video-player {
+    height: 160px;
+  }
+  
+  .modal-body {
+    padding: 0 16px 16px;
+  }
+  
+  .modal-footer {
+    padding: 16px;
+    flex-direction: column;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header>
-  <button class="menu-btn" onclick="openDeleted()">☰</button>
-  📺 Video Arşivi
+  <div class="logo">
+    <button class="menu-btn" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <span>📺 Video Arşivi</span>
+  </div>
 </header>
 
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Menü</h2>
+    <button class="close-sidebar" id="closeSidebar">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="sidebar-section">
+    <h3>Kategoriler</h3>
+    <button class="sidebar-btn active" data-filter="all">
+      <i class="fas fa-globe"></i> Tüm Videolar
+    </button>
+    <button class="sidebar-btn" data-filter="dua">
+      <i class="fas fa-hands-praying"></i> Dua Videoları
+    </button>
+    <button class="sidebar-btn" data-filter="sohbet">
+      <i class="fas fa-comments"></i> Sohbet Videoları
+    </button>
+    <button class="sidebar-btn" data-filter="film">
+      <i class="fas fa-film"></i> Filmler
+    </button>
+    <button class="sidebar-btn" data-filter="cocuk">
+      <i class="fas fa-child"></i> Çocuk Videoları
+    </button>
+  </div>
+  
+  <div class="sidebar-section">
+    <h3>Yönetim</h3>
+    <button class="sidebar-btn" id="openDeleted">
+      <i class="fas fa-trash"></i> Silinen Videolar
+    </button>
+    <button class="sidebar-btn" id="openSettings">
+      <i class="fas fa-cog"></i> Ayarlar
+    </button>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- MAIN CONTENT -->
 <div class="container">
-
-<div class="add-area">
-  <input id="url" placeholder="Video linki" />
-  <input id="title" placeholder="Video başlığı" disabled />
-  <select id="category" disabled>
-    <option value="">Kategori seç</option>
-    <option value="dua">Dua Videoları</option>
-    <option value="sohbet">Sohbet Videoları</option>
-    <option value="film">Filmler</option>
-    <option value="cocuk">Çocuk Videoları</option>
-  </select>
-  <button id="addBtn" onclick="ekle()">Ekle</button>
+  
+  <!-- ADD FORM -->
+  <div class="add-area">
+    <h2>Yeni Video Ekle</h2>
+    
+    <div class="form-group">
+      <label class="form-label" for="url">Video Linki</label>
+      <input type="text" id="url" class="form-input" 
+             placeholder="YouTube, Vimeo, Dailymotion, Twitter, Instagram, Facebook vb.">
+      <span class="form-hint">Desteklenen platformlar: YouTube, Vimeo, Dailymotion, Twitter, Instagram, Facebook</span>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label" for="title">Video Başlığı</label>
+      <input type="text" id="title" class="form-input" placeholder="Video başlığını girin" disabled>
+      <span class="form-hint">Linki girdikten sonra otomatik dolacak veya manuel girebilirsiniz</span>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label" for="category">Kategori</label>
+      <select id="category" class="form-input" disabled>
+        <option value="">Kategori seçin</option>
+        <option value="dua">Dua Videoları</option>
+        <option value="sohbet">Sohbet Videoları</option>
+        <option value="film">Filmler</option>
+        <option value="cocuk">Çocuk Videoları</option>
+      </select>
+    </div>
+    
+    <button id="addBtn" class="add-btn" onclick="ekle()" disabled>
+      <i class="fas fa-plus"></i> Video Ekle
+    </button>
+  </div>
+  
+  <!-- VIDEO CATEGORIES -->
+  <div class="category-section" id="videoLists"></div>
 </div>
 
-<div id="lists"></div>
+<!-- DELETED VIDEOS MODAL -->
+<div class="modal" id="deletedModal">
+  <div class="modal-overlay" onclick="closeModal('deletedModal')"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🗑️ Silinen Videolar</h3>
+      <p>Silinen videoları buradan görüntüleyebilir ve geri yükleyebilirsiniz.</p>
+    </div>
+    <div class="modal-body" id="deletedList">
+      <!-- Deleted items will be inserted here -->
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeModal('deletedModal')">
+        Kapat
+      </button>
+    </div>
+  </div>
 </div>
 
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <h4>🗑️ Silinen Videolar</h4>
-    <div id="deletedList"></div>
-    <button onclick="closeModal()">Kapat</button>
+<!-- EDIT TITLE MODAL -->
+<div class="modal" id="editModal">
+  <div class="modal-overlay" onclick="closeModal('editModal')"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>✏️ Başlık Düzenle</h3>
+      <p>Video başlığını düzenleyin</p>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="editTitle">Yeni Başlık</label>
+        <input type="text" id="editTitle" class="form-input" placeholder="Yeni başlığı girin">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeModal('editModal')">
+        İptal
+      </button>
+      <button class="modal-btn primary" onclick="saveEdit()">
+        Kaydet
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-dialog" id="confirmDialog">
+  <div class="confirm-content">
+    <div class="confirm-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <h3 class="confirm-title" id="confirmTitle">Emin misiniz?</h3>
+    <p class="confirm-message" id="confirmMessage">Bu işlem geri alınamaz.</p>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeConfirmDialog()">
+        İptal
+      </button>
+      <button class="modal-btn primary" id="confirmAction">
+        Evet, Sil
+      </button>
+    </div>
   </div>
 </div>
 
 <script type="module">
+// Firebase bağlantısı için boş import (firebase-core.js dosyanızı kullanacak)
 import { db } from './firebase-core.js';
-import { collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy } 
-from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  query, 
+  where, 
+  orderBy,
+  serverTimestamp 
+} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
-const col = collection(db,'videolar');
-const urlI=url.value, titleI=title, catI=category, addBtn=addBtn;
-const modal=modal, deletedList=deletedList, lists=lists;
-const categoryBoxes={};
+// DOM Elements
+const urlInput = document.getElementById('url');
+const titleInput = document.getElementById('title');
+const categorySelect = document.getElementById('category');
+const addBtn = document.getElementById('addBtn');
+const videoLists = document.getElementById('videoLists');
+const deletedList = document.getElementById('deletedList');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const menuToggle = document.getElementById('menuToggle');
+const closeSidebar = document.getElementById('closeSidebar');
+const openDeletedBtn = document.getElementById('openDeleted');
+const editTitleInput = document.getElementById('editTitle');
 
-function toast(msg, undo){
-  const t=document.createElement('div');
-  t.className='toast';
-  t.innerHTML=`<span>${msg}</span>`;
-  if(undo){
-    const b=document.createElement('button');
-    b.textContent='Geri Al';
-    b.onclick=undo;
-    t.appendChild(b);
-  }
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),4000);
-}
-
-url.oninput=()=>{title.disabled=false;category.disabled=false;check()};
-title.oninput=category.onchange=check;
-function check(){
-  addBtn.classList.toggle('active',title.value&&category.value);
-}
-
-window.ekle=async()=>{
-  const cat=category.value;
-  const ref=await addDoc(col,{
-    url:url.value,title:title.value,category:cat,deleted:false,createdAt:new Date()
-  });
-  toast('✅ Video eklendi');
-  url.value=title.value=category.value='';
-  title.disabled=category.disabled=true;
-  check();
-  await listele(ref.id,cat);
+// State
+let currentVideoId = null;
+let currentFilter = 'all';
+const categories = {
+  dua: { name: 'Dua Videoları', icon: 'fas fa-hands-praying', open: false },
+  sohbet: { name: 'Sohbet Videoları', icon: 'fas fa-comments', open: false },
+  film: { name: 'Filmler', icon: 'fas fa-film', open: false },
+  cocuk: { name: 'Çocuk Videoları', icon: 'fas fa-child', open: false }
 };
 
-async function listele(highlightId,openCat){
-  lists.innerHTML='';
-  const cats={dua:'Dua Videoları',sohbet:'Sohbet Videoları',film:'Filmler',cocuk:'Çocuk Videoları'};
-  for(const k in cats){
-    const box=document.createElement('div');
-    categoryBoxes[k]=box;
-    box.className='category';
-    box.innerHTML=`<h3 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">${cats[k]} <span>▼</span></h3><div class="videos"></div>`;
-    const v=box.querySelector('.videos');
-    const q=query(col,where('category','==',k),where('deleted','==',false),orderBy('createdAt','desc'));
-    const s=await getDocs(q);
-    s.forEach(d=>{
-      const c=document.createElement('div');
-      c.className='video-card';
-      if(d.id===highlightId)c.classList.add('highlight');
-      const id=d.data().url.split('v=')[1]?.split('&')[0]||d.data().url.split('/').pop();
-      c.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen></iframe><div class="video-title">${d.data().title}</div>`;
-      const b=document.createElement('button');
-      b.textContent='Sil';
-      b.onclick=()=>sil(d.id);
-      c.appendChild(b);
-      v.appendChild(c);
+// Firebase Collection
+const videosCol = collection(db, 'videolar');
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  initEventListeners();
+  loadVideos();
+});
+
+// Event Listeners
+function initEventListeners() {
+  // Sidebar
+  menuToggle.addEventListener('click', toggleSidebar);
+  closeSidebar.addEventListener('click', toggleSidebar);
+  sidebarOverlay.addEventListener('click', toggleSidebar);
+  
+  // Filter buttons
+  document.querySelectorAll('.sidebar-btn[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      setActiveFilter(filter, btn);
+      toggleSidebar();
     });
-    lists.appendChild(box);
-  }
-  if(openCat){
-    categoryBoxes[openCat].querySelector('.videos').style.display='block';
-    categoryBoxes[openCat].scrollIntoView({behavior:'smooth'});
-  }
-}
-
-async function sil(id){
-  await updateDoc(doc(db,'videolar',id),{deleted:true});
-  toast('🗑️ Video silindi',async()=>{
-    await updateDoc(doc(db,'videolar',id),{deleted:false});
-    toast('↩️ Geri alındı');
-    listele();
   });
-  listele();
+  
+  // Open deleted modal
+  openDeletedBtn.addEventListener('click', () => {
+    toggleSidebar();
+    openDeletedModal();
+  });
+  
+  // URL input listener for auto-title
+  urlInput.addEventListener('input', handleUrlInput);
+  urlInput.addEventListener('blur', handleUrlBlur);
+  
+  // Title and category validation
+  titleInput.addEventListener('input', validateForm);
+  categorySelect.addEventListener('change', validateForm);
 }
 
-window.openDeleted=async()=>{
-  modal.style.display='flex';
-  deletedList.innerHTML='';
-  const s=await getDocs(query(col,where('deleted','==',true)));
-  s.forEach(d=>{
-    deletedList.innerHTML+=`<div class="deleted-item"><b>${d.data().title}</b><br>${d.data().url}</div>`;
+// Sidebar toggle
+function toggleSidebar() {
+  sidebar.classList.toggle('active');
+  sidebarOverlay.classList.toggle('active');
+  document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+}
+
+// Set active filter
+function setActiveFilter(filter, button) {
+  currentFilter = filter;
+  
+  // Update active button
+  document.querySelectorAll('.sidebar-btn[data-filter]').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  button.classList.add('active');
+  
+  // Update UI
+  updateCategoryVisibility();
+}
+
+// Update category visibility based on filter
+function updateCategoryVisibility() {
+  const categoryElements = document.querySelectorAll('.category');
+  
+  categoryElements.forEach(cat => {
+    const categoryId = cat.dataset.category;
+    
+    if (currentFilter === 'all' || currentFilter === categoryId) {
+      cat.style.display = 'block';
+    } else {
+      cat.style.display = 'none';
+    }
   });
 }
-window.closeModal=()=>modal.style.display='none';
 
-listele();
+// Handle URL input for auto-title
+async function handleUrlInput() {
+  titleInput.disabled = false;
+  categorySelect.disabled = false;
+  validateForm();
+}
+
+// Handle URL blur - try to fetch title
+async function handleUrlBlur() {
+  const url = urlInput.value.trim();
+  if (!url) return;
+  
+  // Show loading
+  addBtn.innerHTML = '<span class="loading"></span> Başlık alınıyor...';
+  addBtn.disabled = true;
+  
+  try {
+    const title = await extractVideoTitle(url);
+    if (title) {
+      titleInput.value = title;
+      showToast('Başlık otomatik alındı', 'success');
+    }
+  } catch (error) {
+    console.log('Başlık alınamadı:', error);
+    showToast('Başlık otomatik alınamadı, lütfen manuel girin', 'warning');
+  } finally {
+    validateForm();
+    addBtn.innerHTML = '<i class="fas fa-plus"></i> Video Ekle';
+  }
+}
+
+// Extract video title from URL
+async function extractVideoTitle(url) {
+  // YouTube
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    const videoId = getYouTubeId(url);
+    if (!videoId) return null;
+    
+    // Try to fetch from oEmbed
+    try {
+      const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.title;
+      }
+    } catch (e) {
+      console.error('YouTube title fetch error:', e);
+    }
+    
+    return `YouTube Video - ${videoId}`;
+  }
+  
+  // Vimeo
+  if (url.includes('vimeo.com')) {
+    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+    if (!videoId) return null;
+    
+    try {
+      const response = await fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.title;
+      }
+    } catch (e) {
+      console.error('Vimeo title fetch error:', e);
+    }
+    
+    return `Vimeo Video - ${videoId}`;
+  }
+  
+  // Other platforms - return generic title
+  if (url.includes('twitter.com') || url.includes('x.com')) {
+    return 'Twitter Video';
+  }
+  
+  if (url.includes('instagram.com')) {
+    return 'Instagram Video';
+  }
+  
+  if (url.includes('facebook.com')) {
+    return 'Facebook Video';
+  }
+  
+  if (url.includes('dailymotion.com')) {
+    return 'Dailymotion Video';
+  }
+  
+  if (url.includes('twitch.tv')) {
+    return 'Twitch Video';
+  }
+  
+  if (url.includes('tiktok.com')) {
+    return 'TikTok Video';
+  }
+  
+  // For movie sites
+  if (url.includes('netflix.com')) return 'Netflix Film/Dizi';
+  if (url.includes('disneyplus.com')) return 'Disney+ Film/Dizi';
+  if (url.includes('primevideo.com')) return 'Amazon Prime Video Film/Dizi';
+  
+  return 'Video';
+}
+
+// Get YouTube ID from URL
+function getYouTubeId(url) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Generate embed URL
+function generateEmbedUrl(url) {
+  const youtubeId = getYouTubeId(url);
+  if (youtubeId) {
+    return `https://www.youtube-nocookie.com/embed/${youtubeId}`;
+  }
+  
+  if (url.includes('vimeo.com')) {
+    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+    if (videoId) return `https://player.vimeo.com/video/${videoId}`;
+  }
+  
+  if (url.includes('dailymotion.com')) {
+    const videoId = url.split('dailymotion.com/video/')[1]?.split('?')[0];
+    if (videoId) return `https://www.dailymotion.com/embed/video/${videoId}`;
+  }
+  
+  // For movie sites that don't support embed, return original URL
+  return url;
+}
+
+// Validate form
+function validateForm() {
+  const isValid = urlInput.value.trim() && 
+                  titleInput.value.trim() && 
+                  categorySelect.value;
+  
+  addBtn.disabled = !isValid;
+}
+
+// Add video
+window.ekle = async function() {
+  if (!validateForm()) return;
+  
+  const url = urlInput.value.trim();
+  const title = titleInput.value.trim();
+  const category = categorySelect.value;
+  
+  // Show loading
+  addBtn.innerHTML = '<span class="loading"></span> Ekleniyor...';
+  addBtn.disabled = true;
+  
+  try {
+    const embedUrl = generateEmbedUrl(url);
+    
+    const docRef = await addDoc(videosCol, {
+      url: url,
+      embedUrl: embedUrl,
+      title: title,
+      category: category,
+      deleted: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    // Success
+    showToast('✅ Video başarıyla eklendi!', 'success');
+    
+    // Reset form
+    urlInput.value = '';
+    titleInput.value = '';
+    categorySelect.value = '';
+    titleInput.disabled = true;
+    categorySelect.disabled = true;
+    validateForm();
+    
+    // Reload videos and highlight new one
+    await loadVideos(docRef.id, category);
+    
+  } catch (error) {
+    console.error('Video ekleme hatası:', error);
+    showToast('❌ Video eklenirken hata oluştu', 'error');
+  } finally {
+    addBtn.innerHTML = '<i class="fas fa-plus"></i> Video Ekle';
+    validateForm();
+  }
+};
+
+// Load videos
+async function loadVideos(highlightId = null, openCategory = null) {
+  videoLists.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Videolar yükleniyor...</h3></div>';
+  
+  try {
+    const q = query(videosCol, where('deleted', '==', false), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      videoLists.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-video-slash"></i>
+          <h3>Henüz video yok</h3>
+          <p>İlk videonuzu eklemek için yukarıdaki formu doldurun.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Group videos by category
+    const videosByCategory = { dua: [], sohbet: [], film: [], cocuk: [] };
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      videosByCategory[data.category].push({
+        id: doc.id,
+        ...data
+      });
+    });
+    
+    // Render categories
+    videoLists.innerHTML = '';
+    
+    for (const [catId, catConfig] of Object.entries(categories)) {
+      const videos = videosByCategory[catId];
+      if (videos.length === 0 && currentFilter !== 'all' && currentFilter !== catId) continue;
+      
+      const isOpen = openCategory === catId || catConfig.open;
+      
+      const categoryHTML = `
+        <div class="category ${isOpen ? 'open' : ''}" data-category="${catId}">
+          <div class="category-header" onclick="toggleCategory('${catId}')">
+            <h3><i class="${catConfig.icon}"></i> ${catConfig.name} (${videos.length})</h3>
+            <span class="category-icon"><i class="fas fa-chevron-down"></i></span>
+          </div>
+          <div class="videos-container" style="display: ${isOpen ? 'block' : 'none'}">
+            ${videos.length > 0 ? `
+              <div class="videos-grid">
+                ${videos.map(video => `
+                  <div class="video-card ${highlightId === video.id ? 'highlight' : ''}" id="video-${video.id}">
+                    <iframe 
+                      class="video-player" 
+                      src="${video.embedUrl || generateEmbedUrl(video.url)}" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowfullscreen
+                      title="${video.title}"
+                    ></iframe>
+                    <div class="video-info">
+                      <div class="video-title">${video.title}</div>
+                      <div class="video-meta">
+                        <span>${formatDate(video.createdAt?.toDate())}</span>
+                        <div class="video-actions">
+                          <button class="action-btn edit" onclick="editVideo('${video.id}', '${escapeHtml(video.title)}')" title="Düzenle">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="action-btn delete" onclick="confirmDelete('${video.id}', '${escapeHtml(video.title)}')" title="Sil">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <div class="empty-state" style="padding: 40px 20px;">
+                <i class="${catConfig.icon}"></i>
+                <h3>Bu kategoride video yok</h3>
+                <p>Bu kategoriye video eklemek için formu doldurun.</p>
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+      
+      videoLists.innerHTML += categoryHTML;
+    }
+    
+    // Scroll to highlighted video
+    if (highlightId) {
+      setTimeout(() => {
+        const element = document.getElementById(`video-${highlightId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Highlight animation
+          element.classList.add('highlight');
+          setTimeout(() => element.classList.remove('highlight'), 3000);
+        }
+      }, 500);
+    }
+    
+    // Update visibility based on filter
+    updateCategoryVisibility();
+    
+  } catch (error) {
+    console.error('Videolar yüklenirken hata:', error);
+    videoLists.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Videolar yüklenemedi</h3>
+        <p>Bir hata oluştu. Lütfen sayfayı yenileyin.</p>
+      </div>
+    `;
+  }
+}
+
+// Toggle category
+window.toggleCategory = function(catId) {
+  categories[catId].open = !categories[catId].open;
+  const categoryEl = document.querySelector(`.category[data-category="${catId}"]`);
+  const container = categoryEl.querySelector('.videos-container');
+  
+  if (categories[catId].open) {
+    container.style.display = 'block';
+    categoryEl.classList.add('open');
+  } else {
+    container.style.display = 'none';
+    categoryEl.classList.remove('open');
+  }
+};
+
+// Edit video title
+window.editVideo = function(videoId, currentTitle) {
+  currentVideoId = videoId;
+  editTitleInput.value = currentTitle;
+  openModal('editModal');
+};
+
+// Save edit
+window.saveEdit = async function() {
+  if (!currentVideoId || !editTitleInput.value.trim()) return;
+  
+  try {
+    await updateDoc(doc(db, 'videolar', currentVideoId), {
+      title: editTitleInput.value.trim(),
+      updatedAt: serverTimestamp()
+    });
+    
+    showToast('✅ Başlık güncellendi!', 'success');
+    closeModal('editModal');
+    loadVideos(currentVideoId);
+    
+  } catch (error) {
+    console.error('Başlık güncelleme hatası:', error);
+    showToast('❌ Başlık güncellenirken hata oluştu', 'error');
+  }
+};
+
+// Confirm delete
+window.confirmDelete = function(videoId, videoTitle) {
+  currentVideoId = videoId;
+  
+  document.getElementById('confirmTitle').textContent = 'Videoyu Sil';
+  document.getElementById('confirmMessage').textContent = `"${videoTitle}" başlıklı videoyu silmek istediğinize emin misiniz?`;
+  document.getElementById('confirmAction').textContent = 'Evet, Sil';
+  document.getElementById('confirmAction').onclick = deleteVideo;
+  
+  openConfirmDialog();
+};
+
+// Delete video
+async function deleteVideo() {
+  closeConfirmDialog();
+  
+  try {
+    await updateDoc(doc(db, 'videolar', currentVideoId), {
+      deleted: true,
+      deletedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    showToast('🗑️ Video silindi', 'info', () => {
+      restoreVideo(currentVideoId);
+    });
+    
+    loadVideos();
+    
+  } catch (error) {
+    console.error('Video silme hatası:', error);
+    showToast('❌ Video silinirken hata oluştu', 'error');
+  }
+}
+
+// Restore video
+async function restoreVideo(videoId) {
+  try {
+    await updateDoc(doc(db, 'videolar', videoId), {
+      deleted: false,
+      restoredAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    showToast('↩️ Video geri yüklendi', 'success');
+    loadVideos(videoId);
+    
+  } catch (error) {
+    console.error('Video geri yükleme hatası:', error);
+    showToast('❌ Video geri yüklenirken hata oluştu', 'error');
+  }
+}
+
+// Open deleted modal
+async function openDeletedModal() {
+  deletedList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Yükleniyor...</h3></div>';
+  openModal('deletedModal');
+  
+  try {
+    const q = query(videosCol, where('deleted', '==', true), orderBy('deletedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      deletedList.innerHTML = `
+        <div class="empty-state" style="padding: 40px 20px;">
+          <i class="fas fa-trash"></i>
+          <h3>Silinen video yok</h3>
+          <p>Henüz hiç video silinmemiş.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    deletedList.innerHTML = '';
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const categoryName = categories[data.category]?.name || data.category;
+      
+      deletedList.innerHTML += `
+        <div class="deleted-item">
+          <h4>${data.title}</h4>
+          <p><strong>Kategori:</strong> ${categoryName}</p>
+          <p><strong>URL:</strong> ${data.url}</p>
+          <p><strong>Silinme Tarihi:</strong> ${formatDate(data.deletedAt?.toDate())}</p>
+          <div class="deleted-actions">
+            <button class="modal-btn secondary" onclick="restoreVideo('${doc.id}'); closeModal('deletedModal');">
+              <i class="fas fa-undo"></i> Geri Yükle
+            </button>
+            <button class="modal-btn primary" onclick="permanentlyDelete('${doc.id}')">
+              <i class="fas fa-trash-alt"></i> Kalıcı Sil
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    
+  } catch (error) {
+    console.error('Silinen videolar yüklenirken hata:', error);
+    deletedList.innerHTML = `
+      <div class="empty-state" style="padding: 40px 20px;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Silinen videolar yüklenemedi</h3>
+        <p>Bir hata oluştu.</p>
+      </div>
+    `;
+  }
+}
+
+// Permanently delete
+window.permanentlyDelete = function(videoId) {
+  currentVideoId = videoId;
+  
+  document.getElementById('confirmTitle').textContent = 'Kalıcı Olarak Sil';
+  document.getElementById('confirmMessage').textContent = 'Bu videoyu kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
+  document.getElementById('confirmAction').textContent = 'Evet, Kalıcı Sil';
+  document.getElementById('confirmAction').onclick = performPermanentDelete;
+  
+  openConfirmDialog();
+};
+
+// Perform permanent delete
+async function performPermanentDelete() {
+  closeConfirmDialog();
+  
+  try {
+    await deleteDoc(doc(db, 'videolar', currentVideoId));
+    
+    showToast('✅ Video kalıcı olarak silindi', 'success');
+    openDeletedModal(); // Refresh the list
+    
+  } catch (error) {
+    console.error('Kalıcı silme hatası:', error);
+    showToast('❌ Video silinirken hata oluştu', 'error');
+  }
+}
+
+// Modal functions
+window.openModal = function(modalId) {
+  document.getElementById(modalId).classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeModal = function(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+  document.body.style.overflow = '';
+  
+  if (modalId === 'editModal') {
+    currentVideoId = null;
+    editTitleInput.value = '';
+  }
+};
+
+// Confirm dialog
+window.openConfirmDialog = function() {
+  document.getElementById('confirmDialog').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeConfirmDialog = function() {
+  document.getElementById('confirmDialog').classList.remove('active');
+  document.body.style.overflow = '';
+  currentVideoId = null;
+};
+
+// Show toast notification
+function showToast(message, type = 'info', undoCallback = null) {
+  const icons = {
+    success: 'fas fa-check-circle',
+    error: 'fas fa-exclamation-circle',
+    warning: 'fas fa-exclamation-triangle',
+    info: 'fas fa-info-circle'
+  };
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="toast-icon ${icons[type]}"></i>
+    <div class="toast-content">
+      <div class="toast-message">${message}</div>
+    </div>
+    ${undoCallback ? '<button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>' : ''}
+  `;
+  
+  if (undoCallback) {
+    const undoBtn = document.createElement('button');
+    undoBtn.className = 'toast-undo';
+    undoBtn.textContent = 'Geri Al';
+    undoBtn.onclick = () => {
+      undoCallback();
+      toast.remove();
+    };
+    toast.querySelector('.toast-content').appendChild(undoBtn);
+  }
+  
+  document.body.appendChild(toast);
+  
+  // Remove after 5 seconds
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.remove();
+    }
+  }, 5000);
+}
+
+// Utility functions
+function formatDate(date) {
+  if (!date) return 'Tarih bilgisi yok';
+  
+  return new Intl.DateTimeFormat('tr-TR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Settings (placeholder for future features)
+document.getElementById('openSettings').addEventListener('click', () => {
+  toggleSidebar();
+  showToast('Ayarlar özelliği yakında eklenecek', 'info');
+});
 </script>
 </body>
 </html>
