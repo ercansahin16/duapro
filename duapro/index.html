@@ -113,7 +113,14 @@ body{
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
+
+
+
+  
 .actions{
   display:flex;
   gap:12px;
@@ -223,12 +230,7 @@ body.surprise .actions {
   display: none !important;
 }
 
-/* 📖 Dua fontu */
-.card pre {
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  font-size: 15px;
-  line-height: 1.6;
-}
+
 
 /* 🔔 Apple tarzı alert */
 .toast {
@@ -258,6 +260,8 @@ body.surprise .actions {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     line-height: 1.7;
+    overflow-x: hidden;
+    word-break: break-word;
   }
 }
 
@@ -266,7 +270,10 @@ body.surprise .actions {
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
     line-height: 1.65;
+     overflow-x: hidden;
+    word-break: break-word;
   }
+    
 }
 
 @media (max-width: 360px) {
@@ -274,6 +281,8 @@ body.surprise .actions {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     line-height: 1.6;
+     overflow-x: hidden;
+    word-break: break-word;
   }
 }
 
@@ -376,5 +385,6 @@ function alertCancel(){
 </body>
 
 </html>
+
 
 
