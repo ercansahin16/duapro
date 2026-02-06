@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dua Videoları</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#f5f5f7;
+  color:#1d1d1f;
+}
+header{
+  padding:20px;
+  font-size:20px;
+  font-weight:600;
+}
+.container{
+  max-width:720px;
+  margin:auto;
+  padding:20px;
+}
+.add-box{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.add-box input{
+  flex:1;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+.add-box button{
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  background:#1c1c1e;
+  color:#fff;
+  cursor:pointer;
+}
+.video-card{
+  background:#fff;
+  border-radius:20px;
+  padding:15px;
+  margin-bottom:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.video-card iframe{
+  width:100%;
+  height:220px;
+  border:none;
+  border-radius:14px;
+}
+.fallback{
+  text-align:center;
+  padding:25px 10px;
+}
+.fallback a{
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 18px;
+  background:#1c1c1e;
+  color:#fff;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:14px;
+}
+.del{
+  margin-top:10px;
+  background:#fdecea;
+  color:#d93025;
+  border:none;
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>📺 Dua Videoları</header>
+
+<div class="container">
+
+  <div class="add-box">
+    <input id="videoUrl" placeholder="YouTube / Instagram / TikTok / X linki yapıştır">
+    <button onclick="ekle()">Ekle</button>
+  </div>
+
+  <div id="videoList"></div>
+
+</div>
+
+<script type="module">
+/* 🔥 MEVCUT firebase.js KULLANILIYOR */
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const colRef = collection(db, "dua_videolari");
+
+const videoUrl = document.getElementById("videoUrl");
+const videoList = document.getElementById("videoList");
+
+/* 🎥 OTOMATİK EMBED */
+function getEmbed(url){
+  if(url.includes("youtube.com") || url.includes("youtu.be")){
+    const id = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
+    return `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+  }
+
+  if(url.includes("x.com") || url.includes("twitter.com")){
+    return `<iframe src="https://twitframe.com/show?url=${encodeURIComponent(url)}"></iframe>`;
+  }
+
+  if(url.includes("instagram.com")){
+    return `
+      <blockquote class="instagram-media"
+        data-instgrm-permalink="${url}"
+        data-instgrm-version="14"></blockquote>`;
+  }
+
+  if(url.includes("tiktok.com")){
+    return `<iframe src="https://www.tiktok.com/embed"></iframe>`;
+  }
+
+  return null;
+}
+
+/* ➕ EKLE */
+window.ekle = async () => {
+  const url = videoUrl.value.trim();
+  if(!url) return;
+
+  await addDoc(colRef,{
+    url,
+    tarih:new Date()
+  });
+
+  videoUrl.value="";
+  listele();
+};
+
+/* 📖 LİSTELE */
+async function listele(){
+  videoList.innerHTML="";
+  const q = query(colRef, orderBy("tarih","desc"));
+  const snap = await getDocs(q);
+
+  snap.forEach(d=>{
+    const data = d.data();
+    const embed = getEmbed(data.url);
+
+    const card = document.createElement("div");
+    card.className="video-card";
+
+    if(embed){
+      card.innerHTML = embed;
+
+      if(data.url.includes("instagram")){
+        const s = document.createElement("script");
+        s.src="//www.instagram.com/embed.js";
+        s.async=true;
+        document.body.appendChild(s);
+      }
+    }else{
+      card.innerHTML = `
+        <div class="fallback">
+          Video burada açılamıyor
+          <br>
+          <a href="${data.url}" target="_blank">Platformda İzle</a>
+        </div>`;
+    }
+
+    const delBtn = document.createElement("button");
+    delBtn.className="del";
+    delBtn.innerText="Sil";
+    delBtn.onclick = async () => {
+      await deleteDoc(doc(db,"dua_videolari",d.id));
+      listele();
+    };
+
+    card.appendChild(delBtn);
+    videoList.appendChild(card);
+  });
+}
+
+listele();
+</script>
+
+</body>
+</html>
