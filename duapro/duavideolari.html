@@ -904,9 +904,10 @@ header {
       </select>
     </div>
     
-    <button id="addBtn" class="add-btn" onclick="ekle()" disabled>
-      <i class="fas fa-plus"></i> Video Ekle
-    </button>
+    <!-- Bu şekilde olmalı: -->
+<button id="addBtn" class="add-btn" onclick="ekle()" disabled>
+  <i class="fas fa-plus"></i> Video Ekle
+</button>
   </div>
   
   <!-- VIDEO CATEGORIES -->
@@ -1208,19 +1209,23 @@ async function extractVideoTitle(url) {
 
 
 // Validate form
+// Validate form - DÜZELTİLDİ
 function validateForm() {
-  const isValid = urlInput.value.trim() && 
-                  titleInput.value.trim() && 
-                  categorySelect.value;
+  const url = urlInput.value.trim();
+  const title = titleInput.value.trim();
+  const category = categorySelect.value;
+  
+  const isValid = url && title && category;
   
   addBtn.disabled = !isValid;
+  return isValid;  // <-- BU ÇOK ÖNEMLİ!
 }
 
-// Add video
+// Add video - BU KISIM DOĞRU
 window.ekle = async function() {
   console.log('ekle() fonksiyonu çağrıldı'); // Debug
   
-  // Validation kontrolü
+  // Validation kontrolü - Artık çalışacak!
   if (!validateForm()) {
     showToast('❌ Lütfen tüm alanları doldurun', 'error');
     return;
@@ -1251,6 +1256,33 @@ window.ekle = async function() {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
+    
+    console.log('Video eklendi, ID:', docRef.id); // Debug
+    
+    // Success
+    showToast('✅ Video başarıyla eklendi!', 'success');
+    
+    // Reset form
+    urlInput.value = '';
+    titleInput.value = '';
+    categorySelect.value = '';
+    titleInput.disabled = true;
+    categorySelect.disabled = true;
+    
+    // Validate form (butonu disabled yapacak)
+    validateForm();
+    
+    // Reload videos and highlight new one
+    await loadVideos(docRef.id, category);
+    
+  } catch (error) {
+    console.error('Video ekleme hatası:', error);
+    showToast('❌ Video eklenirken hata oluştu: ' + error.message, 'error');
+  } finally {
+    addBtn.innerHTML = originalText;
+    validateForm();
+  }
+};
     
     console.log('Video eklendi, ID:', docRef.id); // Debug
     
@@ -1865,6 +1897,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
