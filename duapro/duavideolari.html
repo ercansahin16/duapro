@@ -1205,12 +1205,7 @@ async function extractVideoTitle(url) {
   return 'Video';
 }
 
-// Get YouTube ID from URL
-function getYouTubeId(url) {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
-}
+
 
 // Generate embed URL
 function generateEmbedUrl(url) {
@@ -1818,5 +1813,6 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
