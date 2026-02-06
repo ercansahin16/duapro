@@ -1,200 +1,342 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dua Videoları</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>📺 Video Arşivi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --bg:#f5f5f7;
+  --card:#fff;
+  --text:#1d1d1f;
+  --primary:#1c1c1e;
+  --danger:#d93025;
+}
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:'Poppins',sans-serif;
-  background:#f5f5f7;
-  color:#1d1d1f;
+  background:var(--bg);
+  color:var(--text);
 }
+
+/* HEADER */
 header{
-  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:16px 20px;
   font-size:20px;
   font-weight:600;
 }
+.menu-btn{
+  font-size:22px;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
+/* LAYOUT */
 .container{
-  max-width:720px;
+  max-width:900px;
   margin:auto;
   padding:20px;
 }
-.add-box{
-  display:flex;
-  gap:10px;
+
+/* ADD AREA */
+.add-area{
+  background:var(--card);
+  padding:16px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
-.add-box input{
-  flex:1;
+.add-area input,
+.add-area select{
+  width:100%;
   padding:12px;
+  margin-top:10px;
   border-radius:12px;
   border:1px solid #ddd;
 }
-.add-box button{
-  padding:12px 18px;
+.add-area button{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
   border:none;
   border-radius:12px;
-  background:#1c1c1e;
+  background:var(--primary);
   color:#fff;
+  font-size:15px;
   cursor:pointer;
+  opacity:.4;
 }
+.add-area button.active{
+  opacity:1;
+}
+
+/* CATEGORY */
+.category{
+  background:var(--card);
+  border-radius:18px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.category h3{
+  margin:0;
+  padding:14px 16px;
+  font-size:16px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+}
+.videos{
+  display:none;
+  padding:12px;
+}
+
+/* VIDEO */
 .video-card{
-  background:#fff;
-  border-radius:20px;
-  padding:15px;
-  margin-bottom:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  margin-bottom:16px;
 }
 .video-card iframe{
   width:100%;
   height:220px;
-  border:none;
   border-radius:14px;
-}
-.fallback{
-  text-align:center;
-  padding:25px 10px;
-}
-.fallback a{
-  display:inline-block;
-  margin-top:10px;
-  padding:10px 18px;
-  background:#1c1c1e;
-  color:#fff;
-  border-radius:999px;
-  text-decoration:none;
-  font-size:14px;
-}
-.del{
-  margin-top:10px;
-  background:#fdecea;
-  color:#d93025;
   border:none;
-  padding:8px 14px;
+}
+.video-title{
+  margin:8px 0;
+  font-weight:500;
+}
+.video-card button{
+  background:#fdecea;
+  color:var(--danger);
+  border:none;
+  padding:6px 12px;
   border-radius:999px;
   cursor:pointer;
+}
+
+/* MODAL */
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal{
+  background:#fff;
+  width:90%;
+  max-width:420px;
+  border-radius:20px;
+  padding:20px;
+}
+.modal h4{
+  margin-top:0;
+}
+.deleted-item{
   font-size:13px;
+  margin-bottom:14px;
+}
+.deleted-item button{
+  margin-top:6px;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .video-card iframe{height:190px}
 }
 </style>
 </head>
 
 <body>
 
-<header>📺 Dua Videoları</header>
+<header>
+  <button class="menu-btn" onclick="openDeleted()">☰</button>
+  📺 Video Arşivi
+</header>
 
 <div class="container">
 
-  <div class="add-box">
-    <input id="videoUrl" placeholder="YouTube / Instagram / TikTok / X linki yapıştır">
-    <button onclick="ekle()">Ekle</button>
+  <!-- ADD -->
+  <div class="add-area">
+    <input id="url" placeholder="Video linki" />
+    <input id="title" placeholder="Örn: Sabah Duası – Huzur Veren Okuma" disabled />
+    <select id="category" disabled>
+      <option value="">Kategori seç</option>
+      <option value="dua">Dua Videoları</option>
+      <option value="sohbet">Sohbet Videoları</option>
+      <option value="film">Filmler</option>
+      <option value="cocuk">Çocuk Videoları</option>
+    </select>
+    <button id="addBtn" onclick="ekle()">Ekle</button>
   </div>
 
-  <div id="videoList"></div>
+  <!-- LIST -->
+  <div id="lists"></div>
 
 </div>
 
-<script type="module">
-import { db } from "./firebase-core.js";
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h4>🗑️ Silinen Videolar</h4>
+    <div id="deletedList"></div>
+    <button onclick="closeModal()">Kapat</button>
+  </div>
+</div>
 
+<script type="module">
+import { db } from './firebase-core.js';
 import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
+  updateDoc,
   doc,
   query,
+  where,
   orderBy
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+} from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
-const colRef = collection(db, "dua_videolari");
+const col = collection(db,'videolar');
 
-const videoUrl = document.getElementById("videoUrl");
-const videoList = document.getElementById("videoList");
+const urlI = document.getElementById('url');
+const titleI = document.getElementById('title');
+const catI = document.getElementById('category');
+const addBtn = document.getElementById('addBtn');
+const modal = document.getElementById('modal');
+const deletedList = document.getElementById('deletedList');
+const lists = document.getElementById('lists');
 
-/* 🎥 EMBED */
-function getEmbed(url){
-  if(url.includes("youtube.com") || url.includes("youtu.be")){
-    const id = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
-    return `<iframe 
-  src="https://www.youtube-nocookie.com/embed/${id}"
-  allowfullscreen
-></iframe>`;
-  }
+/* 🔓 OPEN DELETED */
+window.openDeleted = async () => {
+  modal.style.display='flex';
+  deletedList.innerHTML='';
 
-  if(url.includes("x.com") || url.includes("twitter.com")){
-    return `<iframe src="https://twitframe.com/show?url=${encodeURIComponent(url)}"></iframe>`;
-  }
+  const q = query(col, where('deleted','==',true));
+  const s = await getDocs(q);
 
-  if(url.includes("instagram.com")){
-    return `<blockquote class="instagram-media"
-      data-instgrm-permalink="${url}"
-      data-instgrm-version="14"></blockquote>`;
-  }
+  s.forEach(d=>{
+    const div = document.createElement('div');
+    div.className='deleted-item';
+    div.innerHTML = `
+      <b>${d.data().title}</b><br>
+      ${d.data().url}<br>
+      ${d.data().category}
+    `;
 
-  if(url.includes("tiktok.com")){
-    return `<iframe src="https://www.tiktok.com/embed"></iframe>`;
-  }
-
-  return null;
-}
-
-/* ➕ EKLE */
-window.ekle = async () => {
-  if(!videoUrl.value) return;
-
-  await addDoc(colRef,{
-    url: videoUrl.value,
-    tarih: new Date()
-  });
-
-  videoUrl.value = "";
-  listele();
-};
-
-/* 📖 LİSTELE */
-async function listele(){
-  videoList.innerHTML = "";
-
-  const q = query(colRef, orderBy("tarih","desc"));
-  const snap = await getDocs(q);
-
-  snap.forEach(d=>{
-    const data = d.data();
-    const embed = getEmbed(data.url);
-
-    const card = document.createElement("div");
-    card.className = "video-card";
-
-    card.innerHTML = embed || `
-      <div class="fallback">
-        Video burada açılamıyor
-        <br>
-        <a href="${data.url}" target="_blank">Platformda İzle</a>
-      </div>`;
-
-    const del = document.createElement("button");
-    del.className="del";
-    del.innerText="Sil";
-    del.onclick = async ()=> {
-      await deleteDoc(doc(db,"dua_videolari",d.id));
+    const r = document.createElement('button');
+    r.textContent='Geri Yükle';
+    r.onclick = async ()=>{
+      await updateDoc(doc(db,'videolar',d.id),{deleted:false});
+      openDeleted();
       listele();
     };
 
-    card.appendChild(del);
-    videoList.appendChild(card);
-
-    if(data.url.includes("instagram")){
-      const s = document.createElement("script");
-      s.src="//www.instagram.com/embed.js";
-      s.async=true;
-      document.body.appendChild(s);
-    }
+    div.appendChild(r);
+    deletedList.appendChild(div);
   });
+};
+
+window.closeModal = () => modal.style.display='none';
+
+/* INPUT FLOW */
+urlI.oninput = () => {
+  titleI.disabled=false;
+  catI.disabled=false;
+  check();
+};
+titleI.oninput = catI.onchange = check;
+
+function check(){
+  addBtn.classList.toggle('active', titleI.value && catI.value);
+}
+
+/* ➕ ADD */
+window.ekle = async () =>{
+  if(!titleI.value || !catI.value) return;
+
+  await addDoc(col,{
+    url:urlI.value,
+    title:titleI.value,
+    category:catI.value,
+    deleted:false,
+    createdAt:new Date()
+  });
+
+  urlI.value='';
+  titleI.value='';
+  catI.value='';
+  titleI.disabled=true;
+  catI.disabled=true;
+  check();
+  listele();
+};
+
+/* 📖 LIST */
+async function listele(){
+  lists.innerHTML='';
+
+  const cats={
+    dua:'Dua Videoları',
+    sohbet:'Sohbet Videoları',
+    film:'Filmler',
+    cocuk:'Çocuk Videoları'
+  };
+
+  for(const k in cats){
+    const box=document.createElement('div');
+    box.className='category';
+    box.innerHTML=`
+      <h3 onclick="this.nextElementSibling.style.display =
+      this.nextElementSibling.style.display==='block'?'none':'block'">
+      ${cats[k]} <span>▼</span></h3>
+      <div class="videos"></div>
+    `;
+
+    const v=box.querySelector('.videos');
+    const q=query(col,
+      where('category','==',k),
+      where('deleted','==',false),
+      orderBy('createdAt','desc')
+    );
+
+    const s=await getDocs(q);
+
+    s.forEach(d=>{
+      const c=document.createElement('div');
+      c.className='video-card';
+
+      const id = d.data().url.split('v=')[1]?.split('&')[0]
+        || d.data().url.split('/').pop();
+
+      c.innerHTML=`
+        <iframe src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen></iframe>
+        <div class="video-title">${d.data().title}</div>
+      `;
+
+      const b=document.createElement('button');
+      b.textContent='Sil';
+      b.onclick=()=>sil(d.id);
+
+      c.appendChild(b);
+      v.appendChild(c);
+    });
+
+    lists.appendChild(box);
+  }
+}
+
+async function sil(id){
+  await updateDoc(doc(db,'videolar',id),{deleted:true});
+  listele();
 }
 
 listele();
@@ -202,5 +344,3 @@ listele();
 
 </body>
 </html>
-
-
