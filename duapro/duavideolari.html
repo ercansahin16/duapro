@@ -1207,27 +1207,6 @@ async function extractVideoTitle(url) {
 
 
 
-// Generate embed URL
-function generateEmbedUrl(url) {
-  const youtubeId = getYouTubeId(url);
-  if (youtubeId) {
-    return `https://www.youtube-nocookie.com/embed/${youtubeId}`;
-  }
-  
-  if (url.includes('vimeo.com')) {
-    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
-    if (videoId) return `https://player.vimeo.com/video/${videoId}`;
-  }
-  
-  if (url.includes('dailymotion.com')) {
-    const videoId = url.split('dailymotion.com/video/')[1]?.split('?')[0];
-    if (videoId) return `https://www.dailymotion.com/embed/video/${videoId}`;
-  }
-  
-  // For movie sites that don't support embed, return original URL
-  return url;
-}
-
 // Validate form
 function validateForm() {
   const isValid = urlInput.value.trim() && 
@@ -1813,6 +1792,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
