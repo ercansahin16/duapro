@@ -1442,22 +1442,26 @@ window.saveEdit = async function() {
 
 // Confirm delete
 window.confirmDelete = function(videoId, videoTitle) {
-  // Global değişken yerine data attribute kullan
-  const confirmBtn = document.getElementById('confirmAction');
-  confirmBtn.setAttribute('data-video-id', videoId);
-  confirmBtn.setAttribute('data-video-title', videoTitle);
+  console.log('Silinecek video:', videoId, videoTitle);
   
+  // Modal içeriğini güncelle
   document.getElementById('confirmTitle').textContent = 'Videoyu Sil';
   document.getElementById('confirmMessage').textContent = `"${videoTitle}" başlıklı videoyu silmek istediğinize emin misiniz?`;
+  
+  // Sil butonuna event listener ekle
+  const confirmBtn = document.getElementById('confirmAction');
   confirmBtn.textContent = 'Evet, Sil';
   
-  // Event listener'ı her seferinde yeniden ekle
-  confirmBtn.onclick = function() {
-    const id = this.getAttribute('data-video-id');
-    const title = this.getAttribute('data-video-title');
-    performDelete(id, title);
+  // Önceki event listener'ları temizle
+  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+  
+  // Yeni butonu bul ve event ekle
+  const newConfirmBtn = document.getElementById('confirmAction');
+  newConfirmBtn.onclick = function() {
+    performDelete(videoId, videoTitle);
   };
   
+  // Modal'ı aç
   openConfirmDialog();
 };
 
@@ -1494,6 +1498,35 @@ async function deleteVideo() {
   }
 }
 
+
+  async function performDelete(videoId, videoTitle) {
+  console.log('performDelete çağrıldı:', videoId, videoTitle);
+  
+  closeConfirmDialog();
+  
+  if (!videoId) {
+    showToast('❌ Video ID bulunamadı', 'error');
+    return;
+  }
+  
+  try {
+    await updateDoc(doc(db, 'videolar', videoId), {
+      deleted: true,
+      deletedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    showToast(`🗑️ "${videoTitle}" silindi`, 'info', () => {
+      restoreVideo(videoId);
+    });
+    
+    loadVideos();
+    
+  } catch (error) {
+    console.error('Video silme hatası:', error);
+    showToast('❌ Video silinirken hata oluştu', 'error');
+  }
+}
 // Restore video
 async function restoreVideo(videoId) {
   try {
@@ -1817,6 +1850,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
