@@ -1456,11 +1456,14 @@ window.confirmDelete = function(videoId, videoTitle) {
 async function deleteVideo() {
   closeConfirmDialog();
   
-  // NULL KONTROLÜ EKLE
+  // NULL KONTROLÜ (bu zaten var)
   if (!currentVideoId) {
+    console.error('currentVideoId:', currentVideoId); // Debug için
     showToast('❌ Video ID bulunamadı', 'error');
     return;
   }
+  
+  console.log('Silinecek video ID:', currentVideoId); // Debug için
   
   try {
     await updateDoc(doc(db, 'videolar', currentVideoId), {
@@ -1473,6 +1476,7 @@ async function deleteVideo() {
       restoreVideo(currentVideoId);
     });
     
+    // Video listesini yenile
     loadVideos();
     
   } catch (error) {
@@ -1804,6 +1808,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
