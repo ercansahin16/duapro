@@ -755,6 +755,68 @@ header {
     flex-direction: column;
   }
 }
+
+
+
+  /* EMBED OLMAYAN VİDEOLAR İÇİN */
+.video-no-embed {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  border-radius: 12px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-embed-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.video-no-embed .video-info {
+  max-width: 100%;
+}
+
+.video-no-embed .video-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.video-no-embed .video-url {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  word-break: break-all;
+}
+
+.external-link-btn {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.external-link-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
 </style>
 </head>
 
@@ -1042,6 +1104,14 @@ async function handleUrlBlur() {
   const url = urlInput.value.trim();
   if (!url) return;
   
+  // URL doğrulama
+  if (!isValidUrl(url)) {
+    showToast('❌ Geçersiz URL formatı', 'error');
+    addBtn.innerHTML = '<i class="fas fa-plus"></i> Video Ekle';
+    validateForm();
+    return;
+  }
+  
   // Show loading
   addBtn.innerHTML = '<span class="loading"></span> Başlık alınıyor...';
   addBtn.disabled = true;
@@ -1050,11 +1120,13 @@ async function handleUrlBlur() {
     const title = await extractVideoTitle(url);
     if (title) {
       titleInput.value = title;
-      showToast('Başlık otomatik alındı', 'success');
+      showToast('✅ Başlık otomatik alındı', 'success');
+    } else {
+      showToast('ℹ️ Başlık otomatik alınamadı, lütfen manuel girin', 'info');
     }
   } catch (error) {
     console.log('Başlık alınamadı:', error);
-    showToast('Başlık otomatik alınamadı, lütfen manuel girin', 'warning');
+    showToast('⚠️ Başlık otomatik alınamadı, lütfen manuel girin', 'warning');
   } finally {
     validateForm();
     addBtn.innerHTML = '<i class="fas fa-plus"></i> Video Ekle';
@@ -1410,6 +1482,12 @@ window.confirmDelete = function(videoId, videoTitle) {
 async function deleteVideo() {
   closeConfirmDialog();
   
+  // NULL KONTROLÜ EKLE
+  if (!currentVideoId) {
+    showToast('❌ Video ID bulunamadı', 'error');
+    return;
+  }
+  
   try {
     await updateDoc(doc(db, 'videolar', currentVideoId), {
       deleted: true,
@@ -1425,7 +1503,7 @@ async function deleteVideo() {
     
   } catch (error) {
     console.error('Video silme hatası:', error);
-    showToast('❌ Video silinirken hata oluştu', 'error');
+    showToast('❌ Video silinirken hata oluştu: ' + error.message, 'error');
   }
 }
 
@@ -1631,6 +1709,101 @@ function formatDate(date) {
   }).format(date);
 }
 
+
+  // URL doğrulama fonksiyonu
+function isValidUrl(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// YouTube ID alma - GÜNCELLENMİŞ
+function getYouTubeId(url) {
+  if (!url) return null;
+  
+  // YouTube short URL (youtu.be)
+  if (url.includes('youtu.be/')) {
+    return url.split('youtu.be/')[1]?.split(/[?#&]/)[0] || null;
+  }
+  
+  // YouTube watch URL
+  if (url.includes('youtube.com/watch')) {
+    const urlParams = new URLSearchParams(url.split('?')[1] || '');
+    return urlParams.get('v') || null;
+  }
+  
+  // YouTube embed URL
+  if (url.includes('youtube.com/embed/')) {
+    return url.split('youtube.com/embed/')[1]?.split(/[?#&]/)[0] || null;
+  }
+  
+  // YouTube shorts
+  if (url.includes('youtube.com/shorts/')) {
+    return url.split('youtube.com/shorts/')[1]?.split(/[?#&]/)[0] || null;
+  }
+  
+  return null;
+}
+
+// Embed URL oluştur - GÜNCELLENMİŞ
+function generateEmbedUrl(url) {
+  if (!url) return '';
+  
+  // YouTube
+  const youtubeId = getYouTubeId(url);
+  if (youtubeId) {
+    return `https://www.youtube-nocookie.com/embed/${youtubeId}`;
+  }
+  
+  // Vimeo
+  if (url.includes('vimeo.com/')) {
+    const videoId = url.split('vimeo.com/')[1]?.split(/[?#]/)[0];
+    if (videoId) return `https://player.vimeo.com/video/${videoId}`;
+  }
+  
+  // Dailymotion
+  if (url.includes('dailymotion.com/video/')) {
+    const videoId = url.split('dailymotion.com/video/')[1]?.split(/[?#]/)[0];
+    if (videoId) return `https://www.dailymotion.com/embed/video/${videoId}`;
+  }
+  
+  // Diğer platformlar için embed yok
+  return '';
+}
+
+// Video iframe render etme
+function renderVideoIframe(video) {
+  const embedUrl = video.embedUrl || generateEmbedUrl(video.url);
+  
+  // Eğer embed URL yoksa link butonu göster
+  if (!embedUrl || embedUrl === '') {
+    return `
+      <div class="video-no-embed">
+        <div class="no-embed-icon">
+          <i class="fas fa-external-link-alt"></i>
+        </div>
+        <div class="video-info">
+          <div class="video-title">${video.title}</div>
+          <p class="video-url">${truncateUrl(video.url)}</p>
+          <a href="${video.url}" target="_blank" class="external-link-btn">
+            <i class="fas fa-external-link-alt"></i> Linke Git
+          </a>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Embed URL varsa iframe göster
+  ${renderVideoIframe(video)}
+
+// URL kısaltma
+function truncateUrl(url, maxLength = 50) {
+  if (url.length <= maxLength) return url;
+  return url.substring(0, maxLength) + '...';
+}
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
@@ -1645,4 +1818,5 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
