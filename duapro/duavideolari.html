@@ -98,10 +98,10 @@ header{
 
 </div>
 
-<script type="module">
-/* 🔥 MEVCUT firebase.js KULLANILIYOR */
-import { db } from "./firebase.js";
+<!-- 🔥 MEVCUT firebase.js -->
+<script type="module" src="./firebase.js"></script>
 
+<script type="module">
 import {
   collection,
   addDoc,
@@ -112,12 +112,13 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+const db = window.db;
 const colRef = collection(db, "dua_videolari");
 
 const videoUrl = document.getElementById("videoUrl");
 const videoList = document.getElementById("videoList");
 
-/* 🎥 OTOMATİK EMBED */
+/* 🎥 EMBED DÖNÜŞTÜRÜCÜ */
 function getEmbed(url){
   if(url.includes("youtube.com") || url.includes("youtu.be")){
     const id = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
