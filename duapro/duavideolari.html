@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>📺 Dua Videoları</title>
+<title>📺 Video Arşivi</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -13,6 +13,7 @@
   --text:#1d1d1f;
   --primary:#1c1c1e;
   --danger:#d93025;
+  --success:#16a34a;
 }
 *{box-sizing:border-box}
 body{
@@ -32,14 +33,20 @@ header{
 .menu-btn{font-size:22px;background:none;border:none;cursor:pointer}
 .container{max-width:900px;margin:auto;padding:20px}
 
-/* ADD AREA */
-.add-area{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);margin-bottom:20px}
-.add-area input, .add-area select{
+/* ADD */
+.add-area{
+  background:var(--card);
+  padding:16px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  margin-bottom:20px
+}
+.add-area input,.add-area select{
   width:100%;
   padding:12px;
   margin-top:10px;
   border-radius:12px;
-  border:1px solid #ddd;
+  border:1px solid #ddd
 }
 .add-area button{
   margin-top:12px;
@@ -49,9 +56,8 @@ header{
   border-radius:12px;
   background:var(--primary);
   color:#fff;
-  font-size:15px;
   cursor:pointer;
-  opacity:.5;
+  opacity:.4
 }
 .add-area button.active{opacity:1}
 
@@ -60,7 +66,7 @@ header{
   background:var(--card);
   border-radius:18px;
   margin-bottom:16px;
-  overflow:hidden;
+  overflow:hidden
 }
 .category h3{
   margin:0;
@@ -68,25 +74,80 @@ header{
   font-size:16px;
   cursor:pointer;
   display:flex;
-  justify-content:space-between;
+  justify-content:space-between
 }
 .videos{display:none;padding:12px}
 .video-card{margin-bottom:16px}
-.video-card iframe{width:100%;height:220px;border-radius:14px;border:none}
+.video-card iframe{
+  width:100%;
+  height:220px;
+  border-radius:14px;
+  border:none
+}
 .video-title{margin:8px 0;font-weight:500}
-.video-card button{background:#fdecea;color:var(--danger);border:none;padding:6px 12px;border-radius:999px;cursor:pointer}
+.video-card button{
+  background:#fdecea;
+  color:var(--danger);
+  border:none;
+  padding:6px 12px;
+  border-radius:999px;
+  cursor:pointer
+}
+
+/* HIGHLIGHT */
+.highlight{
+  animation:pulse 2s ease;
+  box-shadow:0 0 0 2px rgba(22,163,74,.4)
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(22,163,74,.6)}
+  100%{box-shadow:0 0 0 12px rgba(22,163,74,0)}
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#fff;
+  padding:14px 18px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  animation:slide .4s ease;
+  z-index:999
+}
+.toast button{
+  border:none;
+  background:none;
+  color:#2563eb;
+  cursor:pointer;
+  font-weight:500
+}
+@keyframes slide{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:none}
+}
 
 /* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center}
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  align-items:center;
+  justify-content:center
+}
 .modal{
   background:#fff;
-  width:90%;max-width:420px;
+  width:90%;
+  max-width:420px;
   border-radius:20px;
-  padding:20px;
+  padding:20px
 }
-.modal h4{margin-top:0}
 .deleted-item{font-size:13px;margin-bottom:12px}
-.deleted-item button{margin-top:4px}
 
 @media(max-width:600px){
   .video-card iframe{height:190px}
@@ -95,6 +156,7 @@ header{
 </head>
 
 <body>
+
 <header>
   <button class="menu-btn" onclick="openDeleted()">☰</button>
   📺 Video Arşivi
@@ -102,10 +164,9 @@ header{
 
 <div class="container">
 
-<!-- ADD -->
 <div class="add-area">
   <input id="url" placeholder="Video linki" />
-  <input id="title" placeholder="Örn: Sabah Duası – Huzur Veren Okuma" disabled />
+  <input id="title" placeholder="Video başlığı" disabled />
   <select id="category" disabled>
     <option value="">Kategori seç</option>
     <option value="dua">Dua Videoları</option>
@@ -116,11 +177,9 @@ header{
   <button id="addBtn" onclick="ekle()">Ekle</button>
 </div>
 
-<!-- LIST -->
 <div id="lists"></div>
 </div>
 
-<!-- MODAL -->
 <div class="modal-bg" id="modal">
   <div class="modal">
     <h4>🗑️ Silinen Videolar</h4>
@@ -131,71 +190,52 @@ header{
 
 <script type="module">
 import { db } from './firebase-core.js';
-import { collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+import { collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy } 
+from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 const col = collection(db,'videolar');
-const urlI = document.getElementById('url');
-const titleI = document.getElementById('title');
-const catI = document.getElementById('category');
-const addBtn = document.getElementById('addBtn');
-const modal = document.getElementById('modal');
-const deletedList = document.getElementById('deletedList');
-const lists = document.getElementById('lists');
+const urlI=url.value, titleI=title, catI=category, addBtn=addBtn;
+const modal=modal, deletedList=deletedList, lists=lists;
+const categoryBoxes={};
 
-/* OPEN DELETED – defined early and attached to window */
-window.openDeleted = async () => {
-  modal.style.display='flex';
-  deletedList.innerHTML='';
-  const q=query(col,where('deleted','==',true));
-  const s=await getDocs(q);
-  s.forEach(d=>{
-    const div=document.createElement('div');
-    div.className='deleted-item';
-    div.innerHTML=`<b>${d.data().title}</b><br>${d.data().url}<br>${d.data().category}`;
-    const r=document.createElement('button');
-    r.textContent='Geri Yükle';
-    r.onclick=async()=>{
-      await updateDoc(doc(db,'videolar',d.id),{deleted:false});
-      openDeleted();
-      listele();
-    };
-    div.appendChild(r);
-    deletedList.appendChild(div);
-  });
-};
-
-window.closeModal = () => modal.style.display='none';
-
-urlI.oninput = () => { titleI.disabled=false; catI.disabled=false; check(); };
-titleI.oninput = catI.onchange = check;
-
-function check(){
-  addBtn.classList.toggle('active', titleI.value && catI.value);
+function toast(msg, undo){
+  const t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML=`<span>${msg}</span>`;
+  if(undo){
+    const b=document.createElement('button');
+    b.textContent='Geri Al';
+    b.onclick=undo;
+    t.appendChild(b);
+  }
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
 }
 
-window.ekle = async () =>{
-  if(!titleI.value || !catI.value) return;
-  await addDoc(col,{
-    url:urlI.value,
-    title:titleI.value,
-    category:catI.value,
-    deleted:false,
-    createdAt:new Date()
+url.oninput=()=>{title.disabled=false;category.disabled=false;check()};
+title.oninput=category.onchange=check;
+function check(){
+  addBtn.classList.toggle('active',title.value&&category.value);
+}
+
+window.ekle=async()=>{
+  const cat=category.value;
+  const ref=await addDoc(col,{
+    url:url.value,title:title.value,category:cat,deleted:false,createdAt:new Date()
   });
-  urlI.value='';
-  titleI.value='';
-  catI.value='';
-  titleI.disabled=true;
-  catI.disabled=true;
+  toast('✅ Video eklendi');
+  url.value=title.value=category.value='';
+  title.disabled=category.disabled=true;
   check();
-  listele();
+  await listele(ref.id,cat);
 };
 
-async function listele(){
+async function listele(highlightId,openCat){
   lists.innerHTML='';
   const cats={dua:'Dua Videoları',sohbet:'Sohbet Videoları',film:'Filmler',cocuk:'Çocuk Videoları'};
   for(const k in cats){
     const box=document.createElement('div');
+    categoryBoxes[k]=box;
     box.className='category';
     box.innerHTML=`<h3 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">${cats[k]} <span>▼</span></h3><div class="videos"></div>`;
     const v=box.querySelector('.videos');
@@ -204,7 +244,8 @@ async function listele(){
     s.forEach(d=>{
       const c=document.createElement('div');
       c.className='video-card';
-      const id=d.data().url.split('v=')[1]?.split('&')[0] || d.data().url.split('/').pop();
+      if(d.id===highlightId)c.classList.add('highlight');
+      const id=d.data().url.split('v=')[1]?.split('&')[0]||d.data().url.split('/').pop();
       c.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}" allowfullscreen></iframe><div class="video-title">${d.data().title}</div>`;
       const b=document.createElement('button');
       b.textContent='Sil';
@@ -214,12 +255,31 @@ async function listele(){
     });
     lists.appendChild(box);
   }
+  if(openCat){
+    categoryBoxes[openCat].querySelector('.videos').style.display='block';
+    categoryBoxes[openCat].scrollIntoView({behavior:'smooth'});
+  }
 }
 
 async function sil(id){
   await updateDoc(doc(db,'videolar',id),{deleted:true});
+  toast('🗑️ Video silindi',async()=>{
+    await updateDoc(doc(db,'videolar',id),{deleted:false});
+    toast('↩️ Geri alındı');
+    listele();
+  });
   listele();
 }
+
+window.openDeleted=async()=>{
+  modal.style.display='flex';
+  deletedList.innerHTML='';
+  const s=await getDocs(query(col,where('deleted','==',true)));
+  s.forEach(d=>{
+    deletedList.innerHTML+=`<div class="deleted-item"><b>${d.data().title}</b><br>${d.data().url}</div>`;
+  });
+}
+window.closeModal=()=>modal.style.display='none';
 
 listele();
 </script>
