@@ -98,10 +98,9 @@ header{
 
 </div>
 
-<!-- 🔥 MEVCUT firebase.js -->
-<script type="module" src="./firebase.js"></script>
-
 <script type="module">
+import { db } from "./firebase-core.js";
+
 import {
   collection,
   addDoc,
@@ -112,13 +111,12 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const db = window.db;
 const colRef = collection(db, "dua_videolari");
 
 const videoUrl = document.getElementById("videoUrl");
 const videoList = document.getElementById("videoList");
 
-/* 🎥 EMBED DÖNÜŞTÜRÜCÜ */
+/* 🎥 EMBED */
 function getEmbed(url){
   if(url.includes("youtube.com") || url.includes("youtu.be")){
     const id = url.split("v=")[1]?.split("&")[0] || url.split("/").pop();
@@ -130,10 +128,9 @@ function getEmbed(url){
   }
 
   if(url.includes("instagram.com")){
-    return `
-      <blockquote class="instagram-media"
-        data-instgrm-permalink="${url}"
-        data-instgrm-version="14"></blockquote>`;
+    return `<blockquote class="instagram-media"
+      data-instgrm-permalink="${url}"
+      data-instgrm-version="14"></blockquote>`;
   }
 
   if(url.includes("tiktok.com")){
@@ -145,21 +142,21 @@ function getEmbed(url){
 
 /* ➕ EKLE */
 window.ekle = async () => {
-  const url = videoUrl.value.trim();
-  if(!url) return;
+  if(!videoUrl.value) return;
 
   await addDoc(colRef,{
-    url,
-    tarih:new Date()
+    url: videoUrl.value,
+    tarih: new Date()
   });
 
-  videoUrl.value="";
+  videoUrl.value = "";
   listele();
 };
 
 /* 📖 LİSTELE */
 async function listele(){
-  videoList.innerHTML="";
+  videoList.innerHTML = "";
+
   const q = query(colRef, orderBy("tarih","desc"));
   const snap = await getDocs(q);
 
@@ -168,36 +165,32 @@ async function listele(){
     const embed = getEmbed(data.url);
 
     const card = document.createElement("div");
-    card.className="video-card";
+    card.className = "video-card";
 
-    if(embed){
-      card.innerHTML = embed;
+    card.innerHTML = embed || `
+      <div class="fallback">
+        Video burada açılamıyor
+        <br>
+        <a href="${data.url}" target="_blank">Platformda İzle</a>
+      </div>`;
 
-      if(data.url.includes("instagram")){
-        const s = document.createElement("script");
-        s.src="//www.instagram.com/embed.js";
-        s.async=true;
-        document.body.appendChild(s);
-      }
-    }else{
-      card.innerHTML = `
-        <div class="fallback">
-          Video burada açılamıyor
-          <br>
-          <a href="${data.url}" target="_blank">Platformda İzle</a>
-        </div>`;
-    }
-
-    const delBtn = document.createElement("button");
-    delBtn.className="del";
-    delBtn.innerText="Sil";
-    delBtn.onclick = async () => {
+    const del = document.createElement("button");
+    del.className="del";
+    del.innerText="Sil";
+    del.onclick = async ()=> {
       await deleteDoc(doc(db,"dua_videolari",d.id));
       listele();
     };
 
-    card.appendChild(delBtn);
+    card.appendChild(del);
     videoList.appendChild(card);
+
+    if(data.url.includes("instagram")){
+      const s = document.createElement("script");
+      s.src="//www.instagram.com/embed.js";
+      s.async=true;
+      document.body.appendChild(s);
+    }
   });
 }
 
@@ -206,3 +199,4 @@ listele();
 
 </body>
 </html>
+
