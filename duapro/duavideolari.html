@@ -1442,12 +1442,21 @@ window.saveEdit = async function() {
 
 // Confirm delete
 window.confirmDelete = function(videoId, videoTitle) {
-  currentVideoId = videoId;
+  // Global değişken yerine data attribute kullan
+  const confirmBtn = document.getElementById('confirmAction');
+  confirmBtn.setAttribute('data-video-id', videoId);
+  confirmBtn.setAttribute('data-video-title', videoTitle);
   
   document.getElementById('confirmTitle').textContent = 'Videoyu Sil';
   document.getElementById('confirmMessage').textContent = `"${videoTitle}" başlıklı videoyu silmek istediğinize emin misiniz?`;
-  document.getElementById('confirmAction').textContent = 'Evet, Sil';
-  document.getElementById('confirmAction').onclick = deleteVideo;
+  confirmBtn.textContent = 'Evet, Sil';
+  
+  // Event listener'ı her seferinde yeniden ekle
+  confirmBtn.onclick = function() {
+    const id = this.getAttribute('data-video-id');
+    const title = this.getAttribute('data-video-title');
+    performDelete(id, title);
+  };
   
   openConfirmDialog();
 };
@@ -1808,6 +1817,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
