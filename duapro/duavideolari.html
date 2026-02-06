@@ -1206,10 +1206,7 @@ async function extractVideoTitle(url) {
   return 'Video';
 }
 
-
-
 // Validate form
-// Validate form - DÜZELTİLDİ
 function validateForm() {
   const url = urlInput.value.trim();
   const title = titleInput.value.trim();
@@ -1218,15 +1215,14 @@ function validateForm() {
   const isValid = url && title && category;
   
   addBtn.disabled = !isValid;
-  return isValid;  // <-- BU ÇOK ÖNEMLİ!
+  return isValid;
 }
 
-// Add video - BU KISIM DOĞRU
-// Add video - BU KISIM DOĞRU (BUNU KORUYUN)
+// Add video - TEK VE DOĞRU TANIM
 window.ekle = async function() {
-  console.log('ekle() fonksiyonu çağrıldı'); // Debug
+  console.log('ekle() fonksiyonu çağrıldı');
   
-  // Validation kontrolü - Artık çalışacak!
+  // Validation kontrolü
   if (!validateForm()) {
     showToast('❌ Lütfen tüm alanları doldurun', 'error');
     return;
@@ -1236,7 +1232,7 @@ window.ekle = async function() {
   const title = titleInput.value.trim();
   const category = categorySelect.value;
   
-  console.log('Eklenecek video:', { url, title, category }); // Debug
+  console.log('Eklenecek video:', { url, title, category });
   
   // Show loading
   const originalText = addBtn.innerHTML;
@@ -1246,7 +1242,7 @@ window.ekle = async function() {
   try {
     const embedUrl = generateEmbedUrl(url);
     
-    console.log('Embed URL:', embedUrl); // Debug
+    console.log('Embed URL:', embedUrl);
     
     const docRef = await addDoc(videosCol, {
       url: url,
@@ -1258,7 +1254,7 @@ window.ekle = async function() {
       updatedAt: serverTimestamp()
     });
     
-    console.log('Video eklendi, ID:', docRef.id); // Debug
+    console.log('Video eklendi, ID:', docRef.id);
     
     // Success
     showToast('✅ Video başarıyla eklendi!', 'success');
@@ -1284,60 +1280,6 @@ window.ekle = async function() {
     validateForm();
   }
 };
-    
-    console.log('Video eklendi, ID:', docRef.id);
-    
-    // Success
-    showToast('✅ Video başarıyla eklendi!', 'success');
-    
-    // Reset form
-    urlInput.value = '';
-    titleInput.value = '';
-    categorySelect.value = '';
-    titleInput.disabled = true;
-    categorySelect.disabled = true;
-    
-    // Validate form (butonu disabled yapacak)
-    validateForm();
-    
-    // Reload videos and highlight new one
-    await loadVideos(docRef.id, category);
-    
-  } catch (error) {
-    console.error('Video ekleme hatası:', error);
-    showToast('❌ Video eklenirken hata oluştu: ' + error.message, 'error');
-  } finally {
-    addBtn.innerHTML = originalText;
-    validateForm();
-  }
-};  // <-- BU KADAR! Bundan sonra başka } OLMAMALI
-    
-    console.log('Video eklendi, ID:', docRef.id);
-    
-    // Success
-    showToast('✅ Video başarıyla eklendi!', 'success');
-    
-    // Reset form
-    urlInput.value = '';
-    titleInput.value = '';
-    categorySelect.value = '';
-    titleInput.disabled = true;
-    categorySelect.disabled = true;
-    
-    // Validate form (butonu disabled yapacak)
-    validateForm();
-    
-    // Reload videos and highlight new one
-    await loadVideos(docRef.id, category);
-    
-  } catch (error) {
-    console.error('Video ekleme hatası:', error);
-    showToast('❌ Video eklenirken hata oluştu: ' + error.message, 'error');
-  } finally {
-    addBtn.innerHTML = originalText;
-    validateForm();
-  }
-};  // <-- BU KADAR! Bundan sonra başka } OLMAMALI
 
 // Load videos
 async function loadVideos(highlightId = null, openCategory = null) {
@@ -1541,40 +1483,7 @@ window.confirmDelete = function(videoId, videoTitle) {
 };
 
 // Delete video
-async function deleteVideo() {
-  closeConfirmDialog();
-  
-  // NULL KONTROLÜ (bu zaten var)
-  if (!currentVideoId) {
-    console.error('currentVideoId:', currentVideoId); // Debug için
-    showToast('❌ Video ID bulunamadı', 'error');
-    return;
-  }
-  
-  console.log('Silinecek video ID:', currentVideoId); // Debug için
-  
-  try {
-    await updateDoc(doc(db, 'videolar', currentVideoId), {
-      deleted: true,
-      deletedAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-    
-    showToast('🗑️ Video silindi', 'info', () => {
-      restoreVideo(currentVideoId);
-    });
-    
-    // Video listesini yenile
-    loadVideos();
-    
-  } catch (error) {
-    console.error('Video silme hatası:', error);
-    showToast('❌ Video silinirken hata oluştu: ' + error.message, 'error');
-  }
-}
-
-
-  async function performDelete(videoId, videoTitle) {
+async function performDelete(videoId, videoTitle) {
   console.log('performDelete çağrıldı:', videoId, videoTitle);
   
   closeConfirmDialog();
@@ -1602,6 +1511,7 @@ async function deleteVideo() {
     showToast('❌ Video silinirken hata oluştu', 'error');
   }
 }
+
 // Restore video
 async function restoreVideo(videoId) {
   try {
@@ -1620,7 +1530,6 @@ async function restoreVideo(videoId) {
   }
 }
 
-// Open deleted modal
 // Open deleted modal
 async function openDeletedModal() {
   deletedList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Yükleniyor...</h3></div>';
@@ -1804,8 +1713,7 @@ function formatDate(date) {
   }).format(date);
 }
 
-
-  // URL doğrulama fonksiyonu
+// URL doğrulama fonksiyonu
 function isValidUrl(string) {
   try {
     new URL(string);
@@ -1815,7 +1723,7 @@ function isValidUrl(string) {
   }
 }
 
-// YouTube ID alma - GÜNCELLENMİŞ
+// YouTube ID alma
 function getYouTubeId(url) {
   if (!url) return null;
   
@@ -1843,7 +1751,7 @@ function getYouTubeId(url) {
   return null;
 }
 
-// Embed URL oluştur - GÜNCELLENMİŞ
+// Embed URL oluştur
 function generateEmbedUrl(url) {
   if (!url) return '';
   
@@ -1925,6 +1833,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
