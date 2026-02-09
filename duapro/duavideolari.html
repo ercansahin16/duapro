@@ -1512,8 +1512,8 @@ async function performDelete(videoId, videoTitle) {
   }
 }
 
-// Restore video
-async function restoreVideo(videoId) {
+// Restore video - BU FONKSİYONU GLOBAL YAP
+window.restoreVideo = async function(videoId) {
   try {
     await updateDoc(doc(db, 'videolar', videoId), {
       deleted: false,
@@ -1524,11 +1524,36 @@ async function restoreVideo(videoId) {
     showToast('↩️ Video geri yüklendi', 'success');
     loadVideos(videoId);
     
+    // Silinenler modalını kapat
+    closeModal('deletedModal');
+    
   } catch (error) {
     console.error('Video geri yükleme hatası:', error);
     showToast('❌ Video geri yüklenirken hata oluştu', 'error');
   }
-}
+};
+
+// Open deleted modal
+// Restore video - BU FONKSİYONU GLOBAL YAP
+window.restoreVideo = async function(videoId) {
+  try {
+    await updateDoc(doc(db, 'videolar', videoId), {
+      deleted: false,
+      restoredAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    showToast('↩️ Video geri yüklendi', 'success');
+    loadVideos(videoId);
+    
+    // Silinenler modalını kapat
+    closeModal('deletedModal');
+    
+  } catch (error) {
+    console.error('Video geri yükleme hatası:', error);
+    showToast('❌ Video geri yüklenirken hata oluştu', 'error');
+  }
+};
 
 // Open deleted modal
 async function openDeletedModal() {
@@ -1581,7 +1606,7 @@ async function openDeletedModal() {
           <p><strong>URL:</strong> ${video.url}</p>
           <p><strong>Silinme Tarihi:</strong> ${formatDate(video.deletedAt.toDate())}</p>
           <div class="deleted-actions">
-            <button class="modal-btn secondary" onclick="restoreVideo('${video.id}'); closeModal('deletedModal');">
+            <button class="modal-btn secondary" onclick="restoreVideo('${video.id}')">
               <i class="fas fa-undo"></i> Geri Yükle
             </button>
             <button class="modal-btn primary" onclick="permanentlyDelete('${video.id}')">
@@ -1833,6 +1858,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
