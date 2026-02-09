@@ -1631,60 +1631,68 @@ async function openDeletedModal() {
 
 // Permanently delete
 window.permanentlyDelete = function(videoId) {
+  // videoId parametresini kullan
+  if (!videoId) {
+    showToast('❌ Video ID bulunamadı', 'error');
+    return;
+  }
+  
+  // currentVideoId'ye atama yap
   currentVideoId = videoId;
   
   document.getElementById('confirmTitle').textContent = 'Kalıcı Olarak Sil';
   document.getElementById('confirmMessage').textContent = 'Bu videoyu kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
   document.getElementById('confirmAction').textContent = 'Evet, Kalıcı Sil';
-  document.getElementById('confirmAction').onclick = performPermanentDelete;
+  
+  // Önceki event listener'ları temizle
+  const confirmBtn = document.getElementById('confirmAction');
+  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+  
+  // Yeni butonu bul ve event ekle - videoId parametresini kullan
+  const newConfirmBtn = document.getElementById('confirmAction');
+  newConfirmBtn.onclick = function() {
+    performPermanentDelete(videoId);
+  };
   
   openConfirmDialog();
 };
 
 // Perform permanent delete
-async function performPermanentDelete() {
+// Perform permanent delete - videoId parametresi alacak şekilde güncelle
+async function performPermanentDelete(videoId) {
   closeConfirmDialog();
   
+  if (!videoId) {
+    showToast('❌ Video ID bulunamadı', 'error');
+    return;
+  }
+  
+  console.log('Kalıcı silinecek video ID:', videoId);
+  
   try {
-    await deleteDoc(doc(db, 'videolar', currentVideoId));
+    await deleteDoc(doc(db, 'videolar', videoId));
     
     showToast('✅ Video kalıcı olarak silindi', 'success');
-    openDeletedModal(); // Refresh the list
+    
+    // Silinenler listesini yenile
+    if (document.getElementById('deletedModal').classList.contains('active')) {
+      await openDeletedModal();
+    }
     
   } catch (error) {
     console.error('Kalıcı silme hatası:', error);
-    showToast('❌ Video silinirken hata oluştu', 'error');
+    showToast('❌ Video silinirken hata oluştu: ' + error.message, 'error');
+  } finally {
+    currentVideoId = null;
   }
 }
 
-// Modal functions
-window.openModal = function(modalId) {
-  document.getElementById(modalId).classList.add('active');
-  document.body.style.overflow = 'hidden';
-};
-
-window.closeModal = function(modalId) {
-  document.getElementById(modalId).classList.remove('active');
-  document.body.style.overflow = '';
-  
-  if (modalId === 'editModal') {
-    currentVideoId = null;
-    editTitleInput.value = '';
-  }
-};
-
-// Confirm dialog
-window.openConfirmDialog = function() {
-  document.getElementById('confirmDialog').classList.add('active');
-  document.body.style.overflow = 'hidden';
-};
-
+// Close confirm dialog - currentVideoId'yi sıfırla
 window.closeConfirmDialog = function() {
   document.getElementById('confirmDialog').classList.remove('active');
   document.body.style.overflow = '';
   currentVideoId = null;
 };
-
 // Show toast notification
 function showToast(message, type = 'info', undoCallback = null) {
   const icons = {
@@ -1858,6 +1866,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
