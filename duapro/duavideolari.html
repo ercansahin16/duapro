@@ -1520,6 +1520,7 @@ async function performDelete(videoId, videoTitle) {
 }
 
 // Restore video - BU FONKSİYONU GLOBAL YAP
+// Restore video - BU FONKSİYONU GÜNCELLE
 window.restoreVideo = async function(videoId) {
   try {
     await updateDoc(doc(db, 'videolar', videoId), {
@@ -1529,10 +1530,16 @@ window.restoreVideo = async function(videoId) {
     });
     
     showToast('↩️ Video geri yüklendi', 'success');
-    loadVideos(videoId);
     
     // Silinenler modalını kapat
-    closeModal('deletedModal');
+    const deletedModal = document.getElementById('deletedModal');
+    if (deletedModal && deletedModal.classList.contains('active')) {
+      deletedModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Videoları yenile
+    loadVideos(videoId);
     
   } catch (error) {
     console.error('Video geri yükleme hatası:', error);
@@ -1540,30 +1547,56 @@ window.restoreVideo = async function(videoId) {
   }
 };
 
-// Open deleted modal
-// Restore video - BU FONKSİYONU GLOBAL YAP
-window.restoreVideo = async function(videoId) {
-  try {
-    await updateDoc(doc(db, 'videolar', videoId), {
-      deleted: false,
-      restoredAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+// Ayrıca closeModal fonksiyonunu da global yap
+window.closeModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
     
-    showToast('↩️ Video geri yüklendi', 'success');
-    loadVideos(videoId);
-    
-    // Silinenler modalını kapat
-    closeModal('deletedModal');
-    
-  } catch (error) {
-    console.error('Video geri yükleme hatası:', error);
-    showToast('❌ Video geri yüklenirken hata oluştu', 'error');
+    if (modalId === 'editModal') {
+      currentVideoId = null;
+      editTitleInput.value = '';
+    }
   }
 };
 
+// openModal fonksiyonunu da global yap
+window.openModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+// Confirm dialog fonksiyonları da global olmalı
+window.openConfirmDialog = function() {
+  document.getElementById('confirmDialog').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeConfirmDialog = function() {
+  document.getElementById('confirmDialog').classList.remove('active');
+  document.body.style.overflow = '';
+  currentVideoId = null;
+};
+
+// openDeletedModal fonksiyonunu da güncelle (modal açma kodunu kaldıralım)
+window.openDeletedModal = async function() {
+  // Modalı doğrudan aç
+  const deletedModal = document.getElementById('deletedModal');
+  if (deletedModal) {
+    deletedModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // ... kalan kod aynı
+};
+
+
+
 // Open deleted modal
-// Open deleted modal - GÜNCELLENMİŞ VERSİYON
 window.openDeletedModal = async function() {
   // Modalı doğrudan aç
   document.getElementById('deletedModal').classList.add('active');
@@ -1877,6 +1910,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
