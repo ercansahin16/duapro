@@ -817,6 +817,7 @@ header {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
+
 </style>
 </head>
 
@@ -1660,6 +1661,9 @@ window.openDeletedModal = async function() {
             <button class="modal-btn primary" onclick="permanentlyDelete('${video.id}')">
               <i class="fas fa-trash-alt"></i> Kalıcı Sil
             </button>
+            <a href="${video.url}" target="_blank" class="modal-btn link-btn">
+    <i class="fas fa-external-link-alt"></i> Link'e Git
+</a>
           </div>
         </div>
       `;
@@ -1913,6 +1917,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
