@@ -1373,6 +1373,9 @@ async function loadVideos(highlightId = null, openCategory = null) {
                           <button class="action-btn delete" onclick="confirmDelete('${video.id}', '${escapeHtml(video.title)}')" title="Sil">
                             <i class="fas fa-trash"></i>
                           </button>
+                          <a href="${video.url}" target="_blank" class="action-btn link" title="Link'e Git">
+                                  <i class="fas fa-external-link-alt"></i>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -1910,6 +1913,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
