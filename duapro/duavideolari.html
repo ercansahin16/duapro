@@ -1043,10 +1043,17 @@ function initEventListeners() {
   });
   
   // Open deleted modal
-  openDeletedBtn.addEventListener('click', () => {
-    toggleSidebar();
-    openDeletedModal();
-  });
+  // Open deleted modal butonu için event listener
+openDeletedBtn.addEventListener('click', async () => {
+  toggleSidebar();
+  
+  // Modalı doğrudan aç
+  document.getElementById('deletedModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Silinen videoları yükle
+  await openDeletedModal();
+});
   
   // URL input listener for auto-title
   urlInput.addEventListener('input', handleUrlInput);
@@ -1556,9 +1563,14 @@ window.restoreVideo = async function(videoId) {
 };
 
 // Open deleted modal
-async function openDeletedModal() {
+// Open deleted modal - GÜNCELLENMİŞ VERSİYON
+window.openDeletedModal = async function() {
+  // Modalı doğrudan aç
+  document.getElementById('deletedModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Yükleme durumunu göster
   deletedList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Yükleniyor...</h3></div>';
-  openModal('deletedModal');
   
   try {
     // Index hatasını önlemek için sadece deleted filtresi
@@ -1627,8 +1639,7 @@ async function openDeletedModal() {
       </div>
     `;
   }
-}
-
+};
 // Permanently delete
 window.permanentlyDelete = function(videoId) {
   // videoId parametresini kullan
@@ -1866,6 +1877,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
