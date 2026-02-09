@@ -1205,11 +1205,211 @@ async function extractVideoTitle(url) {
   if (url.includes('tiktok.com')) {
     return 'TikTok Video';
   }
+
+ 
+if (url.includes('hdfilmizle.life') || url.includes('hdfilmizle.to')) {
+    return 'HD Film'; // veya sayfadan başlık çekmeye çalışabilirsin
+}
   
   // For movie sites
-  if (url.includes('netflix.com')) return 'Netflix Film/Dizi';
-  if (url.includes('disneyplus.com')) return 'Disney+ Film/Dizi';
-  if (url.includes('primevideo.com')) return 'Amazon Prime Video Film/Dizi';
+// For movie sites - BU KISMI GÜNCELLE
+if (url.includes('netflix.com')) return 'Netflix Film/Dizi';
+if (url.includes('disneyplus.com')) return 'Disney+ Film/Dizi';
+if (url.includes('primevideo.com')) return 'Amazon Prime Video Film/Dizi';
+if (url.includes('hdfilmizle.')) return 'HD Film';
+if (url.includes('dizipub.')) return 'Dizipub Film/Dizi';
+if (url.includes('dizibox.')) return 'Dizibox Film/Dizi';
+if (url.includes('dizist.')) return 'Diziist Film/Dizi';
+if (url.includes('fullhdfilmizlesene.')) return 'Full HD Film';
+if (url.includes('filmmodu.')) return 'Film Modu';
+if (url.includes('dizilab.')) return 'DiziLab';
+if (url.includes('altyazili.org')) return 'Altyazılı Film/Dizi';
+if (url.includes('puhutv.com')) return 'Puhu TV';
+if (url.includes('blutv.com')) return 'BluTV';
+if (url.includes('exxen.com')) return 'Exxen';
+if (url.includes('mubi.com')) return 'MUBI';
+if (url.includes('hbo.com') || url.includes('hbomax.com')) return 'HBO Max';
+if (url.includes('paramountplus.com')) return 'Paramount+';
+if (url.includes('apple.com/tv')) return 'Apple TV+';
+if (url.includes('peacocktv.com')) return 'Peacock TV';
+if (url.includes('hulu.com')) return 'Hulu';
+if (url.includes('rakuten.tv')) return 'Rakuten TV';
+
+// YENİ EKLENEN SİTELER
+if (url.includes('yoturk.com')) return 'YoTurk Film/Dizi';
+if (url.includes('dizimag.com')) return 'Dizimag';
+if (url.includes('diziyo.com')) return 'Diziyo';
+if (url.includes('dizibak.com')) return 'Dizibak';
+if (url.includes('dizipark.com')) return 'Dizipark';
+if (url.includes('dizimek.com')) return 'Dizimek';
+if (url.includes('dizifilm.com')) return 'Dizifilm';
+if (url.includes('dizifon.com')) return 'Dizifon';
+if (url.includes('dizilite.com')) return 'Dizilite';
+if (url.includes('dizist.com')) return 'Diziist';
+if (url.includes('diziport.com')) return 'Diziport';
+if (url.includes('dizisan.com')) return 'Dizisan';
+if (url.includes('dizifull.com')) return 'Dizifull';
+if (url.includes('dizibox.com')) return 'Dizibox';
+if (url.includes('dizipub.net')) return 'Dizipub';
+if (url.includes('dizilab.net')) return 'DiziLab';
+if (url.includes('filmizle.com')) return 'Filmizle';
+if (url.includes('filmizle.me')) return 'Filmizle';
+if (url.includes('filmizle.vip')) return 'Filmizle';
+if (url.includes('filmizle.org')) return 'Filmizle';
+if (url.includes('filmizle.app')) return 'Filmizle';
+if (url.includes('filmizle.biz')) return 'Filmizle';
+if (url.includes('filmizle.cc')) return 'Filmizle';
+if (url.includes('filmizle.tv')) return 'Filmizle';
+if (url.includes('filmizle.co')) return 'Filmizle';
+if (url.includes('filmizle.pro')) return 'Filmizle';
+if (url.includes('filmizle.xyz')) return 'Filmizle';
+if (url.includes('filmizle.fun')) return 'Filmizle';
+if (url.includes('filmizle.net')) return 'Filmizle';
+if (url.includes('filmizle.one')) return 'Filmizle';
+if (url.includes('filmizle.online')) return 'Filmizle';
+if (url.includes('filmizle.site')) return 'Filmizle';
+if (url.includes('filmizle.website')) return 'Filmizle';
+if (url.includes('fullfilmizle.com')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.org')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.net')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.app')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.tv')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.cc')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.co')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.xyz')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.fun')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.online')) return 'Full Filmizle';
+if (url.includes('fullfilmizle.site')) return 'Full Filmizle';
+if (url.includes('hdfilmizle.com')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.net')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.org')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.app')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.tv')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.cc')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.co')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.xyz')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.fun')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.online')) return 'HD Filmizle';
+if (url.includes('hdfilmizle.site')) return 'HD Filmizle';
+if (url.includes('altyazili.film')) return 'Altyazılı Film';
+if (url.includes('altyazili.dizi')) return 'Altyazılı Dizi';
+if (url.includes('altyazilifilm.net')) return 'Altyazılı Film';
+if (url.includes('altyazilidizi.net')) return 'Altyazılı Dizi';
+if (url.includes('altyazilifilmizle.com')) return 'Altyazılı Filmizle';
+if (url.includes('altyazilidiziizle.com')) return 'Altyazılı Diziizle';
+if (url.includes('turkcealtyazi.org')) return 'Türkçe Altyazılı Film/Dizi';
+if (url.includes('turkcedublaj.org')) return 'Türkçe Dublajlı Film/Dizi';
+if (url.includes('turkcealtyazi.net')) return 'Türkçe Altyazılı Film/Dizi';
+if (url.includes('turkcedublaj.net')) return 'Türkçe Dublajlı Film/Dizi';
+
+// Uluslararası siteler
+if (url.includes('crunchyroll.com')) return 'Crunchyroll Anime';
+if (url.includes('funimation.com')) return 'Funimation Anime';
+if (url.includes('aniwave.to') || url.includes('9anime')) return 'Anime';
+if (url.includes('animepahe.com')) return 'AnimePahe';
+if (url.includes('gogoanime')) return 'Gogoanime';
+if (url.includes('zoro.to')) return 'Zoro Anime';
+if (url.includes('animeflv.net')) return 'AnimeFLV';
+if (url.includes('animeid.tv')) return 'AnimeID';
+if (url.includes('animelab.com')) return 'AnimeLab';
+if (url.includes('viki.com')) return 'Rakuten Viki';
+if (url.includes('viu.com')) return 'Viu';
+if (url.includes('iqiyi.com')) return 'iQiyi';
+if (url.includes('wetv.vip')) return 'WeTV';
+if (url.includes('mydramalist.com')) return 'MyDramaList';
+if (url.includes('kissasian')) return 'KissAsian';
+if (url.includes('dramacool')) return 'DramaCool';
+if (url.includes('viewasian')) return 'ViewAsian';
+if (url.includes('asiandrama.org')) return 'AsianDrama';
+
+// Yerel TV kanalları
+if (url.includes('trtizle.com')) return 'TRT İzle';
+if (url.includes('showtv.com.tr')) return 'Show TV';
+if (url.includes('star.com.tr')) return 'Star TV';
+if (url.includes('fox.com.tr')) return 'FOX TV';
+if (url.includes('kanald.com.tr')) return 'Kanal D';
+if (url.includes('atv.com.tr')) return 'ATV';
+if (url.includes('tv8.com.tr')) return 'TV8';
+if (url.includes('bloomberght.com')) return 'Bloomberg HT';
+if (url.includes('ahaber.com.tr')) return 'A Haber';
+if (url.includes('uhabertv.com')) return 'U Haber TV';
+  // For movie sites - GENİŞLETİLMİŞ LİSTE
+if (url.includes('netflix.com')) return 'Netflix Film/Dizi';
+if (url.includes('disneyplus.com')) return 'Disney+ Film/Dizi';
+if (url.includes('primevideo.com')) return 'Amazon Prime Video Film/Dizi';
+if (url.includes('hdfilmizle.')) return 'HD Film';
+if (url.includes('dizipub.')) return 'Dizipub Film/Dizi';
+if (url.includes('dizibox.')) return 'Dizibox Film/Dizi';
+if (url.includes('dizist.')) return 'Diziist Film/Dizi';
+if (url.includes('fullhdfilmizlesene.')) return 'Full HD Film';
+if (url.includes('filmmodu.')) return 'Film Modu';
+if (url.includes('dizilab.')) return 'DiziLab';
+if (url.includes('altyazili.org')) return 'Altyazılı Film/Dizi';
+if (url.includes('puhutv.com')) return 'Puhu TV';
+if (url.includes('blutv.com')) return 'BluTV';
+if (url.includes('exxen.com')) return 'Exxen';
+if (url.includes('mubi.com')) return 'MUBI';
+if (url.includes('hbo.com') || url.includes('hbomax.com')) return 'HBO Max';
+if (url.includes('paramountplus.com')) return 'Paramount+';
+if (url.includes('apple.com/tv')) return 'Apple TV+';
+if (url.includes('peacocktv.com')) return 'Peacock TV';
+if (url.includes('hulu.com')) return 'Hulu';
+if (url.includes('rakuten.tv')) return 'Rakuten TV';
+
+// YENİ EKLENEN TÜRK SİTELERİ
+if (url.includes('yoturk.com')) return 'YoTurk Film/Dizi';
+if (url.includes('dizimag.com')) return 'Dizimag';
+if (url.includes('diziyo.com')) return 'Diziyo';
+if (url.includes('dizibak.com')) return 'Dizibak';
+if (url.includes('dizipark.com')) return 'Dizipark';
+if (url.includes('dizimek.com')) return 'Dizimek';
+if (url.includes('dizifilm.com')) return 'Dizifilm';
+if (url.includes('dizifon.com')) return 'Dizifon';
+if (url.includes('dizilite.com')) return 'Dizilite';
+if (url.includes('dizist.com')) return 'Diziist';
+if (url.includes('diziport.com')) return 'Diziport';
+if (url.includes('dizisan.com')) return 'Dizisan';
+if (url.includes('dizifull.com')) return 'Dizifull';
+
+// Daha fazla film sitesi
+if (url.includes('filmizle.')) return 'Filmizle';
+if (url.includes('hdizle.')) return 'HD İzle';
+if (url.includes('fullhdizle.')) return 'Full HD İzle';
+if (url.includes('altyazilifilm.')) return 'Altyazılı Film';
+if (url.includes('turkcedublaj.')) return 'Türkçe Dublaj';
+
+// Anime siteleri
+if (url.includes('crunchyroll.com')) return 'Crunchyroll Anime';
+if (url.includes('funimation.com')) return 'Funimation Anime';
+if (url.includes('9anime.')) return '9Anime';
+if (url.includes('animeflv.')) return 'AnimeFLV';
+if (url.includes('gogoanime.')) return 'Gogoanime';
+if (url.includes('zoro.to')) return 'Zoro Anime';
+
+// Yabancı siteler
+if (url.includes('putlocker.')) return 'Putlocker';
+if (url.includes('fmovies.')) return 'FMovies';
+if (url.includes('123movies.')) return '123Movies';
+if (url.includes('soap2day.')) return 'Soap2Day';
+if (url.includes('watchseries.')) return 'WatchSeries';
+if (url.includes('solarmovie.')) return 'SolarMovie';
+
+// Yerel TV kanalları
+if (url.includes('trtizle.com')) return 'TRT İzle';
+if (url.includes('showtv.com.tr')) return 'Show TV';
+if (url.includes('star.com.tr')) return 'Star TV';
+if (url.includes('fox.com.tr')) return 'FOX TV';
+if (url.includes('kanald.com.tr')) return 'Kanal D';
+if (url.includes('atv.com.tr')) return 'ATV';
+
+// Daha fazla eklemek istersen bu pattern'leri kullan:
+if (url.includes('/film/') || url.includes('/dizi/') || url.includes('/izle/')) {
+    return 'Film/Dizi';
+}
+  // En sonda bunu ekle (diğer tüm kontrollerden sonra):
+if (url.match(/\.(com|net|org|tv|io|to|life|site|online)\/(film|dizi|movie|series|watch|video)/i)) {
+    return 'Film/Dizi İçeriği';
+}
   
   return 'Video';
 }
@@ -1917,6 +2117,7 @@ document.getElementById('openSettings').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
 
 
