@@ -78,7 +78,7 @@ async function listele() {
   });
 
 // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
-const arama = aramaInput.value.toLowerCase().trim();
+
 const arama = aramaInput.value.trim().toLowerCase();
 console.log("Aranan:", arama); // Hata ayıklama
 
@@ -283,3 +283,4 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
