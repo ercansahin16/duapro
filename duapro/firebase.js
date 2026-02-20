@@ -22,6 +22,23 @@ const firebaseConfig = {
 };
 
 
+
+
+  // === GÜNCELLENMİŞ ARAMA FİLTRESİ ===
+ const arama = turkceNormalize(aramaInput.value.trim());
+
+let filtrelenmis = tumDualar;
+if (arama) {
+  filtrelenmis = tumDualar.filter(d => {
+    const baslik = d.baslik ? turkceNormalize(String(d.baslik)) : '';
+    const icerik = d.icerik ? turkceNormalize(String(d.icerik)) : '';
+
+    return baslik.includes(arama) || icerik.includes(arama);
+  });
+}
+  console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
+  // === ARAMA FİLTRESİ SONU ===
+
 window.clearSearch = () => {
   const searchInput = document.getElementById('searchInput');
   searchInput.value = '';
@@ -122,20 +139,7 @@ if (arama) {
 
 
   
-  // === GÜNCELLENMİŞ ARAMA FİLTRESİ ===
- const arama = turkceNormalize(aramaInput.value.trim());
 
-let filtrelenmis = tumDualar;
-if (arama) {
-  filtrelenmis = tumDualar.filter(d => {
-    const baslik = d.baslik ? turkceNormalize(String(d.baslik)) : '';
-    const icerik = d.icerik ? turkceNormalize(String(d.icerik)) : '';
-
-    return baslik.includes(arama) || icerik.includes(arama);
-  });
-}
-  console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
-  // === ARAMA FİLTRESİ SONU ===
 
 // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -322,6 +326,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
