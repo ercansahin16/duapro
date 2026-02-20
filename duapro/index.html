@@ -1,303 +1,336 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dualarım</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Dualarım</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Sweet Alert 2 (admin girişi için) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    /* ---------- RESET & DEĞİŞKENLER ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-<link rel="manifest" href="manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    :root {
+      --bg: #F3E5AB;          /* krem arka plan */
+      --card: #FFFFFF;         /* beyaz kartlar */
+      --text: #1d1d1f;         /* koyu metin */
+      --sub: #6F86A1;          /* mavimsi gri alt metin */
+      --accent1: #ACE1AF;      /* açık yeşil (düzenle) */
+      --accent2: #F7B490;      /* şeftali (sil) */
+      --favorite: #9A81A4;     /* lavanta (favori) */
+      --border: rgba(0,0,0,0.08);
+    }
 
-<!-- SortableJS for drag & drop -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    body.dark {
+      --bg: #0f0f12;
+      --card: #1c1c1e;
+      --text: #fff;
+      --sub: #a1a1a6;
+      --accent1: #3a3a3c;
+      --accent2: #5a3a3c;
+      --favorite: #8e7a9c;
+      --border: rgba(255,255,255,0.1);
+    }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&family=Poppins:wght@400;500;600&display=swap');
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: .4s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-:root{
-  --bg:#f5f5f7;
-  --card:#fff;
-  --text:#1d1d1f;
-  --sub:#6e6e73;
-  --accent:#ff6b81;
-}
-body.dark{
-  --bg:#0f0f12;
-  --card:#1c1c1e;
-  --text:#fff;
-  --sub:#a1a1a6;
-}
+    /* ---------- INTRO ---------- */
+    #intro {
+      position: fixed; inset: 0;
+      background: linear-gradient(180deg,#000,#111);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Playfair Display", serif;
+      font-size: 26px;
+      z-index: 20;
+      animation: fadeOut 2s ease forwards;
+      animation-delay: 2s;
+    }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  transition:.4s;
-}
+    /* ---------- TOPBAR ---------- */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .menu-btn span {
+      display: block;
+      width: 30px; height: 3px;
+      background: var(--text);
+      margin: 6px 0;
+      border-radius: 10px;
+    }
 
-/* INTRO */
-#intro{
-  position:fixed; inset:0;
-  background:linear-gradient(180deg,#000,#111);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:"Playfair Display",serif;
-  font-size:26px;
-  z-index:20;
-  animation:fadeOut 2s ease forwards;
-  animation-delay:2s;
-}
-@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+    /* ---------- MENU ---------- */
+    .menu {
+      position: fixed;
+      right: -260px; top: 0;
+      width: 260px; height: 100%;
+      background: var(--card);
+      padding: 30px 20px;
+      transition: .4s;
+      z-index: 15;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    }
+    .menu.active { right: 0; }
+    .menu .close {
+      text-align: right;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .menu button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-/* TOPBAR */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items: center;
-  padding:20px;
-}
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-.count-badge {
-  background: var(--accent);
-  color: white;
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 14px;
-  font-weight: 600;
-}
-.search-box {
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: none;
-  background: var(--card);
-  color: var(--text);
-  font-size: 14px;
-  width: 200px;
-}
-.menu-btn span{
-  display:block;
-  width:30px;height:3px;
-  background:var(--text);
-  margin:6px 0;
-  border-radius:10px;
-}
+    /* ---------- ARAMA & SAYAÇ ---------- */
+    .search-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 40px;
+      border: 2px solid var(--sub);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .count-badge {
+      background: var(--accent1);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
 
-/* MENU */
-.menu{
-  position:fixed;
-  right:-260px; top:0;
-  width:260px;height:100%;
-  background:var(--card);
-  padding:30px 20px;
-  transition:.4s;
-  z-index:15;
-}
-.menu.active{right:0}
-.menu .close{
-  text-align:right;
-  font-size:22px;
-  cursor:pointer;
-}
-.menu button{
-  width:100%;
-  margin-top:20px;
-  padding:14px;
-  border-radius:999px;
-  border:none;
-  background:var(--text);
-  color:var(--bg);
-  cursor: pointer;
-}
+    /* ---------- KARTLAR ---------- */
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      flex: 1;
+    }
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      position: relative;
+      cursor: grab;
+      transition: 0.2s;
+    }
+    .card:active { cursor: grabbing; }
+    .card.dragging { opacity: 0.5; }
 
-/* CONTENT */
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:30px 20px;
-}
-.card{
-  background:var(--card);
-  padding:28px;
-  border-radius:24px;
-  margin-bottom:25px;
-  box-shadow:0 20px 40px rgba(0,0,0,.08);
-  position: relative;
-  cursor: grab;
-  transition: box-shadow 0.2s;
-}
-.card:active {
-  cursor: grabbing;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-}
-.drag-handle {
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: var(--sub);
-  cursor: grab;
-  user-select: none;
-}
-.card h2{
-  font-family:"Playfair Display",serif;
-  margin-left: 30px; /* make room for handle */
-}
-.card pre {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  margin-top: 10px;
-}
-.card .actions{
-  display:flex;
-  gap:12px;
-  margin-top:20px;
-  justify-content: flex-end;
-}
-.card .actions button{
-  padding:8px 16px;
-  border:none;
-  border-radius:999px;
-  cursor:pointer;
-  font-size: 14px;
-}
-.card .actions .edit{background:#ffd166}
-.card .actions .del{background:#ef476f;color:#fff}
-.share-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 15px;
-  justify-content: flex-end;
-}
-.share-buttons button {
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s;
-}
-.share-buttons button:hover {
-  transform: scale(1.1);
-}
+    /* Drag handle */
+    .drag-handle {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: var(--sub);
+      cursor: grab;
+      padding: 10px;
+      user-select: none;
+    }
+    @media (max-width: 768px) {
+      .drag-handle {
+        font-size: 32px;
+        padding: 15px;
+      }
+    }
 
-/* MODALS */
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:30;
-}
-.modal-bg.active{display:flex}
-.modal{
-  background:var(--card);
-  padding:30px;
-  border-radius:26px;
-  width:90%;
-  max-width:420px;
-  text-align:center;
-}
-.modal h3{
-  font-family:"Playfair Display",serif;
-}
-.modal textarea,input{
-  width:100%;
-  margin-top:15px;
-  padding:14px;
-  border-radius:14px;
-  border:none;
-  background:var(--bg);
-  color:var(--text);
-  font-family: 'Poppins', sans-serif;
-}
-/* Güncelleme modu textarea yüksekliği */
-#alertInput {
-  height: 200px;
-  max-height: 50vh;
-  resize: vertical;
-}
-.modal .btns{
-  display:flex;
-  gap:12px;
-  margin-top:20px;
-}
-.modal .btns button{
-  flex:1;
-  padding:12px;
-  border-radius:999px;
-  border:none;
-  cursor: pointer;
-}
+    .card-content {
+      margin-left: 50px; /* handle için yer */
+    }
+    .card h2 {
+      font-family: "Playfair Display", serif;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .card pre {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      display: none;
+    }
+    .card .favorite-star {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--favorite);
+    }
+    .card .share-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: var(--favorite);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
 
-/* TOAST */
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--text);
-  color:var(--bg);
-  padding:14px 22px;
-  border-radius:999px;
-  opacity:0;
-  transition:.4s;
-  z-index:40;
-}
-.toast.show{opacity:1}
+    .actions {
+      display: none;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .actions button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .actions .edit { background: var(--accent1); color: var(--text); }
+    .actions .del { background: var(--accent2); color: var(--text); }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .card pre {
-    font-size: 16px;
-  }
-  .search-box {
-    width: 150px;
-  }
-}
-@media (max-width: 480px) {
-  .card pre {
-    font-size: 15px;
-  }
-  .topbar {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-}
-@media (max-width: 360px) {
-  .card pre {
-    font-size: 14px;
-  }
-}
-</style>
+    /* ---------- MODALLAR ---------- */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+    .modal-bg.active { display: flex; }
+    .modal {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 26px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal h3 {
+      font-family: "Playfair Display", serif;
+      margin-bottom: 20px;
+    }
+    .modal textarea, .modal input {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .modal textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+    .modal .btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal .btns button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #alertInput { display: none; }
+
+    /* ---------- TOAST ---------- */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 14px 22px;
+      border-radius: 999px;
+      opacity: 0;
+      animation: toast 2.5s ease forwards;
+      z-index: 40;
+    }
+    @keyframes toast {
+      0% { opacity: 0; transform: translate(-50%, 20px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 600px) {
+      .card pre { font-size: 16px; }
+      .search-section { flex-wrap: wrap; }
+      .count-badge { width: 100%; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .card pre { font-size: 15px; }
+      .drag-handle { font-size: 28px; }
+    }
+    @media (max-width: 360px) {
+      .card pre { font-size: 14px; }
+    }
+  </style>
 </head>
 <body>
 
 <div id="intro">Kalpten Gelen Dualar…</div>
 
 <div class="topbar">
-  <div class="topbar-left">
-    <strong>Dualarım</strong>
-    <span class="count-badge" id="duaCount">0</span>
-    <input type="text" class="search-box" id="searchInput" placeholder="Ara...">
-  </div>
+  <strong>Dualarım</strong>
   <div class="menu-btn" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
@@ -305,12 +338,23 @@ body{
 
 <div class="menu" id="menu">
   <div class="close" onclick="toggleMenu()">x</div>
-  <button onclick="toggleSurprise()" class="surprise-btn">🧿 Güncelleme Modu</button>
-  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
+  <button onclick="toggleSurprise()" class="surprise-btn">
+    🧿 Güncelleme Modu
+  </button>
+  <button class="menu-item" onclick="goVideos()">
+    📺 Dua Videoları
+  </button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
+<!-- Arama ve Sayaç -->
+<div class="search-section">
+  <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+  <span class="count-badge" id="duaCount">0 dua</span>
+</div>
+
+<!-- Kartların listeleneceği container -->
 <div class="container" id="siirler"></div>
 
 <!-- ADD MODAL -->
@@ -318,7 +362,7 @@ body{
   <div class="modal">
     <h3>Yeni Dua 🤍</h3>
     <input id="baslik" placeholder="Dua Başlığı">
-    <textarea id="icerik" placeholder="Duan..." rows="6"></textarea>
+    <textarea id="icerik" placeholder="Duan..."></textarea>
     <div class="btns">
       <button onclick="closeAdd()">Vazgeç</button>
       <button onclick="ekle()">Kaydet</button>
@@ -330,8 +374,8 @@ body{
 <div class="modal-bg" id="alertModal">
   <div class="modal">
     <h3 id="alertTitle"></h3>
-    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom: 12px;">
-    <textarea id="alertInput" rows="8"></textarea>
+    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom:12px; display:none;">
+    <textarea id="alertInput" style="display:none"></textarea>
     <div class="btns">
       <button onclick="alertCancel()">İptal</button>
       <button id="alertOk">Tamam</button>
@@ -342,44 +386,34 @@ body{
 <div class="toast" id="toast"></div>
 
 <script>
-const menu = document.getElementById("menu");
-const addModal = document.getElementById("addModal");
-const alertModal = document.getElementById("alertModal");
-const alertTitle = document.getElementById("alertTitle");
-const alertInput = document.getElementById("alertInput");
-const alertOk = document.getElementById("alertOk");
-const searchInput = document.getElementById("searchInput");
+  // Menü işlevleri
+  function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
+  function openAdd() {
+    document.getElementById('addModal').classList.add('active');
+    toggleMenu();
+  }
+  function closeAdd() { document.getElementById('addModal').classList.remove('active'); }
+  function alertCancel() {
+    document.getElementById('alertModal').classList.remove('active');
+    document.getElementById('alertInput').style.display = 'none';
+    document.getElementById('alertBaslik').style.display = 'none';
+  }
+  function goVideos() { window.location.href = "duavideolari.html"; }
 
-function toggleMenu(){menu.classList.toggle("active")}
-function openAdd(){addModal.classList.add("active");toggleMenu()}
-function closeAdd(){addModal.classList.remove("active")}
+  // Gece modu
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('dark', document.body.classList.contains('dark'));
+  }
+  if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
 
-function toast(msg){
-  const t=document.getElementById("toast");
-  t.innerText=msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2500);
-}
-
-function toggleDark(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("dark",document.body.classList.contains("dark"));
-}
-if(localStorage.getItem("dark")==="true")document.body.classList.add("dark");
-
-function alertCancel(){
-  alertModal.classList.remove("active");
-  alertInput.style.display="block"; // reset
-}
-
-function goVideos() {
-  window.location.href = "duavideolari.html";
-}
-
-// Arama input dinleyicisi
-searchInput.addEventListener('input', () => {
-  window.filterDualar && window.filterDualar();
-});
+  // Toast mesajı (geçici)
+  window.toast = (msg) => {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  };
 </script>
 
 <script type="module" src="firebase.js"></script>
