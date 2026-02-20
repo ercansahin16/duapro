@@ -21,6 +21,12 @@ const firebaseConfig = {
   appId: "1:450775848659:web:ca192a401da3f887e1e626"
 };
 
+
+window.clearSearch = () => {
+  const searchInput = document.getElementById('searchInput');
+  searchInput.value = '';
+  listele();
+};
 /* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -68,7 +74,7 @@ window.toggleSurprise = () => {
   surprise = !surprise;
   localStorage.setItem("surprise", surprise ? "on" : "off");
   toast(surprise ? "🧿 Sürpriz Modu Açık" : "🧿 Sürpriz Modu Kapalı");
-  listele();
+  ();
 };
 
 /* ➕ EKLE */
@@ -90,7 +96,7 @@ window.ekle = async () => {
   document.getElementById("addModal").classList.remove("active");
 
   toast("✨ Dua kaydedildi");
-  listele();
+  ();
 };
 
 /* 📖 LİSTELE (arama + sıralama + drag & drop) */
@@ -103,6 +109,12 @@ async function listele() {
   tumDualar = [];
   snap.forEach(d => {
     tumDualar.push({ id: d.id, ...d.data() });
+    // Arama modu kontrolü – eğer arama varsa container'a sınıf ekle
+if (arama) {
+  siirlerDiv.classList.add('search-mode');
+} else {
+  siirlerDiv.classList.remove('search-mode');
+}
   });
 
 
@@ -310,6 +322,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
