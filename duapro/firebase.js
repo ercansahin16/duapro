@@ -78,26 +78,21 @@ async function listele() {
   });
 
 // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
+  const arama = aramaInput.value.trim().toLowerCase();
+  console.log("Aranan:", arama);
 
-const arama = aramaInput.value.trim().toLowerCase();
-console.log("Aranan:", arama); // Hata ayıklama
-
-let filtrelenmis = tumDualar;
-if (arama) {
-  filtrelenmis = tumDualar.filter(d => 
-    (d.baslik && typeof d.baslik === 'string' && d.baslik.toLowerCase().includes(arama)) ||
-    (d.icerik && typeof d.icerik === 'string' && d.icerik.toLowerCase().includes(arama))
-  );
-  filtrelenmis = tumDualar.filter(d => {
-    const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
-    const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
-    return baslik.includes(arama) || icerik.includes(arama);
-  });
-}
+  let filtrelenmis = tumDualar;
+  if (arama) {
+    filtrelenmis = tumDualar.filter(d => {
+      const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
+      const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
+      return baslik.includes(arama) || icerik.includes(arama);
+    });
+  }
 
 console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
 
-  // Favoriler üstte
+// Favoriler üstte
   filtrelenmis.sort((a, b) => {
     if (a.favorite === b.favorite) return 0;
     return a.favorite ? -1 : 1;
@@ -107,7 +102,7 @@ console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
 
   siirlerDiv.innerHTML = "";
-  filtrelenmis.forEach((s, index) => {
+  filtrelenmis.forEach((s) => {
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("draggable", !surprise);
@@ -141,7 +136,6 @@ console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
     siirlerDiv.appendChild(card);
   });
 }
-
 /* 🔽 İçerik aç/kapa */
 window.toggleIcerik = (el) => {
   const pre = el.nextElementSibling;
@@ -283,4 +277,5 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
