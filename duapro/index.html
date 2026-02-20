@@ -119,6 +119,8 @@
       align-items: center;
       gap: 12px;
       margin: 20px;
+      width: 100%; /* Konteynır tam genişlik */
+  max-width: 100%;
     }
     #searchInput {
       flex: 1;
@@ -129,7 +131,7 @@
       color: var(--text);
       font-size: 1rem;
       padding-right: 40px; /* çarpı için yer */
-      witdh:100%;
+      width: 100%; /* Div'in tamamını kapla */
     }
     .count-badge {
       background: var(--accent1);
@@ -139,7 +141,13 @@
       font-size: 0.9rem;
       font-weight: 600;
       white-space: nowrap;
+      flex-shrink: 0; /* Buton küçülmesin */
     }
+    .search-section > div:first-child {
+  position: relative;
+  flex: 1; /* Input'un bulunduğu div esneyebilsin */
+  min-width: 0; /* Taşmayı önlemek için */
+}
 
     /* Arama kutusu temizle butonu */
     .clear-search {
@@ -471,4 +479,5 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
