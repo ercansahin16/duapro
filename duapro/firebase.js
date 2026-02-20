@@ -1,5 +1,3 @@
-// firebase.js (CDN + CLEAN)
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getFirestore,
@@ -10,8 +8,7 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy,
-  writeBatch
+  orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -30,13 +27,13 @@ const db = getFirestore(app);
 const colRef = collection(db, "siirler");
 
 /* DOM */
-const siirler = document.getElementById("siirler");
-const baslik = document.getElementById("baslik");
-const icerik = document.getElementById("icerik");
+const siirlerDiv = document.getElementById("siirler");
+const baslikInput = document.getElementById("baslik");
+const icerikInput = document.getElementById("icerik");
+const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
-const searchInput = document.getElementById("searchInput");
 
-/* 🧿 SÜRPRİZ */
+/* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
 window.toggleSurprise = () => {
@@ -46,216 +43,140 @@ window.toggleSurprise = () => {
   listele();
 };
 
-/* 🔔 TOAST */
-window.toast = (msg) => {
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerText = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
-};
-
 /* ➕ EKLE */
 window.ekle = async () => {
-  if (!baslik.value || !icerik.value) {
+  if (!baslikInput.value || !icerikInput.value) {
     toast("🤍 Boş dua olmaz");
     return;
   }
 
-  // Yeni eklenen en sona gitmesi için order değerini al
-  const snapshot = await getDocs(colRef);
-  const maxOrder = snapshot.docs.reduce((max, d) => Math.max(max, d.data().order || 0), 0);
-
   await addDoc(colRef, {
-    baslik: baslik.value,
-    icerik: icerik.value,
+    baslik: baslikInput.value,
+    icerik: icerikInput.value,
     tarih: new Date(),
-    favorite: false,
-    order: maxOrder + 1
+    favorite: false
   });
 
-  baslik.value = "";
-  icerik.value = "";
+  baslikInput.value = "";
+  icerikInput.value = "";
   document.getElementById("addModal").classList.remove("active");
 
   toast("✨ Dua kaydedildi");
   listele();
 };
 
-/* 📖 LİSTELE */
-let allDocs = []; // tüm belgeleri tutar
-let sortableInstance = null;
+/* 📖 LİSTELE (arama + sıralama + drag & drop) */
+let tumDualar = []; // tüm duaları tutar
 
 async function listele() {
-  siirler.innerHTML = "";
-
-  const q = query(colRef);
+  const q = query(colRef, orderBy("tarih", "desc"));
   const snap = await getDocs(q);
 
-  allDocs = [];
+  tumDualar = [];
   snap.forEach(d => {
-    allDocs.push({ id: d.id, ...d.data() });
+    tumDualar.push({ id: d.id, ...d.data() });
   });
 
-  // Favoriler önce, sonra order'a göre
-  allDocs.sort((a, b) => {
-    if (a.favorite === b.favorite) {
-      return (a.order || 0) - (b.order || 0);
-    }
+  // Arama filtresi (büyük/küçük harf duyarsız)
+  const arama = aramaInput.value.toLowerCase().trim();
+  let filtrelenmis = tumDualar;
+  if (arama) {
+    filtrelenmis = tumDualar.filter(d =>
+      d.baslik.toLowerCase().includes(arama) ||
+      d.icerik.toLowerCase().includes(arama)
+    );
+  }
+
+  // Favoriler üstte
+  filtrelenmis.sort((a, b) => {
+    if (a.favorite === b.favorite) return 0;
     return a.favorite ? -1 : 1;
   });
 
-  renderList(allDocs);
-  duaCountSpan.innerText = allDocs.length;
+  // Sayacı güncelle
+  duaCountSpan.innerText = `${filtrelenmis.length} dua`;
 
-  // Eğer daha önce Sortable varsa yok et
-  if (sortableInstance) sortableInstance.destroy();
-
-  // Drag & Drop başlat
-  sortableInstance = new Sortable(siirler, {
-    animation: 150,
-    handle: '.drag-handle',
-    onEnd: async (evt) => {
-      const newOrder = Array.from(siirler.children).map(child => child.dataset.id);
-      // Firestore'da order'ları güncelle
-      await updateOrders(newOrder);
-    }
-  });
-}
-
-function renderList(docs) {
-  siirler.innerHTML = "";
-  docs.forEach(s => {
+  siirlerDiv.innerHTML = "";
+  filtrelenmis.forEach((s, index) => {
     const card = document.createElement("div");
     card.className = "card";
+    card.setAttribute("draggable", !surprise); // sürpriz modunda sürüklenemez
     card.dataset.id = s.id;
 
-    // Sürükleme tutamağı
-    const handle = document.createElement("div");
-    handle.className = "drag-handle";
-    handle.innerHTML = "⋮⋮";
-    card.appendChild(handle);
+    // Drag olayları
+    card.addEventListener("dragstart", handleDragStart);
+    card.addEventListener("dragover", handleDragOver);
+    card.addEventListener("drop", handleDrop);
+    card.addEventListener("dragend", handleDragEnd);
 
-    // Favori yıldızı
-    const favSpan = document.createElement("span");
-    favSpan.style.cssText = "float:right;cursor:pointer;font-size:22px; position:relative; z-index:10;";
-    favSpan.innerHTML = s.favorite ? "⭐" : "☆";
-    favSpan.onclick = (e) => {
-      e.stopPropagation();
-      favToggle(s.id, s.favorite);
-    };
-    card.appendChild(favSpan);
-
-    // Başlık
-    const h2 = document.createElement("h2");
-    h2.textContent = s.baslik;
-    h2.onclick = (e) => toggleIcerik(e.target);
-    card.appendChild(h2);
-
-    // İçerik
-    const pre = document.createElement("pre");
-    pre.className = "icerik";
-    pre.style.display = "none";
-    pre.textContent = s.icerik;
-    card.appendChild(pre);
-
-    // Sürpriz mod değilse butonları ekle
-    if (!surprise) {
-      const actionsDiv = document.createElement("div");
-      actionsDiv.className = "actions";
-      actionsDiv.innerHTML = `
-        <button class="edit" onclick="siirDuzenle('${s.id}', \`${s.baslik.replace(/`/g, '\\`')}\`, \`${s.icerik.replace(/`/g, '\\`')}\`)">✏️ Düzenle</button>
-        <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
-      `;
-      card.appendChild(actionsDiv);
-    }
-
-    // Paylaş butonları (her zaman görünür)
-    const shareDiv = document.createElement("div");
-    shareDiv.className = "share-buttons";
-    shareDiv.innerHTML = `
-      <button onclick="share('whatsapp', '${encodeURIComponent(s.baslik)}', '${encodeURIComponent(s.icerik)}')" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25D366;"></i></button>
-      <button onclick="share('telegram', '${encodeURIComponent(s.baslik)}', '${encodeURIComponent(s.icerik)}')" title="Telegram"><i class="fab fa-telegram" style="color:#0088cc;"></i></button>
-      <button onclick="share('twitter', '${encodeURIComponent(s.baslik)}', '${encodeURIComponent(s.icerik)}')" title="Twitter"><i class="fab fa-twitter" style="color:#1DA1F2;"></i></button>
+    card.innerHTML = `
+      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
+      <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
+        ${s.favorite ? "⭐" : "☆"}
+      </span>
+      <div class="card-content">
+        <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
+        <pre class="icerik" style="display:none">${s.icerik}</pre>
+        ${surprise ? "" : `
+        <div class="actions">
+          <button class="edit" onclick="siirDuzenle('${s.id}', \`${s.baslik}\`, \`${s.icerik}\`)">✏️ Düzenle</button>
+          <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
+        </div>
+        `}
+        <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
+          <i class="fas fa-share-alt"></i>
+        </button>
+      </div>
     `;
-    card.appendChild(shareDiv);
 
-    siirler.appendChild(card);
+    siirlerDiv.appendChild(card);
   });
 }
 
-// Sıralama güncelleme
-async function updateOrders(newOrderIds) {
-  const batch = writeBatch(db);
-  newOrderIds.forEach((id, index) => {
-    const ref = doc(db, "siirler", id);
-    batch.update(ref, { order: index + 1 });
-  });
-  await batch.commit();
-  toast("📋 Sıra güncellendi");
-  listele(); // yeniden listele (opsiyonel)
-}
-
-/* 🔍 FİLTRELE (arama) */
-window.filterDualar = () => {
-  const term = searchInput.value.toLowerCase();
-  if (!term) {
-    renderList(allDocs);
-    return;
-  }
-  const filtered = allDocs.filter(d =>
-    d.baslik.toLowerCase().includes(term) ||
-    d.icerik.toLowerCase().includes(term)
-  );
-  renderList(filtered);
-};
-
-/* 🔽 AÇ / KAPA */
+/* 🔽 İçerik aç/kapa */
 window.toggleIcerik = (el) => {
   const pre = el.nextElementSibling;
   const actions = pre.nextElementSibling;
-  const share = actions?.nextElementSibling;
-
   const acik = pre.style.display === "block";
   pre.style.display = acik ? "none" : "block";
-  if (actions && actions.classList.contains("actions")) actions.style.display = acik ? "none" : "flex";
-  if (share && share.classList.contains("share-buttons")) share.style.display = acik ? "none" : "flex";
+  if (actions) actions.style.display = acik ? "none" : "flex";
 };
 
 /* 🗑️ SİL */
 window.siirSil = (id) => {
-  document.getElementById("alertTitle").innerText = "Bu duayı silmek istiyor musun?";
-  document.getElementById("alertInput").style.display = "none";
-  document.getElementById("alertBaslik").style.display = "none";
-  document.getElementById("alertModal").classList.add("active");
-
-  document.getElementById("alertOk").onclick = async () => {
-    await deleteDoc(doc(db, "siirler", id));
-    document.getElementById("alertModal").classList.remove("active");
-    toast("💔 Dua silindi");
-    listele();
-  };
+  Swal.fire({
+    title: 'Bu duayı silmek istiyor musun?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Evet, sil',
+    cancelButtonText: 'İptal'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteDoc(doc(db, "siirler", id));
+      toast("💔 Dua silindi");
+      listele();
+    }
+  });
 };
 
 /* ✏️ DÜZENLE */
 window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
   document.getElementById("alertTitle").innerText = "Duayı düzenle 🤍";
   const alertInput = document.getElementById("alertInput");
+  const alertBaslik = document.getElementById("alertBaslik");
+
+  alertBaslik.style.display = "block";
+  alertBaslik.value = eskiBaslik;
   alertInput.style.display = "block";
   alertInput.value = eskiIcerik;
-
-  const baslikInput = document.getElementById("alertBaslik");
-  baslikInput.style.display = "block";
-  baslikInput.value = eskiBaslik;
 
   document.getElementById("alertModal").classList.add("active");
 
   document.getElementById("alertOk").onclick = async () => {
     await updateDoc(doc(db, "siirler", id), {
-      baslik: baslikInput.value,
+      baslik: alertBaslik.value,
       icerik: alertInput.value
     });
-
     document.getElementById("alertModal").classList.remove("active");
     toast("✨ Dua güncellendi");
     listele();
@@ -264,44 +185,102 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
 
 /* ⭐ FAVORİ */
 window.favToggle = async (id, val) => {
-  await updateDoc(doc(db, "siirler", id), {
-    favorite: !val
-  });
+  await updateDoc(doc(db, "siirler", id), { favorite: !val });
   toast(val ? "🕊️ Favoriden çıkarıldı" : "🕊️ Favorilere eklendi");
   listele();
 };
 
-/* 📤 PAYLAŞIM */
-window.share = (platform, baslik, icerik) => {
-  const text = `${decodeURIComponent(baslik)}\n\n${decodeURIComponent(icerik)}`;
-  let url = '';
-  switch(platform) {
-    case 'whatsapp':
-      url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-      break;
-    case 'telegram':
-      url = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`;
-      break;
-    case 'twitter':
-      url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-      break;
+/* 📤 PAYLAŞ */
+window.paylas = (baslik, icerik) => {
+  const metin = `${baslik}\n\n${icerik}`;
+  if (navigator.share) {
+    navigator.share({
+      title: baslik,
+      text: icerik,
+    }).catch(() => toast("Paylaşım iptal edildi"));
+  } else {
+    // Web için WhatsApp, Twitter, Telegram
+    const encoded = encodeURIComponent(metin);
+    const wa = `https://wa.me/?text=${encoded}`;
+    const tw = `https://twitter.com/intent/tweet?text=${encoded}`;
+    const tg = `https://t.me/share/url?url=&text=${encoded}`;
+
+    Swal.fire({
+      title: 'Paylaş',
+      html: `
+        <div style="display:flex; gap:15px; justify-content:center;">
+          <a href="${wa}" target="_blank" style="font-size:2rem; color:#25D366;">📱</a>
+          <a href="${tw}" target="_blank" style="font-size:2rem; color:#1DA1F2;">🐦</a>
+          <a href="${tg}" target="_blank" style="font-size:2rem; color:#0088cc;">✈️</a>
+        </div>
+      `,
+      showConfirmButton: false,
+      showCloseButton: true
+    });
   }
-  window.open(url, '_blank');
 };
 
-// 🍔 Menü dışına tıklayınca kapat
+/* 🖱️ DRAG & DROP */
+let draggedItem = null;
+
+function handleDragStart(e) {
+  draggedItem = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDrop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  if (draggedItem !== this) {
+    const parent = this.parentNode;
+    const children = Array.from(parent.children);
+    const draggedIndex = children.indexOf(draggedItem);
+    const targetIndex = children.indexOf(this);
+    if (draggedIndex < targetIndex) {
+      parent.insertBefore(draggedItem, this.nextSibling);
+    } else {
+      parent.insertBefore(draggedItem, this);
+    }
+    // Sıralamayı localStorage'a kaydet (isteğe bağlı)
+    const newOrder = Array.from(parent.children).map(card => card.dataset.id);
+    localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
+  }
+  this.classList.remove('drag-over');
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
+}
+
+/* 🔍 Arama olay dinleyicisi */
+aramaInput.addEventListener('input', listele);
+
+/* 🚀 İlk yükleme */
+window.onload = () => {
+  listele();
+  // localStorage'dan sırayı geri yükle (isteğe bağlı)
+  const kayitliSira = localStorage.getItem('kartSirasi');
+  if (kayitliSira) {
+    try {
+      const sira = JSON.parse(kayitliSira);
+      // Burada sıralama işlemi yapılabilir – şimdilik pasif
+    } catch (e) {}
+  }
+};
+
+/* 🌙 Menü dışına tıklayınca kapat */
 document.addEventListener("click", function (e) {
   const menu = document.getElementById("menu");
   const menuBtn = document.querySelector(".menu-btn");
-
-  if (!menu.classList.contains("active")) return;
-
-  if (
-    !menu.contains(e.target) &&
-    !menuBtn.contains(e.target)
-  ) {
+  if (menu.classList.contains("active") && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
     menu.classList.remove("active");
   }
 });
-
-window.onload = listele;
