@@ -74,7 +74,7 @@ window.toggleSurprise = () => {
   surprise = !surprise;
   localStorage.setItem("surprise", surprise ? "on" : "off");
   toast(surprise ? "🧿 Sürpriz Modu Açık" : "🧿 Sürpriz Modu Kapalı");
-  ();
+  listele();
 };
 
 /* ➕ EKLE */
@@ -322,6 +322,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
