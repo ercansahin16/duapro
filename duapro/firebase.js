@@ -33,6 +33,34 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 
+
+
+ function turkceNormalize(text) {
+  if (!text) return "";
+
+  return text
+    // İ → I + nokta ayrıştırılır
+    .normalize("NFD")
+    // TÜM birleşik noktaları ve aksanları SİL
+    .replace(/[\u0300-\u036f]/g, "")
+    // Türkçe harfler
+    .replace(/ı/g, "i")
+    .replace(/İ/g, "i")
+    .replace(/ş/g, "s")
+    .replace(/Ş/g, "s")
+    .replace(/ğ/g, "g")
+    .replace(/Ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/Ü/g, "u")
+    .replace(/ö/g, "o")
+    .replace(/Ö/g, "o")
+    .replace(/ç/g, "c")
+    .replace(/Ç/g, "c")
+    // EN SON küçük harf
+    .toLowerCase()
+    .trim();
+};
+
 /* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
@@ -79,17 +107,7 @@ async function listele() {
 
 
 
-  function turkceNormalize(text) {
-  return text
-    .toLowerCase()
-    .replace(/ı/g, "i")
-    .replace(/İ/g, "i")
-    .replace(/ş/g, "s")
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c");
-}
+
 
   
   // === GÜNCELLENMİŞ ARAMA FİLTRESİ ===
@@ -292,6 +310,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
