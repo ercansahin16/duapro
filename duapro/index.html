@@ -155,6 +155,9 @@
       position: relative;
       cursor: grab;
       transition: 0.2s;
+      width: 100%;       /* container ne kadar genişse kart o kadar geniş olur */
+  /* veya */
+  flex: 1 1 auto;    /* eğer esnek bir yapı varsa */
     }
     .card:active { cursor: grabbing; }
     .card.dragging { opacity: 0.5; }
@@ -293,6 +296,11 @@
       cursor: pointer;
     }
     #alertInput { display: none; }
+    #siirler {
+  max-width: 900px;  /* veya istediğin bir değer */
+  width: 100%;
+  margin: 0 auto;    /* ortalamak için */
+}
 
     /* ---------- TOAST ---------- */
     .toast {
@@ -429,3 +437,4 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
