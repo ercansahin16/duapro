@@ -77,20 +77,26 @@ async function listele() {
     tumDualar.push({ id: d.id, ...d.data() });
   });
 
-// Arama filtresi (büyük/küçük harf duyarsız, güvenli)
+  // === GÜNCELLENMİŞ ARAMA FİLTRESİ ===
   const arama = aramaInput.value.trim().toLowerCase();
-  console.log("Aranan:", arama);
+  console.log("Aranan (küçültülmüş):", arama);
 
   let filtrelenmis = tumDualar;
   if (arama) {
     filtrelenmis = tumDualar.filter(d => {
-      const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
-      const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
-      return baslik.includes(arama) || icerik.includes(arama);
+      // Verilerdeki başlık ve içeriği güvenli bir şekilde al, string değilse boş string yap
+      const baslikMetin = d.baslik ? String(d.baslik) : '';
+      const icerikMetin = d.icerik ? String(d.icerik) : '';
+      // Her ikisini de küçük harfe çevir
+      const baslikKucuk = baslikMetin.toLowerCase();
+      const icerikKucuk = icerikMetin.toLowerCase();
+
+      // Aranan metin bunlardan birinin içinde geçiyor mu?
+      return baslikKucuk.includes(arama) || icerikKucuk.includes(arama);
     });
   }
-
-console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
+  console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
+  // === ARAMA FİLTRESİ SONU ===
 
 // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -277,5 +283,6 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
