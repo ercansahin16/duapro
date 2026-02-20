@@ -11,6 +11,7 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+/* 🔥 CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCloL8IN0NpHQBxFjaRH_62vOEWjLQjr4o",
   authDomain: "duapro-a7d7e.firebaseapp.com",
@@ -20,16 +21,19 @@ const firebaseConfig = {
   appId: "1:450775848659:web:ca192a401da3f887e1e626"
 };
 
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const colRef = collection(db, "siirler");
 
+/* DOM */
 const siirlerDiv = document.getElementById("siirler");
 const baslikInput = document.getElementById("baslik");
 const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 
+/* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
 window.toggleSurprise = () => {
@@ -39,43 +43,57 @@ window.toggleSurprise = () => {
   listele();
 };
 
+/* ➕ EKLE */
 window.ekle = async () => {
   if (!baslikInput.value || !icerikInput.value) {
     toast("🤍 Boş dua olmaz");
     return;
   }
+
   await addDoc(colRef, {
     baslik: baslikInput.value,
     icerik: icerikInput.value,
     tarih: new Date(),
     favorite: false
   });
+
   baslikInput.value = "";
   icerikInput.value = "";
   document.getElementById("addModal").classList.remove("active");
+
   toast("✨ Dua kaydedildi");
   listele();
 };
 
+/* 📖 LİSTELE (arama + sıralama + drag & drop) */
 let tumDualar = [];
 
 async function listele() {
   const q = query(colRef, orderBy("tarih", "desc"));
   const snap = await getDocs(q);
-  tumDualar = [];
-  snap.forEach(d => tumDualar.push({ id: d.id, ...d.data() }));
 
-  // Arama (büyük/küçük harf duyarsız)
-  const arama = aramaInput.value.trim().toLowerCase();
-  let filtrelenmis = tumDualar.filter(d => {
-    const baslik = d.baslik?.toLowerCase() || "";
-    const icerik = d.icerik?.toLowerCase() || "";
-    return baslik.includes(arama) || icerik.includes(arama);
+  tumDualar = [];
+  snap.forEach(d => {
+    tumDualar.push({ id: d.id, ...d.data() });
   });
 
-  // Favoriler üstte
-  filtrelenmis.sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
+  // Arama filtresi (büyük/küçük harf duyarsız)
+  const arama = aramaInput.value.toLowerCase().trim();
+  let filtrelenmis = tumDualar;
+  if (arama) {
+    filtrelenmis = tumDualar.filter(d =>
+      d.baslik.toLowerCase().includes(arama) ||
+      d.icerik.toLowerCase().includes(arama)
+    );
+  }
 
+  // Favoriler üstte
+  filtrelenmis.sort((a, b) => {
+    if (a.favorite === b.favorite) return 0;
+    return a.favorite ? -1 : 1;
+  });
+
+  // Sayacı güncelle
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
 
   siirlerDiv.innerHTML = "";
@@ -105,22 +123,25 @@ async function listele() {
         </div>
         `}
         <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
-          <i class="fas fa-share-alt"></i>
+          <i class="fas fa-share-alt"></i> Paylaş
         </button>
       </div>
     `;
+
     siirlerDiv.appendChild(card);
   });
 }
 
+/* 🔽 İçerik aç/kapa */
 window.toggleIcerik = (el) => {
   const pre = el.nextElementSibling;
   const actions = pre.nextElementSibling;
   const acik = pre.style.display === "block";
   pre.style.display = acik ? "none" : "block";
-  if (actions && !surprise) actions.style.display = acik ? "none" : "flex";
+  if (actions) actions.style.display = acik ? "none" : "flex";
 };
 
+/* 🗑️ SİL */
 window.siirSil = (id) => {
   Swal.fire({
     title: 'Bu duayı silmek istiyor musun?',
@@ -137,6 +158,7 @@ window.siirSil = (id) => {
   });
 };
 
+/* ✏️ DÜZENLE */
 window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
   document.getElementById("alertTitle").innerText = "Duayı düzenle 🤍";
   const alertInput = document.getElementById("alertInput");
@@ -160,21 +182,27 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
   };
 };
 
+/* ⭐ FAVORİ */
 window.favToggle = async (id, val) => {
   await updateDoc(doc(db, "siirler", id), { favorite: !val });
   toast(val ? "🕊️ Favoriden çıkarıldı" : "🕊️ Favorilere eklendi");
   listele();
 };
 
+/* 📤 PAYLAŞ */
 window.paylas = (baslik, icerik) => {
   const metin = `${baslik}\n\n${icerik}`;
   if (navigator.share) {
-    navigator.share({ title: baslik, text: icerik }).catch(() => toast("Paylaşım iptal edildi"));
+    navigator.share({
+      title: baslik,
+      text: icerik,
+    }).catch(() => toast("Paylaşım iptal edildi"));
   } else {
     const encoded = encodeURIComponent(metin);
     const wa = `https://wa.me/?text=${encoded}`;
     const tw = `https://twitter.com/intent/tweet?text=${encoded}`;
     const tg = `https://t.me/share/url?url=&text=${encoded}`;
+
     Swal.fire({
       title: 'Paylaş',
       html: `
@@ -190,7 +218,7 @@ window.paylas = (baslik, icerik) => {
   }
 };
 
-/* DRAG & DROP */
+/* 🖱️ DRAG & DROP */
 let draggedItem = null;
 
 function handleDragStart(e) {
@@ -218,7 +246,6 @@ function handleDrop(e) {
     } else {
       parent.insertBefore(draggedItem, this);
     }
-    // Sıralamayı localStorage'a kaydet (opsiyonel)
     const newOrder = Array.from(parent.children).map(card => card.dataset.id);
     localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
   }
@@ -230,16 +257,15 @@ function handleDragEnd(e) {
   document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
 }
 
-/* Arama olayı */
+/* 🔍 Arama olay dinleyicisi */
 aramaInput.addEventListener('input', listele);
 
-/* İlk yükleme */
+/* 🚀 İlk yükleme */
 window.onload = () => {
   listele();
-  // localStorage'dan sıra yükleme yapılabilir (şimdilik pasif)
 };
 
-/* Menü dışına tıklama */
+/* 🌙 Menü dışına tıklayınca kapat */
 document.addEventListener("click", function (e) {
   const menu = document.getElementById("menu");
   const menuBtn = document.querySelector(".menu-btn");
