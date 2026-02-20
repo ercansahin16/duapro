@@ -8,11 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Sweet Alert 2 (admin girişi için) -->
+  <!-- Sweet Alert 2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <style>
-    /* ---------- RESET & DEĞİŞKENLER ---------- */
     * {
       margin: 0;
       padding: 0;
@@ -21,13 +20,13 @@
     }
 
     :root {
-      --bg: #F3E5AB;          /* krem arka plan */
-      --card: #FFFFFF;         /* beyaz kartlar */
-      --text: #1d1d1f;         /* koyu metin */
-      --sub: #6F86A1;          /* mavimsi gri alt metin */
-      --accent1: #ACE1AF;      /* açık yeşil (düzenle) */
-      --accent2: #F7B490;      /* şeftali (sil) */
-      --favorite: #9A81A4;     /* lavanta (favori) */
+      --bg: #F3E5AB;
+      --card: #FFFFFF;
+      --text: #1d1d1f;
+      --sub: #6F86A1;
+      --accent1: #ACE1AF;
+      --accent2: #F7B490;
+      --favorite: #9A81A4;
       --border: rgba(0,0,0,0.08);
     }
 
@@ -47,11 +46,8 @@
       color: var(--text);
       transition: .4s;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
-    /* ---------- INTRO ---------- */
     #intro {
       position: fixed; inset: 0;
       background: linear-gradient(180deg,#000,#111);
@@ -67,7 +63,6 @@
     }
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-    /* ---------- TOPBAR ---------- */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -83,7 +78,6 @@
       border-radius: 10px;
     }
 
-    /* ---------- MENU ---------- */
     .menu {
       position: fixed;
       right: -260px; top: 0;
@@ -112,7 +106,6 @@
       cursor: pointer;
     }
 
-    /* ---------- ARAMA & SAYAÇ ---------- */
     .search-section {
       display: flex;
       align-items: center;
@@ -138,12 +131,10 @@
       white-space: nowrap;
     }
 
-    /* ---------- KARTLAR ---------- */
     .container {
       max-width: 900px;
       margin: auto;
       padding: 20px;
-      flex: 1;
     }
     .card {
       background: var(--card);
@@ -159,17 +150,17 @@
     .card:active { cursor: grabbing; }
     .card.dragging { opacity: 0.5; }
 
-    /* Drag handle */
     .drag-handle {
       position: absolute;
-      left: 10px;
+      left: 5px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 24px;
       color: var(--sub);
       cursor: grab;
-      padding: 10px;
+      padding: 12px;
       user-select: none;
+      z-index: 5;
     }
     @media (max-width: 768px) {
       .drag-handle {
@@ -178,13 +169,43 @@
       }
     }
 
+    .favorite-star {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--favorite);
+      z-index: 4;
+    }
+
+    .share-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: var(--favorite);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      z-index: 4;
+    }
+
     .card-content {
-      margin-left: 50px; /* handle için yer */
+      margin-left: 60px; /* handle için yer */
+      min-height: 100px;
     }
     .card h2 {
       font-family: "Playfair Display", serif;
       margin-bottom: 10px;
       cursor: pointer;
+      padding-right: 50px; /* favori yıldızı için yer */
     }
     .card pre {
       font-family: 'Poppins', sans-serif;
@@ -193,30 +214,8 @@
       white-space: pre-wrap;
       overflow-wrap: break-word;
       display: none;
-    }
-    .card .favorite-star {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--favorite);
-    }
-    .card .share-btn {
-      position: absolute;
-      bottom: 15px;
-      right: 15px;
-      background: var(--favorite);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
+      margin-top: 10px;
+      margin-bottom: 50px; /* share butonu için yer */
     }
 
     .actions {
@@ -235,7 +234,6 @@
     .actions .edit { background: var(--accent1); color: var(--text); }
     .actions .del { background: var(--accent2); color: var(--text); }
 
-    /* ---------- MODALLAR ---------- */
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -287,9 +285,8 @@
       font-weight: 600;
       cursor: pointer;
     }
-    #alertInput { display: none; }
+    #alertInput, #alertBaslik { display: none; }
 
-    /* ---------- TOAST ---------- */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -310,11 +307,10 @@
       100% { opacity: 0; }
     }
 
-    /* ---------- RESPONSIVE ---------- */
     @media (max-width: 600px) {
-      .card pre { font-size: 16px; }
       .search-section { flex-wrap: wrap; }
       .count-badge { width: 100%; text-align: center; }
+      .card pre { font-size: 16px; }
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
@@ -338,23 +334,18 @@
 
 <div class="menu" id="menu">
   <div class="close" onclick="toggleMenu()">x</div>
-  <button onclick="toggleSurprise()" class="surprise-btn">
-    🧿 Güncelleme Modu
-  </button>
-  <button class="menu-item" onclick="goVideos()">
-    📺 Dua Videoları
-  </button>
+  <button onclick="toggleSurprise()"> Güncelleme Modu</button>
+  <button onclick="goVideos()">📺 Media</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
-<!-- Arama ve Sayaç -->
+<!-- Arama + Sayaç -->
 <div class="search-section">
   <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
   <span class="count-badge" id="duaCount">0 dua</span>
 </div>
 
-<!-- Kartların listeleneceği container -->
 <div class="container" id="siirler"></div>
 
 <!-- ADD MODAL -->
@@ -374,8 +365,8 @@
 <div class="modal-bg" id="alertModal">
   <div class="modal">
     <h3 id="alertTitle"></h3>
-    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom:12px; display:none;">
-    <textarea id="alertInput" style="display:none"></textarea>
+    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom:12px;">
+    <textarea id="alertInput" placeholder="Dua metni..."></textarea>
     <div class="btns">
       <button onclick="alertCancel()">İptal</button>
       <button id="alertOk">Tamam</button>
@@ -386,7 +377,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // Menü işlevleri
+  // Global fonksiyonlar
   function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
   function openAdd() {
     document.getElementById('addModal').classList.add('active');
@@ -400,14 +391,12 @@
   }
   function goVideos() { window.location.href = "duavideolari.html"; }
 
-  // Gece modu
   function toggleDark() {
     document.body.classList.toggle('dark');
     localStorage.setItem('dark', document.body.classList.contains('dark'));
   }
   if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
 
-  // Toast mesajı (geçici)
   window.toast = (msg) => {
     const t = document.getElementById('toast');
     t.innerText = msg;
