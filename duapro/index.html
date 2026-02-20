@@ -6,9 +6,12 @@
 <title>Dualarım</title>
 
 <link rel="manifest" href="manifest.json">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- SortableJS for drag & drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
@@ -57,7 +60,30 @@ body{
 .topbar{
   display:flex;
   justify-content:space-between;
+  align-items: center;
   padding:20px;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.count-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.search-box {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  width: 200px;
 }
 .menu-btn span{
   display:block;
@@ -91,6 +117,7 @@ body{
   border:none;
   background:var(--text);
   color:var(--bg);
+  cursor: pointer;
 }
 
 /* CONTENT */
@@ -105,9 +132,27 @@ body{
   border-radius:24px;
   margin-bottom:25px;
   box-shadow:0 20px 40px rgba(0,0,0,.08);
+  position: relative;
+  cursor: grab;
+  transition: box-shadow 0.2s;
+}
+.card:active {
+  cursor: grabbing;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+}
+.drag-handle {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--sub);
+  cursor: grab;
+  user-select: none;
 }
 .card h2{
   font-family:"Playfair Display",serif;
+  margin-left: 30px; /* make room for handle */
 }
 .card pre {
   font-family: 'Poppins', sans-serif;
@@ -116,25 +161,40 @@ body{
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+  margin-top: 10px;
 }
-
-
-
-  
-.actions{
+.card .actions{
   display:flex;
   gap:12px;
   margin-top:20px;
+  justify-content: flex-end;
 }
-.actions button{
-  flex:1;
-  padding:10px;
+.card .actions button{
+  padding:8px 16px;
   border:none;
   border-radius:999px;
   cursor:pointer;
+  font-size: 14px;
 }
-.actions .edit{background:#ffd166}
-.actions .del{background:#ef476f;color:#fff}
+.card .actions .edit{background:#ffd166}
+.card .actions .del{background:#ef476f;color:#fff}
+.share-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  justify-content: flex-end;
+}
+.share-buttons button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+.share-buttons button:hover {
+  transform: scale(1.1);
+}
 
 /* MODALS */
 .modal-bg{
@@ -166,6 +226,13 @@ body{
   border:none;
   background:var(--bg);
   color:var(--text);
+  font-family: 'Poppins', sans-serif;
+}
+/* Güncelleme modu textarea yüksekliği */
+#alertInput {
+  height: 200px;
+  max-height: 50vh;
+  resize: vertical;
 }
 .modal .btns{
   display:flex;
@@ -177,6 +244,7 @@ body{
   padding:12px;
   border-radius:999px;
   border:none;
+  cursor: pointer;
 }
 
 /* TOAST */
@@ -195,130 +263,50 @@ body{
 }
 .toast.show{opacity:1}
 
-
-/* 🍎 Apple style buttons */
-.actions button {
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  margin-right: 6px;
-}
-
-/* Düzenle */
-.actions button:first-child {
-  background: #e8f0fe;
-  color: #1a73e8;
-}
-.actions button:first-child:hover {
-  background: #d2e3fc;
-}
-
-/* Sil */
-.actions button:last-child {
-  background: #fdecea;
-  color: #d93025;
-}
-.actions button:last-child:hover {
-  background: #f9d7d5;
-}
-
-/* 🧿 Sürpriz modu */
-body.surprise .actions {
-  display: none !important;
-}
-
-
-
-/* 🔔 Apple tarzı alert */
-.toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1c1c1e;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 14px;
-  font-size: 14px;
-  opacity: 0;
-  animation: toast 2.5s ease forwards;
-  z-index: 9999;
-}
-
-@keyframes toast {
-  0% { opacity: 0; transform: translate(-50%, 20px); }
-  15% { opacity: 1; transform: translate(-50%, 0); }
-  85% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-  @media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 600px) {
   .card pre {
-    font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    line-height: 1.7;
-    overflow-x: hidden;
-    word-break: break-word;
+  }
+  .search-box {
+    width: 150px;
   }
 }
-
-  @media (max-width: 480px) {
+@media (max-width: 480px) {
   .card pre {
-    font-family: 'Poppins', sans-serif;
     font-size: 15px;
-    line-height: 1.65;
-     overflow-x: hidden;
-    word-break: break-word;
   }
-    
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 }
-
 @media (max-width: 360px) {
   .card pre {
-    font-family: 'Poppins', sans-serif;
     font-size: 14px;
-    line-height: 1.6;
-     overflow-x: hidden;
-    word-break: break-word;
   }
 }
-
 </style>
 </head>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then(() => console.log("✅ Service Worker kayıtlı"))
-      .catch(err => console.log("❌ SW hata:", err));
-  });
-}
-</script>
-
 <body>
 
 <div id="intro">Kalpten Gelen Dualar…</div>
 
 <div class="topbar">
-  <strong>Dualarım</strong>
+  <div class="topbar-left">
+    <strong>Dualarım</strong>
+    <span class="count-badge" id="duaCount">0</span>
+    <input type="text" class="search-box" id="searchInput" placeholder="Ara...">
+  </div>
   <div class="menu-btn" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
 </div>
 
 <div class="menu" id="menu">
-
   <div class="close" onclick="toggleMenu()">x</div>
-<button onclick="toggleSurprise()" class="surprise-btn">
-  🧿 Güncelleme Modu
-</button>
-  <button class="menu-item" onclick="goVideos()">
-  📺 Dua Videoları
-</button>
+  <button onclick="toggleSurprise()" class="surprise-btn">🧿 Güncelleme Modu</button>
+  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
@@ -330,7 +318,7 @@ if ("serviceWorker" in navigator) {
   <div class="modal">
     <h3>Yeni Dua 🤍</h3>
     <input id="baslik" placeholder="Dua Başlığı">
-    <textarea id="icerik" placeholder="Duan..."></textarea>
+    <textarea id="icerik" placeholder="Duan..." rows="6"></textarea>
     <div class="btns">
       <button onclick="closeAdd()">Vazgeç</button>
       <button onclick="ekle()">Kaydet</button>
@@ -342,7 +330,8 @@ if ("serviceWorker" in navigator) {
 <div class="modal-bg" id="alertModal">
   <div class="modal">
     <h3 id="alertTitle"></h3>
-    <textarea id="alertInput" style="display:none"></textarea>
+    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom: 12px;">
+    <textarea id="alertInput" rows="8"></textarea>
     <div class="btns">
       <button onclick="alertCancel()">İptal</button>
       <button id="alertOk">Tamam</button>
@@ -359,6 +348,7 @@ const alertModal = document.getElementById("alertModal");
 const alertTitle = document.getElementById("alertTitle");
 const alertInput = document.getElementById("alertInput");
 const alertOk = document.getElementById("alertOk");
+const searchInput = document.getElementById("searchInput");
 
 function toggleMenu(){menu.classList.toggle("active")}
 function openAdd(){addModal.classList.add("active");toggleMenu()}
@@ -377,23 +367,21 @@ function toggleDark(){
 }
 if(localStorage.getItem("dark")==="true")document.body.classList.add("dark");
 
-/* ALERT SKELETON (JS’te dolduracağız) */
 function alertCancel(){
   alertModal.classList.remove("active");
-  alertInput.style.display="none";
+  alertInput.style.display="block"; // reset
 }
 
-  function goVideos() {
+function goVideos() {
   window.location.href = "duavideolari.html";
 }
+
+// Arama input dinleyicisi
+searchInput.addEventListener('input', () => {
+  window.filterDualar && window.filterDualar();
+});
 </script>
 
 <script type="module" src="firebase.js"></script>
 </body>
-
 </html>
-
-
-
-
-
