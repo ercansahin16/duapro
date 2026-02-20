@@ -77,20 +77,25 @@ async function listele() {
     tumDualar.push({ id: d.id, ...d.data() });
   });
 
-  // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
-  const arama = aramaInput.value.trim().toLowerCase();
-  console.log("Aranan:", arama);
+// Arama filtresi (büyük/küçük harf duyarsız, güvenli)
+const arama = aramaInput.value.toLowerCase().trim();
+const arama = aramaInput.value.trim().toLowerCase();
+console.log("Aranan:", arama); // Hata ayıklama
 
-  let filtrelenmis = tumDualar;
-  if (arama) {
-    filtrelenmis = tumDualar.filter(d => {
-      const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
-      const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
-      return baslik.includes(arama) || icerik.includes(arama);
-    });
-  }
+let filtrelenmis = tumDualar;
+if (arama) {
+  filtrelenmis = tumDualar.filter(d => 
+    (d.baslik && typeof d.baslik === 'string' && d.baslik.toLowerCase().includes(arama)) ||
+    (d.icerik && typeof d.icerik === 'string' && d.icerik.toLowerCase().includes(arama))
+  );
+  filtrelenmis = tumDualar.filter(d => {
+    const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
+    const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
+    return baslik.includes(arama) || icerik.includes(arama);
+  });
+}
 
-  console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
+console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
 
   // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -102,7 +107,7 @@ async function listele() {
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
 
   siirlerDiv.innerHTML = "";
-  filtrelenmis.forEach((s) => {
+  filtrelenmis.forEach((s, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("draggable", !surprise);
