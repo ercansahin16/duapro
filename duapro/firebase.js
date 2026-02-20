@@ -78,14 +78,19 @@ async function listele() {
   });
 
 // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
-const arama = aramaInput.value.toLowerCase().trim();
+const arama = aramaInput.value.trim().toLowerCase();
+console.log("Aranan:", arama); // Hata ayıklama
+
 let filtrelenmis = tumDualar;
 if (arama) {
-  filtrelenmis = tumDualar.filter(d => 
-    (d.baslik && typeof d.baslik === 'string' && d.baslik.toLowerCase().includes(arama)) ||
-    (d.icerik && typeof d.icerik === 'string' && d.icerik.toLowerCase().includes(arama))
-  );
+  filtrelenmis = tumDualar.filter(d => {
+    const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
+    const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
+    return baslik.includes(arama) || icerik.includes(arama);
+  });
 }
+
+console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
 
   // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -273,4 +278,5 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
