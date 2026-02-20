@@ -302,6 +302,45 @@
   margin: 0 auto;    /* ortalamak için */
 }
 
+    /* Arama kutusu temizle butonu */
+.clear-search {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--sub);
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.clear-search:hover {
+  background: rgba(0,0,0,0.1);
+  color: var(--text);
+}
+.clear-search.hidden {
+  display: none;
+}
+
+/* Arama modu – kartlar lavanta rengi */
+.search-mode .card {
+  background-color: #DCD0FF;  /* sessiz lavanta */
+  transition: 0.2s;
+}
+
+/* Koyu temada lavanta daha koyu olsun */
+body.dark .search-mode .card {
+  background-color: #4B3A6B;
+}
+
     /* ---------- TOAST ---------- */
     .toast {
       position: fixed;
@@ -368,7 +407,10 @@
 
 <!-- Arama ve Sayaç -->
 <div class="search-section">
-  <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+  <div style="position: relative; flex:1;">
+    <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+    <span id="clearSearch" class="clear-search" onclick="clearSearch()">✕</span>
+  </div>
   <span class="count-badge" id="duaCount">0 dua</span>
 </div>
 
@@ -404,6 +446,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
+
+  
   // Menü işlevleri
   function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
   function openAdd() {
@@ -437,4 +481,5 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
