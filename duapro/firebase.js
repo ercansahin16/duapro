@@ -96,7 +96,7 @@ window.ekle = async () => {
   document.getElementById("addModal").classList.remove("active");
 
   toast("✨ Dua kaydedildi");
-  ();
+  listele();
 };
 
 /* 📖 LİSTELE (arama + sıralama + drag & drop) */
@@ -322,6 +322,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
