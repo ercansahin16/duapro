@@ -77,24 +77,33 @@ async function listele() {
     tumDualar.push({ id: d.id, ...d.data() });
   });
 
+
+
+  function turkceNormalize(text) {
+  return text
+    .toLowerCase()
+    .replace(/ı/g, "i")
+    .replace(/İ/g, "i")
+    .replace(/ş/g, "s")
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c");
+}
+
+  
   // === GÜNCELLENMİŞ ARAMA FİLTRESİ ===
-  const arama = aramaInput.value.trim().toLowerCase();
-  console.log("Aranan (küçültülmüş):", arama);
+ const arama = turkceNormalize(aramaInput.value.trim());
 
-  let filtrelenmis = tumDualar;
-  if (arama) {
-    filtrelenmis = tumDualar.filter(d => {
-      // Verilerdeki başlık ve içeriği güvenli bir şekilde al, string değilse boş string yap
-      const baslikMetin = d.baslik ? String(d.baslik) : '';
-      const icerikMetin = d.icerik ? String(d.icerik) : '';
-      // Her ikisini de küçük harfe çevir
-      const baslikKucuk = baslikMetin.toLowerCase();
-      const icerikKucuk = icerikMetin.toLowerCase();
+let filtrelenmis = tumDualar;
+if (arama) {
+  filtrelenmis = tumDualar.filter(d => {
+    const baslik = d.baslik ? turkceNormalize(String(d.baslik)) : '';
+    const icerik = d.icerik ? turkceNormalize(String(d.icerik)) : '';
 
-      // Aranan metin bunlardan birinin içinde geçiyor mu?
-      return baslikKucuk.includes(arama) || icerikKucuk.includes(arama);
-    });
-  }
+    return baslik.includes(arama) || icerik.includes(arama);
+  });
+}
   console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
   // === ARAMA FİLTRESİ SONU ===
 
@@ -283,6 +292,7 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
 
 
 
