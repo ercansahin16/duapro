@@ -79,7 +79,7 @@ async function listele() {
 
   // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
   const arama = aramaInput.value.trim().toLowerCase();
-  console.log("Aranan:", arama); // Hata ayıklama
+  console.log("Aranan:", arama);
 
   let filtrelenmis = tumDualar;
   if (arama) {
@@ -102,7 +102,7 @@ async function listele() {
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
 
   siirlerDiv.innerHTML = "";
-  filtrelenmis.forEach((s, index) => {
+  filtrelenmis.forEach((s) => {
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("draggable", !surprise);
