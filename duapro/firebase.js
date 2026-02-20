@@ -56,6 +56,14 @@ function turkceNormalize(text) {
     .trim();
 }
 
+
+window.toggleIcerik = (el) => {
+  const pre = el.nextElementSibling;
+  const actions = pre.nextElementSibling;
+  const acik = pre.style.display === "block";
+  pre.style.display = acik ? "none" : "block";
+  if (actions) actions.style.display = acik ? "none" : "flex";
+};
 /* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
@@ -126,3 +134,4 @@ window.clearSearch = () => {
 
 /* 🚀 İlk yükleme */
 window.onload = listele;
+
