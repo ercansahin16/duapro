@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Sweet Alert 2 (admin girişi için) -->
+  <!-- Sweet Alert 2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -22,13 +22,13 @@
     }
 
     :root {
-      --bg: #F3E5AB;          /* krem arka plan */
-      --card: #FFFFFF;         /* beyaz kartlar */
-      --text: #1d1d1f;         /* koyu metin */
-      --sub: #6F86A1;          /* mavimsi gri alt metin */
-      --accent1: #ACE1AF;      /* açık yeşil (düzenle) */
-      --accent2: #F7B490;      /* şeftali (sil) */
-      --favorite: #9A81A4;     /* lavanta (favori) */
+      --bg: #F3E5AB;
+      --card: #FFFFFF;
+      --text: #1d1d1f;
+      --sub: #6F86A1;
+      --accent1: #ACE1AF;
+      --accent2: #F7B490;
+      --favorite: #9A81A4;
       --border: rgba(0,0,0,0.08);
     }
 
@@ -128,6 +128,7 @@
       background: var(--card);
       color: var(--text);
       font-size: 1rem;
+      padding-right: 40px; /* çarpı için yer */
     }
     .count-badge {
       background: var(--accent1);
@@ -139,10 +140,40 @@
       white-space: nowrap;
     }
 
+    /* Arama kutusu temizle butonu */
+    .clear-search {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--sub);
+      font-size: 1.4rem;  /* biraz büyütüldü */
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: 0.2s;
+      z-index: 2;
+    }
+    .clear-search:hover {
+      background: rgba(0,0,0,0.1);
+      color: var(--text);
+    }
+    .clear-search.hidden {
+      display: none;
+    }
+
     /* ---------- KARTLAR ---------- */
     .container {
       max-width: 900px;
-      margin: auto;
+      width: 100%;
+      margin: 0 auto;
       padding: 20px;
       flex: 1;
     }
@@ -156,9 +187,7 @@
       position: relative;
       cursor: grab;
       transition: 0.2s;
-      width: 100%;       /* container ne kadar genişse kart o kadar geniş olur */
-  /* veya */
-  flex: 1 1 auto;    /* eğer esnek bir yapı varsa */
+      width: 100%;
     }
     .card:active { cursor: grabbing; }
     .card.dragging { opacity: 0.5; }
@@ -174,6 +203,7 @@
       cursor: grab;
       padding: 10px;
       user-select: none;
+      z-index: 2;
     }
     @media (max-width: 768px) {
       .drag-handle {
@@ -183,11 +213,11 @@
     }
 
     .card-content {
-      margin-left: 50px; /* handle için yer */
+      margin-left: 50px;
     }
     .card h2 {
       font-family: "Playfair Display", serif;
-      font-size: 1.2rem;  /* küçültüldü */
+      font-size: 1.2rem;
       margin-bottom: 10px;
       cursor: pointer;
     }
@@ -206,6 +236,7 @@
       font-size: 24px;
       cursor: pointer;
       color: var(--favorite);
+      z-index: 2;
     }
     .card .share-btn {
       background: transparent;
@@ -243,6 +274,15 @@
     }
     .actions .edit { background: var(--accent1); color: var(--text); }
     .actions .del { background: var(--accent2); color: var(--text); }
+
+    /* Arama modu – kartlar lavanta */
+    .search-mode .card {
+      background-color: #DCD0FF;
+      transition: 0.2s;
+    }
+    body.dark .search-mode .card {
+      background-color: #4B3A6B;
+    }
 
     /* ---------- MODALLAR ---------- */
     .modal-bg {
@@ -297,50 +337,6 @@
       cursor: pointer;
     }
     #alertInput { display: none; }
-    #siirler {
-  max-width: 900px;  /* veya istediğin bir değer */
-  width: 100%;
-  margin: 0 auto;    /* ortalamak için */
-}
-
-    /* Arama kutusu temizle butonu */
-.clear-search {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: var(--sub);
-  font-size: 1.2rem;
-  font-weight: 600;
-  background: transparent;
-  border: none;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: 0.2s;
-}
-.clear-search:hover {
-  background: rgba(0,0,0,0.1);
-  color: var(--text);
-}
-.clear-search.hidden {
-  display: none;
-}
-
-/* Arama modu – kartlar lavanta rengi */
-.search-mode .card {
-  background-color: #DCD0FF;  /* sessiz lavanta */
-  transition: 0.2s;
-}
-
-/* Koyu temada lavanta daha koyu olsun */
-body.dark .search-mode .card {
-  background-color: #4B3A6B;
-}
 
     /* ---------- TOAST ---------- */
     .toast {
@@ -365,13 +361,11 @@ body.dark .search-mode .card {
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 600px) {
-      .card pre { font-size: 16px; }
       .search-section { flex-wrap: wrap; }
       .count-badge { width: 100%; text-align: center; }
-      .card .share-btn {
-        font-size: 0.9rem;
-        padding: 5px;
-      }
+      .card pre { font-size: 16px; }
+      .card .share-btn { font-size: 0.9rem; padding: 5px; }
+      .clear-search { font-size: 1.6rem; width: 40px; height: 40px; } /* mobilde daha büyük */
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
@@ -396,12 +390,8 @@ body.dark .search-mode .card {
 
 <div class="menu" id="menu">
   <div class="close" onclick="toggleMenu()">x</div>
-  <button onclick="toggleSurprise()" class="surprise-btn">
-    🧿 Güncelleme Modu
-  </button>
-  <button class="menu-item" onclick="goVideos()">
-    📺 Dua Videoları
-  </button>
+  <button onclick="toggleSurprise()" class="surprise-btn">🧿 Güncelleme Modu</button>
+  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
@@ -410,12 +400,12 @@ body.dark .search-mode .card {
 <div class="search-section">
   <div style="position: relative; flex:1;">
     <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
-    <span id="clearSearch" class="clear-search" onclick="clearSearch()">✕</span>
+    <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
   </div>
   <span class="count-badge" id="duaCount">0 dua</span>
 </div>
 
-<!-- Kartların listeleneceği container -->
+<!-- Kartlar -->
 <div class="container" id="siirler"></div>
 
 <!-- ADD MODAL -->
@@ -447,8 +437,6 @@ body.dark .search-mode .card {
 <div class="toast" id="toast"></div>
 
 <script>
-
-  
   // Menü işlevleri
   function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
   function openAdd() {
@@ -470,7 +458,7 @@ body.dark .search-mode .card {
   }
   if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
 
-  // Toast mesajı (geçici)
+  // Toast mesajı
   window.toast = (msg) => {
     const t = document.getElementById('toast');
     t.innerText = msg;
@@ -482,6 +470,3 @@ body.dark .search-mode .card {
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
-
-
-
