@@ -77,69 +77,20 @@ async function listele() {
     tumDualar.push({ id: d.id, ...d.data() });
   });
 
-// Arama filtresi (büyük/küçük harf duyarsız, güvenli)
-// Arama filtresi (büyük/küçük harf duyarsız, güvenli)
-const arama = aramaInput.value.trim().toLowerCase();
-console.log("Aranan:", arama); // Hata ayıklama
+  // Arama filtresi (büyük/küçük harf duyarsız, güvenli)
+  const arama = aramaInput.value.trim().toLowerCase();
+  console.log("Aranan:", arama); // Hata ayıklama
 
-let filtrelenmis = tumDualar;
-if (arama) {
-  filtrelenmis = tumDualar.filter(d => {
-    const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
-    const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
-    return baslik.includes(arama) || icerik.includes(arama);
-  });
-}
+  let filtrelenmis = tumDualar;
+  if (arama) {
+    filtrelenmis = tumDualar.filter(d => {
+      const baslik = d.baslik ? String(d.baslik).toLowerCase() : '';
+      const icerik = d.icerik ? String(d.icerik).toLowerCase() : '';
+      return baslik.includes(arama) || icerik.includes(arama);
+    });
+  }
 
-console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
-
-  // Favoriler üstte
-  filtrelenmis.sort((a, b) => {
-    if (a.favorite === b.favorite) return 0;
-    return a.favorite ? -1 : 1;
-  });
-
-  // Sayacı güncelle
-  duaCountSpan.innerText = `${filtrelenmis.length} dua`;
-
-  siirlerDiv.innerHTML = "";
-  filtrelenmis.forEach((s, index) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.setAttribute("draggable", !surprise);
-    card.dataset.id = s.id;
-
-    card.addEventListener("dragstart", handleDragStart);
-    card.addEventListener("dragover", handleDragOver);
-    card.addEventListener("drop", handleDrop);
-    card.addEventListener("dragend", handleDragEnd);
-
-    card.innerHTML = `
-      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
-      <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
-        ${s.favorite ? "⭐" : "☆"}
-      </span>
-      <div class="card-content">
-        <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
-        <pre class="icerik" style="display:none">${s.icerik}</pre>
-        ${surprise ? "" : `
-        <div class="actions">
-          <button class="edit" onclick="siirDuzenle('${s.id}', \`${s.baslik}\`, \`${s.icerik}\`)">✏️ Düzenle</button>
-          <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
-        </div>
-        `}
-        <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
-          <i class="fas fa-share-alt"></i> Paylaş
-        </button>
-      </div>
-    `;
-
-    siirlerDiv.appendChild(card);
-  });
-}
-
-
-console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
+  console.log("Bulunan sonuç sayısı:", filtrelenmis.length);
 
   // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -327,6 +278,3 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
-
-
-
