@@ -77,15 +77,15 @@ async function listele() {
     tumDualar.push({ id: d.id, ...d.data() });
   });
 
-  // Arama filtresi (büyük/küçük harf duyarsız)
-  const arama = aramaInput.value.toLowerCase().trim();
-  let filtrelenmis = tumDualar;
-  if (arama) {
-    filtrelenmis = tumDualar.filter(d =>
-      d.baslik.toLowerCase().includes(arama) ||
-      d.icerik.toLowerCase().includes(arama)
-    );
-  }
+// Arama filtresi (büyük/küçük harf duyarsız, güvenli)
+const arama = aramaInput.value.toLowerCase().trim();
+let filtrelenmis = tumDualar;
+if (arama) {
+  filtrelenmis = tumDualar.filter(d => 
+    (d.baslik && typeof d.baslik === 'string' && d.baslik.toLowerCase().includes(arama)) ||
+    (d.icerik && typeof d.icerik === 'string' && d.icerik.toLowerCase().includes(arama))
+  );
+}
 
   // Favoriler üstte
   filtrelenmis.sort((a, b) => {
@@ -273,3 +273,4 @@ document.addEventListener("click", function (e) {
     menu.classList.remove("active");
   }
 });
+
