@@ -8,7 +8,8 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy
+  orderBy,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -33,6 +34,7 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 const clearBtn = document.getElementById("clearSearch");
+const surpriseStatusSpan = document.getElementById("surpriseStatus"); // YENİ
 
 /* 🔤 TÜRKÇE NORMALİZASYON */
 function turkceNormalize(text) {
@@ -56,28 +58,59 @@ function turkceNormalize(text) {
     .trim();
 }
 
-/* 🧿 SÜRPRİZ MODU */
+/* 🧿 SÜRPRİZ MODU - SweetAlert eklendi */
 let surprise = localStorage.getItem("surprise") === "on";
 
-window.toggleSurprise = () => {
-  surprise = !surprise;
-  localStorage.setItem("surprise", surprise ? "on" : "off");
-  toast(surprise ? "🧿 Sürpriz Modu Açık" : "🧿 Sürpriz Modu Kapalı");
-  listele();
+// Surprise durumunu göster
+function updateSurpriseStatus() {
+  if (surpriseStatusSpan) {
+    surpriseStatusSpan.innerText = surprise ? "🧿 Güncelleme Modu Açık" : "🧿 Güncelleme Modu Kapalı";
+  }
+}
+
+window.toggleSurprise = async () => {
+  const result = await Swal.fire({
+    title: surprise ? 'Güncelleme Modu Kapatılsın mı?' : 'Güncelleme Modu Açılsın mı?',
+    text: surprise 
+      ? 'Mod kapatılırsa düzenleme/silme butonları görünür olacak.'
+      : 'Mod açılırsa düzenleme/silme butonları gizlenecek ve kartlar sürüklenemez olacak.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Evet',
+    cancelButtonText: 'İptal'
+  });
+
+  if (result.isConfirmed) {
+    surprise = !surprise;
+    localStorage.setItem("surprise", surprise ? "on" : "off");
+    updateSurpriseStatus();
+    toast(surprise ? "🧿 Sürpriz Modu Açık" : "🧿 Sürpriz Modu Kapalı");
+    listele();
+  }
 };
 
-/* ➕ EKLE (global olarak tanımlanmalı) */
+/* ➕ EKLE */
 window.ekle = async () => {
   if (!baslikInput.value || !icerikInput.value) {
     toast("🤍 Boş dua olmaz");
     return;
   }
 
+  // Yeni dua eklenirken sıra numarasını belirle (mevcut duaların en büyük sırası + 1)
+  const q = query(colRef, orderBy("order", "desc"));
+  const snap = await getDocs(q);
+  let maxOrder = 0;
+  snap.forEach(d => {
+    const data = d.data();
+    if (data.order && data.order > maxOrder) maxOrder = data.order;
+  });
+
   await addDoc(colRef, {
     baslik: baslikInput.value,
     icerik: icerikInput.value,
     tarih: new Date(),
-    favorite: false
+    favorite: false,
+    order: maxOrder + 1
   });
 
   baslikInput.value = "";
@@ -88,12 +121,11 @@ window.ekle = async () => {
   listele();
 };
 
-/* 📖 LİSTELE (arama, sıralama, drag & drop) */
+/* 📖 LİSTELE - order'a göre sırala */
 let tumDualar = [];
-let draggedItem = null; // drag & drop için
 
 async function listele() {
-  const q = query(colRef, orderBy("tarih", "desc"));
+  const q = query(colRef, orderBy("order", "asc")); // order'a göre sırala
   const snap = await getDocs(q);
 
   tumDualar = [];
@@ -113,31 +145,31 @@ async function listele() {
     siirlerDiv.classList.remove("search-mode");
   }
 
-  // Favoriler üstte
-  filtrelenmis.sort((a, b) => b.favorite - a.favorite);
+  // Favoriler üstte (order korunarak)
+  filtrelenmis.sort((a, b) => {
+    if (a.favorite && !b.favorite) return -1;
+    if (!a.favorite && b.favorite) return 1;
+    return a.order - b.order;
+  });
 
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
   siirlerDiv.innerHTML = "";
 
-  // Çarpı butonunun görünürlüğü
+  // Çarpı butonu görünürlüğü
   if (clearBtn) {
     if (arama) clearBtn.classList.remove("hidden");
     else clearBtn.classList.add("hidden");
   }
 
+  // Surprise durumunu güncelle
+  updateSurpriseStatus();
+
   filtrelenmis.forEach(s => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.id = s.id;
-    card.setAttribute("draggable", !surprise); // sürpriz modunda sürüklenemez
+    card.setAttribute("draggable", false); // HTML5 drag kapalı
 
-    // Drag & drop eventleri
-    //card.addEventListener("dragstart", handleDragStart);
-    //card.addEventListener("dragover", handleDragOver);
-    //card.addEventListener("drop", handleDrop);
-    //card.addEventListener("dragend", handleDragEnd);
-
-    // Kart içeriği
     card.innerHTML = `
       <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
       <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
@@ -160,6 +192,33 @@ async function listele() {
 
     siirlerDiv.appendChild(card);
   });
+
+  // SortableJS'yi başlat (sürpriz modu kapalıysa)
+  if (!surprise && typeof Sortable !== "undefined") {
+    new Sortable(siirlerDiv, {
+      animation: 150,
+      handle: '.drag-handle',
+      forceFallback: true,
+      onEnd: async function(evt) {
+        // Yeni sırayı al
+        const items = Array.from(siirlerDiv.children);
+        const updates = items.map((item, index) => {
+          const id = item.dataset.id;
+          return { id, order: index + 1 };
+        });
+
+        // Firestore'da toplu güncelleme
+        const batch = writeBatch(db);
+        updates.forEach(u => {
+          const docRef = doc(db, "siirler", u.id);
+          batch.update(docRef, { order: u.order });
+        });
+        await batch.commit();
+
+        toast("🔄 Sıralama güncellendi");
+      }
+    });
+  }
 }
 
 /* 🔽 İçerik aç/kapa */
@@ -248,58 +307,6 @@ window.paylas = (baslik, icerik) => {
   }
 };
 
-
-// Sürpriz modu kapalıysa Sortable'ı başlat
-if (!surprise) {
-  new Sortable(siirlerDiv, {
-    animation: 150,
-    handle: '.drag-handle', // sadece tutamakla sürüklenebilir
-    onEnd: function(evt) {
-      // Sıralama değişince yapılacak işler (isteğe bağlı)
-      const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
-      localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
-    }
-  });
-}
-
-/* 🖱️ DRAG & DROP FONKSİYONLARI 
-function handleDragStart(e) {
-  draggedItem = this;
-  this.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/html', this.innerHTML);
-}
-
-function handleDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-}
-
-function handleDrop(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  if (draggedItem !== this) {
-    const parent = this.parentNode;
-    const children = Array.from(parent.children);
-    const draggedIndex = children.indexOf(draggedItem);
-    const targetIndex = children.indexOf(this);
-    if (draggedIndex < targetIndex) {
-      parent.insertBefore(draggedItem, this.nextSibling);
-    } else {
-      parent.insertBefore(draggedItem, this);
-    }
-    // Sıralamayı localStorage'a kaydet (isteğe bağlı)
-    const newOrder = Array.from(parent.children).map(card => card.dataset.id);
-    localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
-  }
-  this.classList.remove('drag-over');
-}
-
-function handleDragEnd(e) {
-  this.classList.remove('dragging');
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
-}
-*/
 /* 🧹 Aramayı temizle */
 window.clearSearch = () => {
   aramaInput.value = "";
@@ -310,6 +317,7 @@ window.clearSearch = () => {
 aramaInput.addEventListener("input", listele);
 
 /* 🚀 İlk yükleme */
-window.onload = listele;
-
-
+window.onload = () => {
+  updateSurpriseStatus();
+  listele();
+};
