@@ -124,14 +124,14 @@
     }
     #searchInput {
       flex: 1;
-      padding: 12px 18px;
-      border-radius: 40px;
+      padding: 8px 10px;
+      border-radius: 30px;
       border: 2px solid var(--sub);
       background: var(--card);
       color: var(--text);
       font-size: 1rem;
       padding-right: 40px; /* çarpı için yer */
-      width: 100%; /* Div'in tamamını kapla */
+      width: 95%; /* Div'in tamamını kapla */
     }
     .count-badge {
       background: var(--accent1);
@@ -371,10 +371,10 @@
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 600px) {
       .search-section { flex-wrap: wrap; }
-      .count-badge { width: 10%; text-align: center; }
+      .count-badge { width: 20%; text-align: center; }
       .card pre { font-size: 10px; }
       .card .share-btn { font-size: 0.9rem; padding: 5px; }
-      .clear-search { font-size: 1.6rem; width: 40px; height: 40px; } /* mobilde daha büyük */
+      .clear-search { font-size: 1.2rem; width: 40px; height: 40px; } /* mobilde daha büyük */
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
@@ -409,7 +409,7 @@
 <!-- Arama ve Sayaç -->
 <div class="search-section">
   <div style="position: relative; flex:1;">
-    <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+    <input type="text" id="searchInput" placeholder="Ara...)">
     <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
   </div>
   
@@ -480,6 +480,7 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
