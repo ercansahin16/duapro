@@ -430,7 +430,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!--<div class="toast" id="toast"></div>-->
 
 <script>
   // Menü işlevleri
@@ -455,17 +455,18 @@
   if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
 
   // Toast mesajı
-  window.toast = (msg) => {
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-  };
+ // window.toast = (msg) => {
+  //  const t = document.getElementById('toast');
+  //  t.innerText = msg;
+  //  t.classList.add('show');
+  //  setTimeout(() => t.classList.remove('show'), 2500);
+//  };
 </script>
 
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
