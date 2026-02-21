@@ -248,6 +248,20 @@ window.paylas = (baslik, icerik) => {
   }
 };
 
+
+// Sürpriz modu kapalıysa Sortable'ı başlat
+if (!surprise) {
+  new Sortable(siirlerDiv, {
+    animation: 150,
+    handle: '.drag-handle', // sadece tutamakla sürüklenebilir
+    onEnd: function(evt) {
+      // Sıralama değişince yapılacak işler (isteğe bağlı)
+      const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+      localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
+    }
+  });
+}
+
 /* 🖱️ DRAG & DROP FONKSİYONLARI */
 function handleDragStart(e) {
   draggedItem = this;
@@ -297,3 +311,4 @@ aramaInput.addEventListener("input", listele);
 
 /* 🚀 İlk yükleme */
 window.onload = listele;
+
