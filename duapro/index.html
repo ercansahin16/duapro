@@ -255,6 +255,14 @@
       overflow-wrap: break-word;
       display: none;
     }
+    .card-actions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
     .card .favorite-star {
       position: absolute;
       top: 15px;
@@ -263,6 +271,7 @@
       cursor: pointer;
       color: var(--favorite);
       z-index: 2;
+       font-size: 24px;
     }
     .card .share-btn {
       background: transparent;
@@ -277,6 +286,15 @@
       padding: 5px 10px;
       border-radius: 20px;
       transition: 0.2s;
+      background: transparent;
+  border: none;
+  font-size: 24px; /* ikon boyutu */
+  cursor: pointer;
+  color: var(--favorite);
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  transition: transform 0.2s;
     }
     .card .share-btn:hover {
       background: rgba(154, 129, 164, 0.2);
@@ -508,6 +526,7 @@ document.addEventListener('click', function(event) {
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
