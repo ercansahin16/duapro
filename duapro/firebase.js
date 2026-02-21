@@ -132,10 +132,10 @@ async function listele() {
     card.setAttribute("draggable", !surprise); // sürpriz modunda sürüklenemez
 
     // Drag & drop eventleri
-    card.addEventListener("dragstart", handleDragStart);
-    card.addEventListener("dragover", handleDragOver);
-    card.addEventListener("drop", handleDrop);
-    card.addEventListener("dragend", handleDragEnd);
+    //card.addEventListener("dragstart", handleDragStart);
+    //card.addEventListener("dragover", handleDragOver);
+    //card.addEventListener("drop", handleDrop);
+    //card.addEventListener("dragend", handleDragEnd);
 
     // Kart içeriği
     card.innerHTML = `
@@ -262,7 +262,7 @@ if (!surprise) {
   });
 }
 
-/* 🖱️ DRAG & DROP FONKSİYONLARI */
+/* 🖱️ DRAG & DROP FONKSİYONLARI 
 function handleDragStart(e) {
   draggedItem = this;
   this.classList.add('dragging');
@@ -299,7 +299,7 @@ function handleDragEnd(e) {
   this.classList.remove('dragging');
   document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
 }
-
+*/
 /* 🧹 Aramayı temizle */
 window.clearSearch = () => {
   aramaInput.value = "";
@@ -311,4 +311,5 @@ aramaInput.addEventListener("input", listele);
 
 /* 🚀 İlk yükleme */
 window.onload = listele;
+
 
