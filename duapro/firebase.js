@@ -8,8 +8,7 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy,
-  writeBatch
+  orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -22,6 +21,7 @@ const firebaseConfig = {
   appId: "1:450775848659:web:ca192a401da3f887e1e626"
 };
 
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const colRef = collection(db, "siirler");
@@ -33,8 +33,8 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 const clearBtn = document.getElementById("clearSearch");
-const updateStatusSpan = document.getElementById("updateStatus");
-const updateModeBtn = document.getElementById("updateModeBtn");
+const updateToggle = document.getElementById("updateToggle");
+const themeToggle = document.getElementById("themeToggle");
 
 /* 🔤 TÜRKÇE NORMALİZASYON */
 function turkceNormalize(text) {
@@ -58,69 +58,66 @@ function turkceNormalize(text) {
     .trim();
 }
 
-/* 🛠️ SÜRPRİZ MODU */
+/* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
-function updateSurpriseUI() {
-  // Menü butonu metni
-  if (updateModeBtn) {
-    updateModeBtn.innerText = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
-  }
-  // Üstteki gösterge
-  if (updateStatusSpan) {
-    updateStatusSpan.innerText = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
-    updateStatusSpan.style.backgroundColor = surprise ? "var(--update-bg)" : "var(--accent1)";
-  }
+if (updateToggle) {
+  updateToggle.addEventListener('change', function() {
+    surprise = this.checked;
+    localStorage.setItem("surprise", surprise ? "on" : "off");
+    
+    const updateBadge = document.getElementById("updateStatus");
+    if (updateBadge) {
+      updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+    }
+    
+    window.toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
+    listele();
+  });
 }
 
-window.toggleSurprise = () => {
-  surprise = !surprise;
-  localStorage.setItem("surprise", surprise ? "on" : "off");
-  
-  // Buton metnini güncelle (hamburger menüdeki buton)
-  const updateBtn = document.getElementById("updateModeBtn");
-  if (updateBtn) {
-    updateBtn.innerHTML = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
+/* 🌙 TEMA MODU */
+function setTheme(isDark) {
+  if (isDark) {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
   }
-  
-  // Badge metnini güncelle (arama çubuğu yanındaki)
-  const updateBadge = document.getElementById("updateStatus");
-  if (updateBadge) {
-    updateBadge.innerHTML = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
-  }
-  
-  toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
-  listele();
-};
+  localStorage.setItem('dark', isDark);
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener('change', function() {
+    setTheme(this.checked);
+  });
+}
+
+window.addEventListener('load', function() {
+  if (updateToggle) updateToggle.checked = surprise;
+  const isDark = localStorage.getItem('dark') === 'true';
+  if (themeToggle) themeToggle.checked = isDark;
+  setTheme(isDark);
+});
 
 /* ➕ EKLE */
 window.ekle = async () => {
   if (!baslikInput.value || !icerikInput.value) {
-    toast("🤍 Boş dua olmaz");
+    window.toast("🤍 Boş dua olmaz");
     return;
   }
-
-  // Yeni eklenen duayı en sona eklemek için mevcut son order değerini bul
-  let maxOrder = 0;
-  const snapshot = await getDocs(query(colRef));
-  snapshot.forEach(d => {
-    const order = d.data().order || 0;
-    if (order > maxOrder) maxOrder = order;
-  });
 
   await addDoc(colRef, {
     baslik: baslikInput.value,
     icerik: icerikInput.value,
     tarih: new Date(),
-    favorite: false,
-    order: maxOrder + 1
+    favorite: false
   });
 
   baslikInput.value = "";
   icerikInput.value = "";
   document.getElementById("addModal").classList.remove("active");
 
-  toast("✨ Dua kaydedildi");
+  window.toast("✨ Dua kaydedildi");
   listele();
 };
 
@@ -128,13 +125,11 @@ window.ekle = async () => {
 let tumDualar = [];
 
 async function listele() {
-  const q = query(colRef, orderBy("order", "asc")); // order'a göre sırala
+  const q = query(colRef, orderBy("tarih", "desc"));
   const snap = await getDocs(q);
 
   tumDualar = [];
-  snap.forEach(d => {
-    tumDualar.push({ id: d.id, ...d.data() });
-  });
+  snap.forEach(d => tumDualar.push({ id: d.id, ...d.data() }));
 
   const arama = turkceNormalize(aramaInput.value);
 
@@ -150,7 +145,6 @@ async function listele() {
     siirlerDiv.classList.remove("search-mode");
   }
 
-  // Favoriler üstte (kendi içinde)
   filtrelenmis.sort((a, b) => b.favorite - a.favorite);
 
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
@@ -167,14 +161,21 @@ async function listele() {
     card.dataset.id = s.id;
     card.setAttribute("draggable", false);
 
+    // Paylaş butonu HTML'i (her kart için ayrı)
+    const shareHTML = `
+      <button class="share-btn" onclick="window.paylas('${s.baslik}', \`${s.icerik}\`)">
+        <i class="fas fa-share-alt"></i>
+      </button>
+    `;
+
     card.innerHTML = `
-      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮⋮⋮</div>
-     <div style="position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; z-index: 2;">
-  <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
-    ${s.favorite ? "❤️" : "🤍"}
-  </span>
-  ${shareHTML}
-</div>
+      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
+      <div style="position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; z-index: 2;">
+        <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
+          ${s.favorite ? "❤️" : "🤍"}
+        </span>
+        ${shareHTML}
+      </div>
       <div class="card-content">
         <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
         <pre class="icerik" style="display:none">${s.icerik}</pre>
@@ -184,32 +185,20 @@ async function listele() {
           <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
         </div>
         `}
-        <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
-  <i class="fas fa-share-alt"></i>
-</button>
       </div>
     `;
 
     siirlerDiv.appendChild(card);
   });
 
-  // Sortable'ı başlat
   if (!surprise && typeof Sortable !== "undefined") {
     new Sortable(siirlerDiv, {
       animation: 150,
       handle: '.drag-handle',
       forceFallback: true,
-      onEnd: async function(evt) {
-        // Yeni sırayı al
-        const items = Array.from(siirlerDiv.children).map(card => card.dataset.id);
-        // Firestore'da toplu güncelle
-        const batch = writeBatch(db);
-        items.forEach((id, index) => {
-          const ref = doc(db, "siirler", id);
-          batch.update(ref, { order: index });
-        });
-        await batch.commit();
-        toast("🔄 Sıra kaydedildi");
+      onEnd: function(evt) {
+        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
       }
     });
   }
@@ -235,7 +224,7 @@ window.siirSil = (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       await deleteDoc(doc(db, "siirler", id));
-      toast("💔 Dua silindi");
+      window.toast("💔 Dua silindi");
       listele();
     }
   });
@@ -260,16 +249,34 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
       icerik: alertInput.value
     });
     document.getElementById("alertModal").classList.remove("active");
-    toast("✨ Dua güncellendi");
+    window.toast("✨ Dua güncellendi");
     listele();
   };
 };
 
-/* ❤️ FAVORİ */
+
+/* ⭐ FAVORİ */
 window.favToggle = async (id, val) => {
-  await updateDoc(doc(db, "siirler", id), { favorite: !val });
-  window.toast(val ? "❤️ Favoriden çıkarıldı" : "❤️ Favorilere eklendi");
-  listele();
+  try {
+    // val string gelirse booleana çevir
+    const mevcutDeger = val === true || val === "true";
+
+    await updateDoc(doc(db, "siirler", id), {
+      favorite: !mevcutDeger
+    });
+
+    if (typeof window.toast === "function") {
+      window.toast(mevcutDeger
+        ? "💔 Favoriden çıkarıldı"
+        : "❤️ Favorilere eklendi"
+      );
+    }
+
+    listele();
+  } catch (err) {
+    console.error("Favori hatası:", err);
+    alert("Favori güncellenemedi ❌");
+  }
 };
 
 /* 📤 PAYLAŞ */
@@ -279,7 +286,7 @@ window.paylas = (baslik, icerik) => {
     navigator.share({
       title: baslik,
       text: icerik,
-    }).catch(() => toast("Paylaşım iptal edildi"));
+    }).catch(() => window.toast("Paylaşım iptal edildi"));
   } else {
     const encoded = encodeURIComponent(metin);
     const wa = `https://wa.me/?text=${encoded}`;
@@ -307,18 +314,5 @@ window.clearSearch = () => {
   listele();
 };
 
-/* 🔍 Arama olay dinleyicisi */
 aramaInput.addEventListener("input", listele);
-
-/* 🚀 İlk yükleme */
-window.onload = () => {
-  updateSurpriseUI();
-  listele();
-};
-
-
-
-
-
-
-
+window.onload = listele;
