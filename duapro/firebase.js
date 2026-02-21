@@ -1,3 +1,4 @@
+// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getFirestore,
@@ -8,8 +9,7 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy,
-  writeBatch
+  orderBy
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -34,7 +34,8 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 const clearBtn = document.getElementById("clearSearch");
-const surpriseStatusSpan = document.getElementById("surpriseStatus"); // YENİ
+const surpriseBadge = document.getElementById("surpriseBadge");
+const surpriseText = document.getElementById("surpriseText");
 
 /* 🔤 TÜRKÇE NORMALİZASYON */
 function turkceNormalize(text) {
@@ -58,33 +59,34 @@ function turkceNormalize(text) {
     .trim();
 }
 
-/* 🧿 SÜRPRİZ MODU - SweetAlert eklendi */
+/* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
-// Surprise durumunu göster
-function updateSurpriseStatus() {
-  if (surpriseStatusSpan) {
-    surpriseStatusSpan.innerText = surprise ? "🧿 Güncelleme Modu Açık" : "🧿 Güncelleme Modu Kapalı";
+// Güncelleme modu badge'ini güncelle
+function updateSurpriseBadge() {
+  if (surpriseBadge && surpriseText) {
+    surpriseBadge.style.backgroundColor = surprise ? "var(--favorite)" : "var(--sub)";
+    surpriseText.innerText = surprise ? "Güncelleme Açık" : "Güncelleme Kapalı";
   }
 }
 
 window.toggleSurprise = async () => {
   const result = await Swal.fire({
-    title: surprise ? 'Güncelleme Modu Kapatılsın mı?' : 'Güncelleme Modu Açılsın mı?',
+    title: surprise ? 'Güncelleme Modunu Kapat' : 'Güncelleme Modunu Aç',
     text: surprise 
-      ? 'Mod kapatılırsa düzenleme/silme butonları görünür olacak.'
-      : 'Mod açılırsa düzenleme/silme butonları gizlenecek ve kartlar sürüklenemez olacak.',
+      ? 'Düzenleme/silme butonları gizlenecek, kartlar sürüklenemez olacak.' 
+      : 'Düzenleme/silme butonları görünecek, kartlar sürüklenebilir olacak.',
     icon: 'question',
     showCancelButton: true,
-    confirmButtonText: 'Evet',
+    confirmButtonText: 'Evet, değiştir',
     cancelButtonText: 'İptal'
   });
 
   if (result.isConfirmed) {
     surprise = !surprise;
     localStorage.setItem("surprise", surprise ? "on" : "off");
-    updateSurpriseStatus();
-    toast(surprise ? "🧿 Sürpriz Modu Açık" : "🧿 Sürpriz Modu Kapalı");
+    toast(surprise ? "🧿 Güncelleme Modu Açık" : "🧿 Güncelleme Modu Kapalı");
+    updateSurpriseBadge();
     listele();
   }
 };
@@ -96,21 +98,11 @@ window.ekle = async () => {
     return;
   }
 
-  // Yeni dua eklenirken sıra numarasını belirle (mevcut duaların en büyük sırası + 1)
-  const q = query(colRef, orderBy("order", "desc"));
-  const snap = await getDocs(q);
-  let maxOrder = 0;
-  snap.forEach(d => {
-    const data = d.data();
-    if (data.order && data.order > maxOrder) maxOrder = data.order;
-  });
-
   await addDoc(colRef, {
     baslik: baslikInput.value,
     icerik: icerikInput.value,
     tarih: new Date(),
-    favorite: false,
-    order: maxOrder + 1
+    favorite: false
   });
 
   baslikInput.value = "";
@@ -121,11 +113,11 @@ window.ekle = async () => {
   listele();
 };
 
-/* 📖 LİSTELE - order'a göre sırala */
+/* 📖 LİSTELE */
 let tumDualar = [];
 
 async function listele() {
-  const q = query(colRef, orderBy("order", "asc")); // order'a göre sırala
+  const q = query(colRef, orderBy("tarih", "desc"));
   const snap = await getDocs(q);
 
   tumDualar = [];
@@ -145,15 +137,10 @@ async function listele() {
     siirlerDiv.classList.remove("search-mode");
   }
 
-  // Favoriler üstte (order korunarak)
-  filtrelenmis.sort((a, b) => {
-    if (a.favorite && !b.favorite) return -1;
-    if (!a.favorite && b.favorite) return 1;
-    return a.order - b.order;
-  });
+  // Favoriler üstte
+  filtrelenmis.sort((a, b) => b.favorite - a.favorite);
 
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
-  siirlerDiv.innerHTML = "";
 
   // Çarpı butonu görünürlüğü
   if (clearBtn) {
@@ -161,20 +148,23 @@ async function listele() {
     else clearBtn.classList.add("hidden");
   }
 
-  // Surprise durumunu güncelle
-  updateSurpriseStatus();
+  siirlerDiv.innerHTML = "";
 
   filtrelenmis.forEach(s => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.id = s.id;
-    card.setAttribute("draggable", false); // HTML5 drag kapalı
+    card.setAttribute("draggable", false); // Sortable kullanacağız
+
+    // Güncelleme modu açıkken rozet göster
+    const surpriseModeIndicator = surprise ? '<div class="surprise-mode-indicator"><i class="fas fa-magic"></i> Güncelleme Modu</div>' : '';
 
     card.innerHTML = `
       <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
       <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
         ${s.favorite ? "⭐" : "☆"}
       </span>
+      ${surpriseModeIndicator}
       <div class="card-content">
         <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
         <pre class="icerik" style="display:none">${s.icerik}</pre>
@@ -199,23 +189,9 @@ async function listele() {
       animation: 150,
       handle: '.drag-handle',
       forceFallback: true,
-      onEnd: async function(evt) {
-        // Yeni sırayı al
-        const items = Array.from(siirlerDiv.children);
-        const updates = items.map((item, index) => {
-          const id = item.dataset.id;
-          return { id, order: index + 1 };
-        });
-
-        // Firestore'da toplu güncelleme
-        const batch = writeBatch(db);
-        updates.forEach(u => {
-          const docRef = doc(db, "siirler", u.id);
-          batch.update(docRef, { order: u.order });
-        });
-        await batch.commit();
-
-        toast("🔄 Sıralama güncellendi");
+      onEnd: function(evt) {
+        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
       }
     });
   }
@@ -318,6 +294,6 @@ aramaInput.addEventListener("input", listele);
 
 /* 🚀 İlk yükleme */
 window.onload = () => {
-  updateSurpriseStatus();
+  updateSurpriseBadge();
   listele();
 };
