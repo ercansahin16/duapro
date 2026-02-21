@@ -64,11 +64,11 @@ let surprise = localStorage.getItem("surprise") === "on";
 function updateSurpriseUI() {
   // Menü butonu metni
   if (updateModeBtn) {
-    updateModeBtn.innerText = surprise ? "🛠️ Güncelleme Açık" : "🛠️ Güncelleme Kapalı";
+    updateModeBtn.innerText = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
   }
   // Üstteki gösterge
   if (updateStatusSpan) {
-    updateStatusSpan.innerText = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+    updateStatusSpan.innerText = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
     updateStatusSpan.style.backgroundColor = surprise ? "var(--update-bg)" : "var(--accent1)";
   }
 }
@@ -80,13 +80,13 @@ window.toggleSurprise = () => {
   // Buton metnini güncelle (hamburger menüdeki buton)
   const updateBtn = document.getElementById("updateModeBtn");
   if (updateBtn) {
-    updateBtn.innerHTML = surprise ? "🛠️ Güncelleme Açık" : "🛠️ Güncelleme Kapalı";
+    updateBtn.innerHTML = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
   }
   
   // Badge metnini güncelle (arama çubuğu yanındaki)
   const updateBadge = document.getElementById("updateStatus");
   if (updateBadge) {
-    updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+    updateBadge.innerHTML = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
   }
   
   toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
@@ -312,6 +312,7 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
 
 
