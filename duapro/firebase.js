@@ -33,6 +33,8 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 const clearBtn = document.getElementById("clearSearch");
+const updateToggle = document.getElementById("updateToggle");
+const themeToggle = document.getElementById("themeToggle");
 
 /* 🔤 TÜRKÇE NORMALİZASYON */
 function turkceNormalize(text) {
@@ -59,34 +61,50 @@ function turkceNormalize(text) {
 /* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
-// Toggle butonundan gelen değer için yardımcı fonksiyon
-window.toggleSurpriseFromToggle = (checked) => {
-  surprise = checked;
-  localStorage.setItem("surprise", surprise ? "on" : "off");
-  
-  // Buton metnini güncelle (hamburger menüdeki toggle zaten durumu yansıtır)
-  const updateBadge = document.getElementById("updateStatus");
-  if (updateBadge) {
-    updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
-  }
-  
-  window.toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
-  listele();
-};
+// Güncelleme toggle'ını dinle
+if (updateToggle) {
+  updateToggle.addEventListener('change', function() {
+    surprise = this.checked;
+    localStorage.setItem("surprise", surprise ? "on" : "off");
+    
+    const updateBadge = document.getElementById("updateStatus");
+    if (updateBadge) {
+      updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+    }
+    
+    window.toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
+    listele();
+  });
+}
 
-// Eski toggleSurprise fonksiyonu (buton tıklaması için, artık kullanılmayabilir)
-window.toggleSurprise = () => {
-  surprise = !surprise;
-  localStorage.setItem("surprise", surprise ? "on" : "off");
-  
-  const updateBadge = document.getElementById("updateStatus");
-  if (updateBadge) {
-    updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+/* 🌙 TEMA MODU */
+function setTheme(isDark) {
+  if (isDark) {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
   }
-  
-  window.toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
-  listele();
-};
+  localStorage.setItem('dark', isDark);
+}
+
+// Tema toggle'ını dinle
+if (themeToggle) {
+  themeToggle.addEventListener('change', function() {
+    setTheme(this.checked);
+  });
+}
+
+// Sayfa yüklendiğinde toggle'ların durumunu localStorage'dan ayarla
+window.addEventListener('load', function() {
+  if (updateToggle) {
+    updateToggle.checked = surprise;
+  }
+  const isDark = localStorage.getItem('dark') === 'true';
+  if (themeToggle) {
+    themeToggle.checked = isDark;
+  }
+  setTheme(isDark); // body class'ını güncelle
+});
 
 /* ➕ EKLE */
 window.ekle = async () => {
@@ -150,24 +168,26 @@ async function listele() {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.id = s.id;
-    card.setAttribute("draggable", false); // SortableJS kullanıyoruz
+    card.setAttribute("draggable", false);
 
-    // Paylaş butonu için yeni HTML (Uiverse.io'dan uyarlanmış)
+    // Orijinal paylaş butonu (kullanıcının istediği)
     const shareHTML = `
-      <div class="share-wrapper">
-        <div class="share-tooltip">Paylaş</div>
-        <button class="share-btn-new" onclick="window.paylas('${s.baslik}', \`${s.icerik}\`)">
-          <svg fill="none" viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <circle stroke="currentColor" stroke-linejoin="round" r="9" cy="12" cx="12"></circle>
-            <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 8.5 6 8.5 12C8.5 18 12 21 12 21"></path>
-            <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 15.5 6 15.5 12C15.5 18 12 21 12 21"></path>
-            <path stroke="currentColor" stroke-linejoin="round" d="M3 12H21"></path>
-            <path stroke="currentColor" stroke-linejoin="round" d="M19.5 7.5H4.5"></path>
-            <g filter="url(#filter0_d_15_556)">
-              <path stroke="currentColor" stroke-linejoin="round" d="M19.5 16.5H4.5"></path>
-            </g>
-          </svg>
-        </button>
+      <div class="share-container">
+        <div class="share-group">
+          <div class="share-tooltip">Uiverse.io <div class="tooltip-arrow"></div></div>
+          <button class="share-btn-original" onclick="window.paylas('${s.baslik}', \`${s.icerik}\`)">
+            <svg fill="none" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+              <circle stroke="currentColor" stroke-linejoin="round" r="9" cy="12" cx="12"></circle>
+              <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 8.5 6 8.5 12C8.5 18 12 21 12 21"></path>
+              <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 15.5 6 15.5 12C15.5 18 12 21 12 21"></path>
+              <path stroke="currentColor" stroke-linejoin="round" d="M3 12H21"></path>
+              <path stroke="currentColor" stroke-linejoin="round" d="M19.5 7.5H4.5"></path>
+              <g filter="url(#filter0_d_15_556)">
+                <path stroke="currentColor" stroke-linejoin="round" d="M19.5 16.5H4.5"></path>
+              </g>
+            </svg>
+          </button>
+        </div>
       </div>
     `;
 
@@ -210,11 +230,11 @@ async function listele() {
 window.toggleIcerik = (el) => {
   const pre = el.nextElementSibling;
   const actions = pre.nextElementSibling;
-  const shareWrapper = pre.nextElementSibling?.nextElementSibling; // share butonu
+  const shareContainer = pre.nextElementSibling?.nextElementSibling;
   const acik = pre.style.display === "block";
   pre.style.display = acik ? "none" : "block";
   if (actions) actions.style.display = acik ? "none" : "flex";
-  if (shareWrapper) shareWrapper.style.display = acik ? "none" : "block"; // paylaş butonu da görünür
+  if (shareContainer) shareContainer.style.display = acik ? "none" : "flex";
 };
 
 /* 🗑️ SİL */
