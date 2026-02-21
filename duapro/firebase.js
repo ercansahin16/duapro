@@ -58,17 +58,17 @@ function turkceNormalize(text) {
     .trim();
 }
 
-/* 🧿 SÜRPRİZ MODU */
+/* 🛠️ SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
 function updateSurpriseUI() {
   // Menü butonu metni
   if (updateModeBtn) {
-    updateModeBtn.innerText = surprise ? "🧿 Güncelleme Açık" : "🧿 Güncelleme Kapalı";
+    updateModeBtn.innerText = surprise ? "🛠️ Güncelleme Açık" : "🛠️ Güncelleme Kapalı";
   }
   // Üstteki gösterge
   if (updateStatusSpan) {
-    updateStatusSpan.innerText = surprise ? "🧿 Açık" : "🧿 Kapalı";
+    updateStatusSpan.innerText = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
     updateStatusSpan.style.backgroundColor = surprise ? "var(--update-bg)" : "var(--accent1)";
   }
 }
@@ -312,4 +312,5 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
