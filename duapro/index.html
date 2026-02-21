@@ -491,9 +491,21 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   };
+
+  // Menü dışına tıklanınca kapat
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('menu');
+  const menuBtn = document.querySelector('.menu-btn');
+  
+  // Eğer menü aktifse ve tıklanan yer menü değilse ve menü butonu değilse menüyü kapat
+  if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
+    menu.classList.remove('active');
+  }
+});
 </script>
 
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
