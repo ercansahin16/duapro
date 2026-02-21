@@ -168,10 +168,13 @@ async function listele() {
     card.setAttribute("draggable", false);
 
     card.innerHTML = `
-      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
-      <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
-        ${s.favorite ? "❤️" : "☆"}
-      </span>
+      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮⋮⋮</div>
+     <div style="position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; z-index: 2;">
+  <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
+    ${s.favorite ? "❤️" : "🤍"}
+  </span>
+  ${shareHTML}
+</div>
       <div class="card-content">
         <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
         <pre class="icerik" style="display:none">${s.icerik}</pre>
@@ -312,6 +315,7 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
 
 
