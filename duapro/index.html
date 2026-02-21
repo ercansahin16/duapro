@@ -52,21 +52,7 @@
       flex-direction: column;
     }
 
-    /* ---------- INTRO ---------- */
-    #intro {
-      position: fixed; inset: 0;
-      background: linear-gradient(180deg,#000,#111);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: "Playfair Display", serif;
-      font-size: 20px;
-      z-index: 20;
-      animation: fadeOut 2s ease forwards;
-      animation-delay: 2s;
-    }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+  
 
     /* ---------- TOPBAR ---------- */
     .topbar {
@@ -113,14 +99,14 @@
       cursor: pointer;
     }
 
-    /* ---------- ARAMA & SAYAÇ ---------- */
+    /* ---------- MA & SAYAÇ ---------- */
     .search-section {
       display: flex;
       align-items: center;
       gap: 12px;
       margin: 20px;
-      width: 100%; /* Konteynır tam genişlik */
-  max-width: 100%;
+      width: 90%; /* Konteynır tam genişlik */
+  max-width: 90%;
     }
     #searchInput {
       flex: 1;
@@ -130,7 +116,7 @@
       background: var(--card);
       color: var(--text);
       font-size: 1rem;
-      padding-right: 40px; /* çarpı için yer */
+      padding-right: 50px; /* çarpı için yer */
       width: 95%; /* Div'in tamamını kapla */
     }
     .count-badge {
@@ -149,7 +135,7 @@
   min-width: 0; /* Taşmayı önlemek için */
 }
 
-    /* Arama kutusu temizle butonu */
+    /* ma kutusu temizle butonu */
     .clear-search {
       position: absolute;
       right: 20px;
@@ -284,7 +270,7 @@
     .actions .edit { background: var(--accent1); color: var(--text); }
     .actions .del { background: var(--accent2); color: var(--text); }
 
-    /* Arama modu – kartlar lavanta */
+    /* ma modu – kartlar lavanta */
     .search-mode .card {
       background-color: #DCD0FF;
       transition: 0.2s;
@@ -406,10 +392,10 @@
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
-<!-- Arama ve Sayaç -->
+<!-- ma ve Sayaç -->
 <div class="search-section">
   <div style="position: relative; flex:1;">
-    <input type="text" id="searchInput" placeholder="Ara...)">
+    <input type="text" id="searchInput" placeholder="Dua arayabilirsiniz...">
     <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
   </div>
   
@@ -480,6 +466,7 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
