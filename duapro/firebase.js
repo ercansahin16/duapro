@@ -265,7 +265,7 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
 /* ❤️ FAVORİ */
 window.favToggle = async (id, val) => {
   await updateDoc(doc(db, "siirler", id), { favorite: !val });
-  toast(val ? "🕊️ Favoriden çıkarıldı" : "🕊️ Favorilere eklendi");
+  window.toast(val ? "❤️ Favoriden çıkarıldı" : "❤️ Favorilere eklendi");
   listele();
 };
 
@@ -312,6 +312,7 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
 
 
