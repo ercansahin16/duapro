@@ -254,29 +254,11 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
   };
 };
 
-
 /* ⭐ FAVORİ */
 window.favToggle = async (id, val) => {
-  try {
-    // val string gelirse booleana çevir
-    const mevcutDeger = val === true || val === "true";
-
-    await updateDoc(doc(db, "siirler", id), {
-      favorite: !mevcutDeger
-    });
-
-    if (typeof window.toast === "function") {
-      window.toast(mevcutDeger
-        ? "💔 Favoriden çıkarıldı"
-        : "❤️ Favorilere eklendi"
-      );
-    }
-
-    listele();
-  } catch (err) {
-    console.error("Favori hatası:", err);
-    alert("Favori güncellenemedi ❌");
-  }
+  await updateDoc(doc(db, "siirler", id), { favorite: !val });
+  window.toast(val ? "❤️ Favoriden çıkarıldı" : "❤️ Favorilere eklendi");
+  listele();
 };
 
 /* 📤 PAYLAŞ */
