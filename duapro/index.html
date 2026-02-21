@@ -8,13 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Sweet Alert 2 (gerekirse) -->
+  <!-- Sweet Alert 2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- SortableJS -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <style>
+    /* ... mevcut stiller (değişmedi) ... */
+    /* ---------- RESET & DEĞİŞKENLER ---------- */
     * {
       margin: 0;
       padding: 0;
@@ -90,7 +92,7 @@
       border-radius: 10px;
     }
 
-    /* MENU */
+    /* MENU - Düzenli hizalama */
     .menu {
       position: fixed;
       right: -260px; top: 0;
@@ -100,16 +102,20 @@
       transition: .4s;
       z-index: 15;
       box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
     .menu.active { right: 0; }
     .menu .close {
       text-align: right;
       font-size: 22px;
       cursor: pointer;
+      align-self: flex-end;
     }
     .menu button {
       width: 100%;
-      margin-top: 20px;
       padding: 14px;
       border-radius: 999px;
       border: none;
@@ -119,14 +125,14 @@
       cursor: pointer;
     }
 
-    /* --- YENİ: GÜNCELLEME MODU TOGGLE (Uiverse.io) --- */
+    /* Güncelleme toggle */
     .switch {
       font-size: 17px;
       position: relative;
       display: inline-block;
       width: 3.5em;
       height: 2em;
-      margin: 20px 0;
+      margin: 10px 0;
     }
     .switch input {
       opacity: 0;
@@ -165,12 +171,12 @@
       transform: translateX(1.6em);
     }
 
-    /* --- YENİ: TEMA TOGGLE (Uiverse.io) --- */
+    /* Tema toggle */
     .theme {
       display: flex;
       align-items: center;
       -webkit-tap-highlight-color: transparent;
-      margin: 20px 0;
+      margin: 10px 0;
     }
     .theme__fill,
     .theme__icon {
@@ -317,7 +323,7 @@
       .theme__toggle:focus-visible { box-shadow: 0 0 0 0.125em var(--primary); }
     }
 
-    /* --- YENİ: ARAMA ÇUBUĞU (Uiverse.io) --- */
+    /* Arama çubuğu */
     #searchInput {
       border: none;
       outline: none;
@@ -437,7 +443,7 @@
       padding: 10px;
       user-select: none;
       z-index: 2;
-      touch-action: none; /* mobil için önemli */
+      touch-action: none;
     }
     @media (max-width: 768px) {
       .drag-handle {
@@ -473,54 +479,72 @@
       z-index: 2;
     }
 
-    /* --- YENİ: PAYLAŞ BUTONU (Uiverse.io) --- */
-    .share-wrapper {
+    /* Orijinal paylaş butonu (kullanıcının istediği) */
+    .share-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .share-group {
       position: relative;
-      display: inline-block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .share-tooltip {
       position: absolute;
+      opacity: 0;
+      visibility: hidden;
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      white-space: nowrap;
+      transition: 0.2s;
+      pointer-events: none;
+      z-index: 10;
       bottom: 100%;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background: var(--card);
-      padding: 8px 12px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      white-space: nowrap;
-      font-size: 0.85rem;
-      color: var(--text);
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.2s;
-      z-index: 10;
     }
-    .share-wrapper:hover .share-tooltip {
+    .share-group:hover .share-tooltip {
       opacity: 1;
       visibility: visible;
       transform: translateX(-50%) translateY(-15px);
     }
-    .share-btn-new {
-      background: linear-gradient(145deg, var(--accent1), var(--accent2));
+    .share-btn-original {
+      background: linear-gradient(145deg, #ACE1AF, #F7B490);
       border: none;
       border-radius: 50%;
-      width: 45px;
-      height: 45px;
+      width: 50px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       transition: 0.2s;
-      margin-top: 10px;
     }
-    .share-btn-new:hover {
+    .share-btn-original:hover {
       transform: scale(1.1);
     }
-    .share-btn-new svg {
+    .share-btn-original svg {
       width: 24px;
       height: 24px;
       fill: var(--text);
+    }
+    .tooltip-arrow {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background: var(--card);
+      margin-top: -5px;
     }
 
     .actions {
@@ -628,7 +652,7 @@
       .search-section { flex-direction: column; align-items: stretch; }
       .badge-group { justify-content: space-between; }
       .card pre { font-size: 16px; }
-      .share-btn-new { width: 40px; height: 40px; }
+      .share-btn-original { width: 45px; height: 45px; }
       .clear-search { font-size: 1.6rem; width: 40px; height: 40px; }
     }
     @media (max-width: 480px) {
@@ -656,13 +680,13 @@
   <div class="close" onclick="toggleMenu()">x</div>
 
   <!-- Güncelleme Modu Toggle -->
-  <label class="switch" style="display: flex; justify-content: center;">
+  <label class="switch">
     <input type="checkbox" id="updateToggle">
     <span class="slider"></span>
   </label>
 
   <!-- Tema Toggle -->
-  <label for="theme" class="theme" style="justify-content: center;">
+  <label class="theme">
     <span class="theme__toggle-wrap">
       <input id="themeToggle" class="theme__toggle" type="checkbox" role="switch" name="theme" value="dark">
       <span class="theme__fill"></span>
@@ -674,7 +698,6 @@
 
   <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
-  <!-- Gece modu butonu kaldırıldı, yerine toggle eklendi -->
 </div>
 
 <div class="main-content">
@@ -751,27 +774,6 @@
     if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
       menu.classList.remove('active');
     }
-  });
-
-  // Güncelleme modu toggle'ını dinle
-  const updateToggle = document.getElementById('updateToggle');
-  updateToggle.addEventListener('change', function() {
-    // firebase.js'deki toggleSurprise fonksiyonunu çağır
-    window.toggleSurpriseFromToggle(this.checked);
-  });
-
-  // Tema toggle'ını dinle
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('change', function() {
-    window.toggleDarkFromToggle(this.checked);
-  });
-
-  // Sayfa yüklendiğinde toggle'ların durumunu localStorage'dan ayarla
-  window.addEventListener('load', function() {
-    const surprise = localStorage.getItem('surprise') === 'on';
-    updateToggle.checked = surprise;
-    const dark = localStorage.getItem('dark') === 'true';
-    themeToggle.checked = dark;
   });
 </script>
 
