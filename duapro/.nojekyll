@@ -1,0 +1,5 @@
+# Bilgisayarınızda proje klasöründe
+touch .nojekyll
+git add .nojekyll
+git commit -m "Disable Jekyll builds"
+git push
