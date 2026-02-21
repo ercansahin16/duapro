@@ -76,9 +76,20 @@ function updateSurpriseUI() {
 window.toggleSurprise = () => {
   surprise = !surprise;
   localStorage.setItem("surprise", surprise ? "on" : "off");
-  updateSurpriseUI();
-  // Toast ile uyarı
-  toast(surprise ? "🧿 Güncelleme Modu Açıldı" : "🧿 Güncelleme Modu Kapatıldı");
+  
+  // Buton metnini güncelle (hamburger menüdeki buton)
+  const updateBtn = document.getElementById("updateModeBtn");
+  if (updateBtn) {
+    updateBtn.innerHTML = surprise ? "🛠️ Güncelleme Açık" : "🛠️ Güncelleme Kapalı";
+  }
+  
+  // Badge metnini güncelle (arama çubuğu yanındaki)
+  const updateBadge = document.getElementById("updateStatus");
+  if (updateBadge) {
+    updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
+  }
+  
+  toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
   listele();
 };
 
@@ -301,3 +312,4 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
