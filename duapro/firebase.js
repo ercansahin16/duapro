@@ -57,6 +57,81 @@ function turkceNormalize(text) {
     .toLowerCase()
     .trim();
 }
+async function listele() {
+  const q = query(colRef, orderBy("tarih", "desc"));
+  const snap = await getDocs(q);
+
+  tumDualar = [];
+  snap.forEach(d => tumDualar.push({ id: d.id, ...d.data() }));
+
+  const arama = turkceNormalize(aramaInput.value);
+
+  let filtrelenmis = tumDualar;
+  if (arama) {
+    filtrelenmis = tumDualar.filter(d => {
+      const baslik = turkceNormalize(d.baslik);
+      const icerik = turkceNormalize(d.icerik);
+      return baslik.includes(arama) || icerik.includes(arama);
+    });
+    siirlerDiv.classList.add("search-mode");
+  } else {
+    siirlerDiv.classList.remove("search-mode");
+  }
+
+  filtrelenmis.sort((a, b) => b.favorite - a.favorite);
+
+  duaCountSpan.innerText = `${filtrelenmis.length} dua`;
+  siirlerDiv.innerHTML = "";
+
+  if (clearBtn) {
+    if (arama) clearBtn.classList.remove("hidden");
+    else clearBtn.classList.add("hidden");
+  }
+
+  filtrelenmis.forEach(s => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.id = s.id;
+    card.setAttribute("draggable", false);
+
+    // Paylaş butonu ve favori yıldızı aynı kapta, doğrudan HTML içinde
+    card.innerHTML = `
+      <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
+      <div class="card-actions">
+        <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
+          ${s.favorite ? "❤️" : "🤍"}
+        </span>
+        <button class="share-btn" onclick="window.paylas('${s.baslik}', \`${s.icerik}\`)">
+          <i class="fas fa-share-alt"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
+        <pre class="icerik" style="display:none">${s.icerik}</pre>
+        ${surprise ? "" : `
+        <div class="actions">
+          <button class="edit" onclick="siirDuzenle('${s.id}', \`${s.baslik}\`, \`${s.icerik}\`)">✏️ Düzenle</button>
+          <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
+        </div>
+        `}
+      </div>
+    `;
+
+    siirlerDiv.appendChild(card);
+  });
+
+  if (!surprise && typeof Sortable !== "undefined") {
+    new Sortable(siirlerDiv, {
+      animation: 150,
+      handle: '.drag-handle',
+      forceFallback: true,
+      onEnd: function(evt) {
+        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
+      }
+    });
+  }
+}
 
 /* 🧿 SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
@@ -298,3 +373,4 @@ window.clearSearch = () => {
 
 aramaInput.addEventListener("input", listele);
 window.onload = listele;
+
