@@ -1,172 +1,512 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arapça Gündelik Kelime Öğren - Kur'an Odaklı</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Dualarım</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Sweet Alert 2 (gerekirse) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SortableJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+      --bg: #F8F4E3;          /* krem */
+      --card: #FFFFFF;
+      --text: #1d1d1f;
+      --sub: #6F86A1;
+      --accent1: #ACE1AF;
+      --accent2: #F7B490;
+      --favorite: #ff4d4d;
+      --border: rgba(0,0,0,0.08);
+      --update-bg: #e0d5ff;   /* mor açık ton */
+    }
+
+    body.dark {
+      --bg: #0f0f12;
+      --card: #1c1c1e;
+      --text: #fff;
+      --sub: #a1a1a6;
+      --accent1: #3a3a3c;
+      --accent2: #5a3a3c;
+      --favorite: #8e7a9c;
+      --border: rgba(255,255,255,0.1);
+      --update-bg: #4B3A6B;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: .4s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* INTRO */
+    #intro {
+      position: fixed; inset: 0;
+      background: linear-gradient(180deg,#000,#111);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Playfair Display", serif;
+      font-size: 26px;
+      z-index: 20;
+      animation: fadeOut 2s ease forwards;
+      animation-delay: 2s;
+    }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .menu-btn span {
+      display: block;
+      width: 30px; height: 3px;
+      background: var(--text);
+      margin: 6px 0;
+      border-radius: 10px;
+    }
+
+    /* MENU */
+    .menu {
+      position: fixed;
+      right: -260px; top: 0;
+      width: 260px; height: 100%;
+      background: var(--card);
+      padding: 30px 20px;
+      transition: .4s;
+      z-index: 15;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    }
+    .menu.active { right: 0; }
+    .menu .close {
+      text-align: right;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .menu button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ANA İÇERİK */
+    .main-content {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ARAMA ve GÖSTERGELER */
+    .search-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 40px;
+      border: 2px solid var(--sub);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      padding-right: 40px;
+    }
+    .clear-search {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--sub);
+      font-size: 1.4rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: 0.2s;
+      z-index: 2;
+    }
+    .clear-search:hover {
+      background: rgba(0,0,0,0.1);
+      color: var(--text);
+    }
+    .clear-search.hidden {
+      display: none;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .count-badge {
+      background: var(--accent1);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .update-badge {
+      background: var(--update-bg);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* KARTLAR */
+    .container {
+      width: 100%;
+    }
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      position: relative;
+      transition: 0.2s;
+      width: 100%;
+    }
+    .card.dragging { opacity: 0.5; }
+
+    .drag-handle {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: var(--sub);
+      cursor: grab;
+      padding: 10px;
+      user-select: none;
+      z-index: 2;
+      touch-action: none; /* mobil için önemli */
+    }
+    @media (max-width: 768px) {
+      .drag-handle {
+        font-size: 32px;
+        padding: 15px;
+      }
+    }
+
+    .card-content {
+      margin-left: 50px;
+    }
+    .card h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .card pre {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      display: none;
+    }
+    .card .favorite-star {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--favorite);
+      z-index: 2;
+    }
+    .card .share-btn {
+      background: transparent;
+      border: none;
+      color: var(--favorite);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      transition: 0.2s;
+    }
+    .card .share-btn:hover {
+      background: rgba(154, 129, 164, 0.2);
+    }
+    .card .share-btn i {
+      font-size: 1.2rem;
+    }
+
+    .actions {
+      display: none;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .actions button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .actions .edit { background: var(--accent1); color: var(--text); }
+    .actions .del { background: var(--accent2); color: var(--text); }
+
+    /* Arama modu */
+    .search-mode .card {
+      background-color: #DCD0FF;
+      transition: 0.2s;
+    }
+    body.dark .search-mode .card {
+      background-color: #4B3A6B;
+    }
+
+    /* MODALLAR */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+    .modal-bg.active { display: flex; }
+    .modal {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 26px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal h3 {
+      font-family: "Playfair Display", serif;
+      margin-bottom: 20px;
+    }
+    .modal textarea, .modal input {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .modal textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+    .modal .btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal .btns button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #alertInput { display: none; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 14px 22px;
+      border-radius: 999px;
+      opacity: 0;
+      animation: toast 2.5s ease forwards;
+      z-index: 40;
+    }
+    @keyframes toast {
+      0% { opacity: 0; transform: translate(-50%, 20px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      85% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .search-section { flex-direction: column; align-items: stretch; }
+      .badge-group { justify-content: space-between; }
+      .card pre { font-size: 16px; }
+      .card .share-btn { font-size: 0.9rem; padding: 5px; }
+      .clear-search { font-size: 1.6rem; width: 40px; height: 40px; }
+    }
+    @media (max-width: 480px) {
+      .card pre { font-size: 15px; }
+      .drag-handle { font-size: 28px; }
+      .card h2 { font-size: 1.1rem; }
+    }
+    @media (max-width: 360px) {
+      .card pre { font-size: 14px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Hamburger Menu Overlay -->
-    <div class="menu-overlay" id="menuOverlay"></div>
-    
-    <!-- Hamburger Menu -->
-    <div class="hamburger-menu" id="hamburgerMenu">
-        <div class="menu-header">
-            <h3><i class="fas fa-book-quran"></i> Kur'an Arapçası</h3>
-            <button class="menu-close" id="menuClose">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="menu-items">
-            <div class="menu-section">
-			<h4><i class="fas fa-thumbtack"></i> Köşemiz💕</h4>
-                <a href="duapro/index.html" class="menu-item">
-					<i class="fas fa-hands-praying"></i>
-					<span>Bizim Dualarımız ❤️</span>
-				</a>
-				<a href="dua.html" class="menu-item">
-					<i class="fas fa-hands-praying"></i>
-					<span>Ruhuna Göre Dua Oku 💖</span>
-				</a>
-				
-				<a href="https://cocuk.diyanet.gov.tr/" target="_blank" class="menu-item">
-                    <i class="fas fa-clock"></i>
-                    <span>Diyanet Çocuk </span>
-                </a>
-				
-				
-                <h4><i class="fas fa-link"></i> Faydalı Bağlantılar</h4>
-                <a href="https://mealikerim.com" target="_blank" class="menu-item">
-                    <i class="fas fa-book-open"></i>
-                    <span>Kur'an Meali</span>
-                </a>
-                
-                <a href="https://www.diyanet.gov.tr/tr-TR/Kuran/Sayfa/default" target="_blank" class="menu-item">
-                    <i class="fas fa-mosque"></i>
-                    <span>Diyanet Sayfası</span>
-                </a>
-				<a href="https://kuran.diyanet.gov.tr/" target="_blank" class="menu-item">
-                    <i class="fas fa-mosque"></i>
-                    <span>Diyanet Kur'an Oku</span>
-                </a>
-                <a href="https://mylittleoffice.github.io/zaman/" target="_blank" class="menu-item">
-                    <i class="fas fa-clock"></i>
-                    <span>Ezan Vakitleri</span>
-                </a>
-				
-            </div>
-            
-      
-            
-            <div class="menu-section">
-                <h4><i class="fas fa-cog"></i> Ayarlar</h4>
-                <button class="menu-item" onclick="toggleTheme()">
-                    <i class="fas fa-moon"></i>
-                    <span>Tema Değiştir</span>
-                </button>
-                <button class="menu-item" onclick="resetProgress()">
-                    <i class="fas fa-redo"></i>
-                    <span>İlerlemeyi Sıfırla</span>
-                </button>
-               
-            </div>
-            
-            <div class="menu-footer">
-                <p>Her gün 5 Kur'an kelimesi öğrenerek Allah'ın kelamını anlamaya bir adım daha yaklaşın.</p>
-            </div>
-        </div>
+
+<div id="intro">Kalpten Gelen Dualar…</div>
+
+<div class="topbar">
+  <strong>Dualarım</strong>
+  <div class="menu-btn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="menu" id="menu">
+  <div class="close" onclick="toggleMenu()">x</div>
+  <button id="updateModeBtn" onclick="toggleSurprise()">🛠️ Güncelleme Kapalı</button>
+  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
+  <button onclick="openAdd()">➕ Yeni Dua</button>
+  <button onclick="toggleDark()">🌙 Gece Modu</button>
+</div>
+
+<div class="main-content">
+  <!-- Arama ve sayaç grubu -->
+  <div class="search-section">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+      <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
     </div>
-    
-    <header>
-        <div class="header-top">
-            <button class="hamburger-btn" id="hamburgerBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1><i class="fas fa-book-quran"></i> Kur'an Arapçası Öğren</h1>
-        </div>
-        
-        <p class="subtitle">Her gün 5 Kur'an kelimesi öğrenin, İlahi Kelam'ı anlayın</p>
-        
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
-        </div>
-        
-        <div class="controls">
-            <div class="date-selector">
-                <button class="btn" id="prevDay"><i class="fas fa-chevron-left"></i> Önceki Gün</button>
-                <span id="currentDate">Gün 1</span>
-                <button class="btn" id="nextDay">Sonraki Gün <i class="fas fa-chevron-right"></i></button>
-            </div>
-            
-            <div class="stats">
-                <span id="stats">Toplam <span id="totalWords">0</span> kelime öğrenildi</span>
-            </div>
-            
-            <div class="theme-toggle">
-                <button class="btn btn-outline" id="themeToggle">
-                    <i class="fas fa-moon"></i> Tema Değiştir
-                </button>
-            </div>
-        </div>
-    </header>
-    
-    
-    <main>
-        <section class="today-words">
-            <h2 class="section-title"><i class="fas fa-calendar-day"></i> Bugünün Kelimeleri</h2>
-            <div class="words-grid" id="todayWords">
-                <!-- Kelimeler JavaScript ile buraya eklenecek -->
-            </div>
-        </section>
-        
-        <section class="learned-words">
-            <h2 class="section-title"><i class="fas fa-history"></i> Öğrenilen Kelimeler</h2>
-            <div id="learnedWordsList">
-                <!-- Öğrenilen kelimeler JavaScript ile buraya eklenecek -->
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="motivation-section">
-            <div class="motivation-item">
-                <i class="fas fa-star"></i>
-                <p class="motivation-text">“İlim maldan hayırlıdır; ilim seni korur, sense malı korursun. Mal, vermekle azalır, ilim öğretmekle çoğalır.”</p>
-                <p class="motivation-source">Hz. Ali (r.a.)</p>
-            </div>
-            
-            <div class="motivation-item">
-                <i class="fas fa-star"></i>
-                <p class="motivation-text">"Hiç bilenlerle bilmeyenler bir olur mu?"</p>
-                <p class="motivation-source">Zümer Suresi, 9. Ayet</p>
-            </div>
-            
-            <div class="motivation-item">
-                <i class="fas fa-star"></i>
-                <p class="motivation-text">"Allah, içinizden iman edenlerin ve kendilerine ilim verilenlerin derecelerini yükseltir."</p>
-                <p class="motivation-source">Mücadele Suresi, 11. Ayet</p>
-            </div>
-        </div>
-        
-        <div class="gift-message">
-            <!-- <div class="heart">i❤️E</div>-->
-            <p class="gift-text">Sevgili İlknur Hanım'a Hediye Olsun</p>
-            <p class="prayer">Allah bizden razı olsun, ilim öğrenme yolunda muvaffak eylesin.</p>
-            
-        </div>
-    </footer>
+    <div class="badge-group">
+      <span class="count-badge" id="duaCount">0 dua</span>
+      <span class="update-badge" id="updateStatus">🛠️ Kapalı</span>
+    </div>
+  </div>
 
-    <!-- Kelime veritabanını yükle -->
-    <script src="words-database.js"></script>
-    <!-- Ana JavaScript dosyası -->
-    <script src="app.js"></script>
+  <!-- Kartların listeleneceği container -->
+  <div class="container" id="siirler"></div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <h3>Yeni Dua 🤍</h3>
+    <input id="baslik" placeholder="Dua Başlığı">
+    <textarea id="icerik" placeholder="Duan..."></textarea>
+    <div class="btns">
+      <button onclick="closeAdd()">Vazgeç</button>
+      <button onclick="ekle()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM / EDIT MODAL -->
+<div class="modal-bg" id="alertModal">
+  <div class="modal">
+    <h3 id="alertTitle"></h3>
+    <input type="text" id="alertBaslik" placeholder="Dua Başlığı" style="margin-bottom:12px; display:none;">
+    <textarea id="alertInput" style="display:none"></textarea>
+    <div class="btns">
+      <button onclick="alertCancel()">İptal</button>
+      <button id="alertOk">Tamam</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
+  function openAdd() {
+    document.getElementById('addModal').classList.add('active');
+    toggleMenu();
+  }
+  function closeAdd() { document.getElementById('addModal').classList.remove('active'); }
+  function alertCancel() {
+    document.getElementById('alertModal').classList.remove('active');
+    document.getElementById('alertInput').style.display = 'none';
+    document.getElementById('alertBaslik').style.display = 'none';
+  }
+  function goVideos() { window.location.href = "duavideolari.html"; }
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('dark', document.body.classList.contains('dark'));
+  }
+  if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
+
+  window.toast = (msg) => {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  };
+
+  // Menü dışına tıklanınca kapat
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('menu');
+  const menuBtn = document.querySelector('.menu-btn');
+  
+  // Eğer menü aktifse ve tıklanan yer menü değilse ve menü butonu değilse menüyü kapat
+  if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
+    menu.classList.remove('active');
+  }
+});
+</script>
+
+<script type="module" src="firebase.js"></script>
 </body>
-
 </html>
-
 
 
 
