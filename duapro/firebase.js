@@ -8,7 +8,8 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy
+  orderBy,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -21,7 +22,6 @@ const firebaseConfig = {
   appId: "1:450775848659:web:ca192a401da3f887e1e626"
 };
 
-/* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const colRef = collection(db, "siirler");
@@ -33,8 +33,8 @@ const icerikInput = document.getElementById("icerik");
 const aramaInput = document.getElementById("searchInput");
 const duaCountSpan = document.getElementById("duaCount");
 const clearBtn = document.getElementById("clearSearch");
-const updateToggle = document.getElementById("updateToggle");
-const themeToggle = document.getElementById("themeToggle");
+const updateStatusSpan = document.getElementById("updateStatus");
+const updateModeBtn = document.getElementById("updateModeBtn");
 
 /* 🔤 TÜRKÇE NORMALİZASYON */
 function turkceNormalize(text) {
@@ -58,73 +58,69 @@ function turkceNormalize(text) {
     .trim();
 }
 
-/* 🧿 SÜRPRİZ MODU */
+/* 🛠️ SÜRPRİZ MODU */
 let surprise = localStorage.getItem("surprise") === "on";
 
-// Güncelleme toggle'ını dinle
-if (updateToggle) {
-  updateToggle.addEventListener('change', function() {
-    surprise = this.checked;
-    localStorage.setItem("surprise", surprise ? "on" : "off");
-    
-    const updateBadge = document.getElementById("updateStatus");
-    if (updateBadge) {
-      updateBadge.innerHTML = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
-    }
-    
-    window.toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
-    listele();
-  });
+function updateSurpriseUI() {
+  // Menü butonu metni
+  if (updateModeBtn) {
+    updateModeBtn.innerText = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
+  }
+  // Üstteki gösterge
+  if (updateStatusSpan) {
+    updateStatusSpan.innerText = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
+    updateStatusSpan.style.backgroundColor = surprise ? "var(--update-bg)" : "var(--accent1)";
+  }
 }
 
-/* 🌙 TEMA MODU */
-function setTheme(isDark) {
-  if (isDark) {
-    document.body.classList.add('dark');
-  } else {
-    document.body.classList.remove('dark');
+window.toggleSurprise = () => {
+  surprise = !surprise;
+  localStorage.setItem("surprise", surprise ? "on" : "off");
+  
+  // Buton metnini güncelle (hamburger menüdeki buton)
+  const updateBtn = document.getElementById("updateModeBtn");
+  if (updateBtn) {
+    updateBtn.innerHTML = surprise ? "🛠️ Güncelleme Kapalı" : "🛠️ Güncelleme Açık";
   }
-  localStorage.setItem('dark', isDark);
-}
-
-// Tema toggle'ını dinle
-if (themeToggle) {
-  themeToggle.addEventListener('change', function() {
-    setTheme(this.checked);
-  });
-}
-
-// Sayfa yüklendiğinde toggle'ların durumunu localStorage'dan ayarla
-window.addEventListener('load', function() {
-  if (updateToggle) {
-    updateToggle.checked = surprise;
+  
+  // Badge metnini güncelle (arama çubuğu yanındaki)
+  const updateBadge = document.getElementById("updateStatus");
+  if (updateBadge) {
+    updateBadge.innerHTML = surprise ? "🛠️ Kapalı" : "🛠️ Açık";
   }
-  const isDark = localStorage.getItem('dark') === 'true';
-  if (themeToggle) {
-    themeToggle.checked = isDark;
-  }
-  setTheme(isDark); // body class'ını güncelle
-});
+  
+  toast(surprise ? "🛠️ Güncelleme modu açıldı" : "🛠️ Güncelleme modu kapatıldı");
+  listele();
+};
 
 /* ➕ EKLE */
 window.ekle = async () => {
   if (!baslikInput.value || !icerikInput.value) {
-    window.toast("🤍 Boş dua olmaz");
+    toast("🤍 Boş dua olmaz");
     return;
   }
+
+  // Yeni eklenen duayı en sona eklemek için mevcut son order değerini bul
+  let maxOrder = 0;
+  const snapshot = await getDocs(query(colRef));
+  snapshot.forEach(d => {
+    const order = d.data().order || 0;
+    if (order > maxOrder) maxOrder = order;
+  });
 
   await addDoc(colRef, {
     baslik: baslikInput.value,
     icerik: icerikInput.value,
     tarih: new Date(),
-    favorite: false
+    favorite: false,
+    order: maxOrder + 1
   });
 
   baslikInput.value = "";
   icerikInput.value = "";
   document.getElementById("addModal").classList.remove("active");
 
-  window.toast("✨ Dua kaydedildi");
+  toast("✨ Dua kaydedildi");
   listele();
 };
 
@@ -132,11 +128,13 @@ window.ekle = async () => {
 let tumDualar = [];
 
 async function listele() {
-  const q = query(colRef, orderBy("tarih", "desc"));
+  const q = query(colRef, orderBy("order", "asc")); // order'a göre sırala
   const snap = await getDocs(q);
 
   tumDualar = [];
-  snap.forEach(d => tumDualar.push({ id: d.id, ...d.data() }));
+  snap.forEach(d => {
+    tumDualar.push({ id: d.id, ...d.data() });
+  });
 
   const arama = turkceNormalize(aramaInput.value);
 
@@ -152,13 +150,12 @@ async function listele() {
     siirlerDiv.classList.remove("search-mode");
   }
 
-  // Favoriler üstte
+  // Favoriler üstte (kendi içinde)
   filtrelenmis.sort((a, b) => b.favorite - a.favorite);
 
   duaCountSpan.innerText = `${filtrelenmis.length} dua`;
   siirlerDiv.innerHTML = "";
 
-  // Çarpı butonu görünürlüğü
   if (clearBtn) {
     if (arama) clearBtn.classList.remove("hidden");
     else clearBtn.classList.add("hidden");
@@ -170,31 +167,10 @@ async function listele() {
     card.dataset.id = s.id;
     card.setAttribute("draggable", false);
 
-    // Orijinal paylaş butonu (kullanıcının istediği)
-    const shareHTML = `
-      <div class="share-container">
-        <div class="share-group">
-          <div class="share-tooltip">Uiverse.io <div class="tooltip-arrow"></div></div>
-          <button class="share-btn-original" onclick="window.paylas('${s.baslik}', \`${s.icerik}\`)">
-            <svg fill="none" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-              <circle stroke="currentColor" stroke-linejoin="round" r="9" cy="12" cx="12"></circle>
-              <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 8.5 6 8.5 12C8.5 18 12 21 12 21"></path>
-              <path stroke="currentColor" stroke-linejoin="round" d="M12 3C12 3 15.5 6 15.5 12C15.5 18 12 21 12 21"></path>
-              <path stroke="currentColor" stroke-linejoin="round" d="M3 12H21"></path>
-              <path stroke="currentColor" stroke-linejoin="round" d="M19.5 7.5H4.5"></path>
-              <g filter="url(#filter0_d_15_556)">
-                <path stroke="currentColor" stroke-linejoin="round" d="M19.5 16.5H4.5"></path>
-              </g>
-            </svg>
-          </button>
-        </div>
-      </div>
-    `;
-
     card.innerHTML = `
       <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
       <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
-        ${s.favorite ? "❤️" : "🤍"}
+        ${s.favorite ? "❤️" : "☆"}
       </span>
       <div class="card-content">
         <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
@@ -205,22 +181,32 @@ async function listele() {
           <button class="del" onclick="siirSil('${s.id}')">🗑️ Sil</button>
         </div>
         `}
-        ${shareHTML}
+        <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
+          <i class="fas fa-share-alt"></i> Paylaş
+        </button>
       </div>
     `;
 
     siirlerDiv.appendChild(card);
   });
 
-  // SortableJS'yi başlat (sürpriz modu kapalıysa)
+  // Sortable'ı başlat
   if (!surprise && typeof Sortable !== "undefined") {
     new Sortable(siirlerDiv, {
       animation: 150,
       handle: '.drag-handle',
       forceFallback: true,
-      onEnd: function(evt) {
-        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
-        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
+      onEnd: async function(evt) {
+        // Yeni sırayı al
+        const items = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+        // Firestore'da toplu güncelle
+        const batch = writeBatch(db);
+        items.forEach((id, index) => {
+          const ref = doc(db, "siirler", id);
+          batch.update(ref, { order: index });
+        });
+        await batch.commit();
+        toast("🔄 Sıra kaydedildi");
       }
     });
   }
@@ -230,11 +216,9 @@ async function listele() {
 window.toggleIcerik = (el) => {
   const pre = el.nextElementSibling;
   const actions = pre.nextElementSibling;
-  const shareContainer = pre.nextElementSibling?.nextElementSibling;
   const acik = pre.style.display === "block";
   pre.style.display = acik ? "none" : "block";
   if (actions) actions.style.display = acik ? "none" : "flex";
-  if (shareContainer) shareContainer.style.display = acik ? "none" : "flex";
 };
 
 /* 🗑️ SİL */
@@ -248,7 +232,7 @@ window.siirSil = (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       await deleteDoc(doc(db, "siirler", id));
-      window.toast("💔 Dua silindi");
+      toast("💔 Dua silindi");
       listele();
     }
   });
@@ -273,12 +257,12 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
       icerik: alertInput.value
     });
     document.getElementById("alertModal").classList.remove("active");
-    window.toast("✨ Dua güncellendi");
+    toast("✨ Dua güncellendi");
     listele();
   };
 };
 
-/* ⭐ FAVORİ */
+/* ❤️ FAVORİ */
 window.favToggle = async (id, val) => {
   await updateDoc(doc(db, "siirler", id), { favorite: !val });
   window.toast(val ? "❤️ Favoriden çıkarıldı" : "❤️ Favorilere eklendi");
@@ -292,7 +276,7 @@ window.paylas = (baslik, icerik) => {
     navigator.share({
       title: baslik,
       text: icerik,
-    }).catch(() => window.toast("Paylaşım iptal edildi"));
+    }).catch(() => toast("Paylaşım iptal edildi"));
   } else {
     const encoded = encodeURIComponent(metin);
     const wa = `https://wa.me/?text=${encoded}`;
@@ -324,4 +308,12 @@ window.clearSearch = () => {
 aramaInput.addEventListener("input", listele);
 
 /* 🚀 İlk yükleme */
-window.onload = listele;
+window.onload = () => {
+  updateSurpriseUI();
+  listele();
+};
+
+
+
+
+
