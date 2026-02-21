@@ -170,7 +170,7 @@ async function listele() {
     card.innerHTML = `
       <div class="drag-handle" ${surprise ? 'style="display:none"' : ''}>⋮⋮</div>
       <span class="favorite-star" onclick="favToggle('${s.id}', ${s.favorite})">
-        ${s.favorite ? "⭐" : "☆"}
+        ${s.favorite ? "❤️" : "☆"}
       </span>
       <div class="card-content">
         <h2 onclick="toggleIcerik(this)">${s.baslik}</h2>
@@ -262,7 +262,7 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
   };
 };
 
-/* ⭐ FAVORİ */
+/* ❤️ FAVORİ */
 window.favToggle = async (id, val) => {
   await updateDoc(doc(db, "siirler", id), { favorite: !val });
   toast(val ? "🕊️ Favoriden çıkarıldı" : "🕊️ Favorilere eklendi");
@@ -312,5 +312,6 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
 
