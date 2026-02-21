@@ -10,10 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Sweet Alert 2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SortableJS (mobil için) -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <!--SortableJS kütüphanesini -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <style>
     /* ---------- RESET & DEĞİŞKENLER ---------- */
     * {
@@ -24,7 +24,7 @@
     }
 
     :root {
-      --bg: #F7B490;
+      --bg: #F3E5AB;
       --card: #FFFFFF;
       --text: #1d1d1f;
       --sub: #6F86A1;
@@ -54,7 +54,21 @@
       flex-direction: column;
     }
 
-  
+    /* ---------- INTRO ---------- */
+    #intro {
+      position: fixed; inset: 0;
+      background: linear-gradient(180deg,#000,#111);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Playfair Display", serif;
+      font-size: 26px;
+      z-index: 20;
+      animation: fadeOut 2s ease forwards;
+      animation-delay: 2s;
+    }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     /* ---------- TOPBAR ---------- */
     .topbar {
@@ -101,25 +115,29 @@
       cursor: pointer;
     }
 
-    /* ---------- MA & SAYAÇ ---------- */
+    /* ---------- ARAMA, SAYAÇ ve DURUM ---------- */
     .search-section {
       display: flex;
       align-items: center;
       gap: 12px;
       margin: 20px;
-      width: 90%; /* Konteynır tam genişlik */
-  max-width: 90%;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
     }
     #searchInput {
-      flex: 1;
-      padding: 8px 10px;
-      border-radius: 30px;
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 40px;
       border: 2px solid var(--sub);
       background: var(--card);
       color: var(--text);
       font-size: 1rem;
-      padding-right: 50px; /* çarpı için yer */
-      width: 95%; /* Div'in tamamını kapla */
+      padding-right: 40px;
     }
     .count-badge {
       background: var(--accent1);
@@ -129,23 +147,26 @@
       font-size: 0.9rem;
       font-weight: 600;
       white-space: nowrap;
-      flex-shrink: 0; /* Buton küçülmesin */
     }
-    .search-section > div:first-child {
-  position: relative;
-  flex: 1; /* Input'un bulunduğu div esneyebilsin */
-  min-width: 0; /* Taşmayı önlemek için */
-}
+    .surprise-badge {
+      background: var(--favorite);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
 
-    /* ma kutusu temizle butonu */
+    /* Arama kutusu temizle butonu */
     .clear-search {
       position: absolute;
-      right: 20px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
       color: var(--sub);
-      font-size: 1.4rem;  /* biraz büyütüldü */
+      font-size: 1.4rem;
       font-weight: 600;
       background: transparent;
       border: none;
@@ -182,14 +203,12 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.05);
       border: 1px solid var(--border);
       position: relative;
-      cursor: grab;
       transition: 0.2s;
       width: 100%;
     }
-    .card:active { cursor: grabbing; }
     .card.dragging { opacity: 0.5; }
 
-    /* Drag handle */
+    /* Drag handle - mobilde touch-action eklendi */
     .drag-handle {
       position: absolute;
       left: 10px;
@@ -207,7 +226,6 @@
       .drag-handle {
         font-size: 32px;
         padding: 15px;
-        touch-action: none; /* mobilde sürüklemeyi etkinleştir */
       }
     }
 
@@ -274,7 +292,7 @@
     .actions .edit { background: var(--accent1); color: var(--text); }
     .actions .del { background: var(--accent2); color: var(--text); }
 
-    /* ma modu – kartlar lavanta */
+    /* Arama modu – kartlar lavanta */
     .search-mode .card {
       background-color: #DCD0FF;
       transition: 0.2s;
@@ -361,14 +379,14 @@
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 600px) {
       .search-section { flex-wrap: wrap; }
-      .count-badge { width: 20%; text-align: center; }
-      .card pre { font-size: 10px; }
+      .count-badge, .surprise-badge { width: 100%; text-align: center; }
+      .card pre { font-size: 16px; }
       .card .share-btn { font-size: 0.9rem; padding: 5px; }
-      .clear-search { font-size: 1.2rem; width: 40px; height: 40px; } /* mobilde daha büyük */
+      .clear-search { font-size: 1.6rem; width: 40px; height: 40px; }
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
-      .drag-handle { font-size: 28px;touch-action: none; /* mobilde sürüklemeyi etkinleştir */ }
+      .drag-handle { font-size: 28px; }
       .card h2 { font-size: 1.1rem; }
     }
     @media (max-width: 360px) {
@@ -378,11 +396,10 @@
 </head>
 <body>
 
-<!--<div id="intro">Kalpten Gelen Dualar</div>-->
+<div id="intro">Kalpten Gelen Dualar…</div>
 
 <div class="topbar">
   <strong>Dualarım</strong>
-  <span class="count-badge" id="duaCount">0 dua</span>
   <div class="menu-btn" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
@@ -390,19 +407,20 @@
 
 <div class="menu" id="menu">
   <div class="close" onclick="toggleMenu()">x</div>
-  <button onclick="toggleSurprise()" class="surprise-btn"> Güncelleme Modu</button>
-  <button class="menu-item" onclick="goVideos()">📺 Media</button>
+  <button onclick="toggleSurprise()" class="surprise-btn">🧿 Güncelleme Modu</button>
+  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
-<!-- ma ve Sayaç -->
+<!-- Arama, Sayaç ve Güncelleme Modu Durumu -->
 <div class="search-section">
-  <div style="position: relative; flex:1;">
-    <input type="text" id="searchInput" placeholder="Dua arayabilirsiniz...">
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
     <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
   </div>
-  
+  <span class="count-badge" id="duaCount">0 dua</span>
+  <span class="surprise-badge" id="surpriseStatus">🧿 Güncelleme Modu Kapalı</span>
 </div>
 
 <!-- Kartlar -->
@@ -434,7 +452,7 @@
   </div>
 </div>
 
-<!--<div class="toast" id="toast"></div>-->
+<div class="toast" id="toast"></div>
 
 <script>
   // Menü işlevleri
@@ -459,25 +477,14 @@
   if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
 
   // Toast mesajı
- // window.toast = (msg) => {
-  //  const t = document.getElementById('toast');
-  //  t.innerText = msg;
-  //  t.classList.add('show');
-  //  setTimeout(() => t.classList.remove('show'), 2500);
-//  };
+  window.toast = (msg) => {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  };
 </script>
 
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
