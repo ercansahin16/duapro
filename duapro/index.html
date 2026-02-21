@@ -201,11 +201,13 @@
       padding: 10px;
       user-select: none;
       z-index: 2;
+      touch-action: none; /* mobilde sürüklemeyi etkinleştir */
     }
     @media (max-width: 768px) {
       .drag-handle {
         font-size: 32px;
         padding: 15px;
+        touch-action: none; /* mobilde sürüklemeyi etkinleştir */
       }
     }
 
@@ -366,7 +368,7 @@
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
-      .drag-handle { font-size: 28px; }
+      .drag-handle { font-size: 28px;touch-action: none; /* mobilde sürüklemeyi etkinleştir */ }
       .card h2 { font-size: 1.1rem; }
     }
     @media (max-width: 360px) {
@@ -468,6 +470,7 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
