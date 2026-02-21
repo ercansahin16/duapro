@@ -182,8 +182,8 @@ async function listele() {
         </div>
         `}
         <button class="share-btn" onclick="paylas('${s.baslik}', \`${s.icerik}\`)">
-          <i class="fas fa-share-alt"></i> Paylaş
-        </button>
+  <i class="fas fa-share-alt"></i>
+</button>
       </div>
     `;
 
@@ -312,6 +312,7 @@ window.onload = () => {
   updateSurpriseUI();
   listele();
 };
+
 
 
 
