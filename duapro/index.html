@@ -12,6 +12,8 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <!--SortableJS kütüphanesini -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <style>
     /* ---------- RESET & DEĞİŞKENLER ---------- */
     * {
@@ -386,8 +388,8 @@
 
 <div class="menu" id="menu">
   <div class="close" onclick="toggleMenu()">x</div>
-  <button onclick="toggleSurprise()" class="surprise-btn">🧿 Güncelleme Modu</button>
-  <button class="menu-item" onclick="goVideos()">📺 Dua Videoları</button>
+  <button onclick="toggleSurprise()" class="surprise-btn"> Güncelleme Modu</button>
+  <button class="menu-item" onclick="goVideos()">📺 Media</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
@@ -466,6 +468,7 @@
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
+
 
 
 
