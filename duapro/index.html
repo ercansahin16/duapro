@@ -24,13 +24,13 @@
     }
 
     :root {
-      --bg: #F3E5AB;
-      --card: #FFFFFF;
-      --text: #1d1d1f;
-      --sub: #6F86A1;
-      --accent1: #ACE1AF;
-      --accent2: #F7B490;
-      --favorite: #9A81A4;
+      --bg: #FAF0E6;          /* krem arka plan */
+      --card: #FFFFFF;         /* beyaz kartlar */
+      --text: #1d1d1f;         /* koyu metin */
+      --sub: #6F86A1;          /* mavimsi gri alt metin */
+      --accent1: #ACE1AF;      /* açık yeşil (düzenle) */
+      --accent2: #F7B490;      /* şeftali (sil) */
+      --favorite: #9A81A4;     /* lavanta (favori) */
       --border: rgba(0,0,0,0.08);
     }
 
@@ -115,19 +115,27 @@
       cursor: pointer;
     }
 
-    /* ---------- ARAMA, SAYAÇ ve DURUM ---------- */
+    /* ---------- ARAMA & DURUM BİLGİSİ (web/mobil uyumlu) ---------- */
+    .top-bar {
+      max-width: 900px;
+      width: 100%;
+      margin: 20px auto 10px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .search-section {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 20px;
       width: 100%;
-      flex-wrap: wrap;
     }
     .search-wrapper {
       position: relative;
       flex: 1;
-      min-width: 200px;
+      min-width: 0;
     }
     #searchInput {
       width: 100%;
@@ -138,24 +146,6 @@
       color: var(--text);
       font-size: 1rem;
       padding-right: 40px;
-    }
-    .count-badge {
-      background: var(--accent1);
-      color: var(--text);
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .surprise-badge {
-      background: var(--favorite);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      white-space: nowrap;
     }
 
     /* Arama kutusu temizle butonu */
@@ -187,12 +177,44 @@
       display: none;
     }
 
+    /* Dua sayısı ve güncelleme modu badge'i */
+    .status-badges {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .count-badge {
+      background: var(--accent1);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .surprise-badge {
+      background: var(--favorite);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .surprise-badge i {
+      font-size: 1rem;
+    }
+
     /* ---------- KARTLAR ---------- */
     .container {
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 20px 20px;
       flex: 1;
     }
     .card {
@@ -208,7 +230,7 @@
     }
     .card.dragging { opacity: 0.5; }
 
-    /* Drag handle - mobilde touch-action eklendi */
+    /* Drag handle */
     .drag-handle {
       position: absolute;
       left: 10px;
@@ -301,6 +323,19 @@
       background-color: #4B3A6B;
     }
 
+    /* Güncelleme modu rozeti kartta */
+    .surprise-mode-indicator {
+      position: absolute;
+      top: 10px;
+      left: 50px;
+      background: var(--favorite);
+      color: white;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
     /* ---------- MODALLAR ---------- */
     .modal-bg {
       position: fixed;
@@ -376,10 +411,23 @@
       100% { opacity: 0; }
     }
 
-    /* ---------- RESPONSIVE ---------- */
+    /* ---------- RESPONSIVE (mobil düzenlemeler) ---------- */
     @media (max-width: 600px) {
-      .search-section { flex-wrap: wrap; }
-      .count-badge, .surprise-badge { width: 100%; text-align: center; }
+      .top-bar {
+        margin: 15px auto 5px;
+        padding: 0 15px;
+      }
+      .search-section {
+        width: 100%;
+      }
+      .status-badges {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .count-badge, .surprise-badge {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
       .card pre { font-size: 16px; }
       .card .share-btn { font-size: 0.9rem; padding: 5px; }
       .clear-search { font-size: 1.6rem; width: 40px; height: 40px; }
@@ -413,14 +461,20 @@
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
-<!-- Arama, Sayaç ve Güncelleme Modu Durumu -->
-<div class="search-section">
-  <div class="search-wrapper">
-    <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
-    <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
+<!-- Üst Bilgi Alanı (Arama, Dua Sayısı, Güncelleme Modu) -->
+<div class="top-bar">
+  <div class="search-section">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
+      <span id="clearSearch" class="clear-search hidden" onclick="clearSearch()">✕</span>
+    </div>
   </div>
-  <span class="count-badge" id="duaCount">0 dua</span>
-  <span class="surprise-badge" id="surpriseStatus">🧿 Güncelleme Modu Kapalı</span>
+  <div class="status-badges">
+    <span class="count-badge" id="duaCount">0 dua</span>
+    <span class="surprise-badge" id="surpriseBadge">
+      <i class="fas fa-magic"></i> <span id="surpriseText">Güncelleme Kapalı</span>
+    </span>
+  </div>
 </div>
 
 <!-- Kartlar -->
