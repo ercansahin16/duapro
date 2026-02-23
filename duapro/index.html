@@ -7,10 +7,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Sweet Alert 2 (gerekirse) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- SortableJS -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -24,7 +22,7 @@
     }
 
     :root {
-      --bg: #F8F4E3;          /* krem */
+      --bg: #F8F4E3;
       --card: #FFFFFF;
       --text: #1d1d1f;
       --sub: #6F86A1;
@@ -32,7 +30,7 @@
       --accent2: #F7B490;
       --favorite: #ff4d4d;
       --border: rgba(0,0,0,0.08);
-      --update-bg: #e0d5ff;   /* mor açık ton */
+      --update-bg: #e0d5ff;
     }
 
     body.dark {
@@ -56,7 +54,6 @@
       flex-direction: column;
     }
 
-    /* INTRO */
     #intro {
       position: fixed; inset: 0;
       background: linear-gradient(180deg,#000,#111);
@@ -72,13 +69,17 @@
     }
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-    /* TOPBAR */
     .topbar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 20px;
       background: var(--card);
       border-bottom: 1px solid var(--border);
+    }
+    .menu-btn {
+      cursor: pointer;
+      padding: 10px;
     }
     .menu-btn span {
       display: block;
@@ -88,7 +89,6 @@
       border-radius: 10px;
     }
 
-    /* MENU */
     .menu {
       position: fixed;
       right: -260px; top: 0;
@@ -104,10 +104,11 @@
       text-align: right;
       font-size: 22px;
       cursor: pointer;
+      margin-bottom: 20px;
     }
     .menu button {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 14px;
       border-radius: 999px;
       border: none;
@@ -115,9 +116,13 @@
       color: var(--bg);
       font-weight: 600;
       cursor: pointer;
+      transition: 0.2s;
+    }
+    .menu button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
 
-    /* ANA İÇERİK */
     .main-content {
       max-width: 900px;
       width: 100%;
@@ -125,7 +130,6 @@
       padding: 20px;
     }
 
-    /* ARAMA ve GÖSTERGELER */
     .search-section {
       display: flex;
       align-items: center;
@@ -199,9 +203,13 @@
       font-size: 0.9rem;
       font-weight: 600;
       white-space: nowrap;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .update-badge:hover {
+      opacity: 0.8;
     }
 
-    /* KARTLAR */
     .container {
       width: 100%;
     }
@@ -217,6 +225,15 @@
       width: 100%;
     }
     .card.dragging { opacity: 0.5; }
+    .card.sortable-ghost {
+      opacity: 0.4;
+      background: var(--accent1);
+    }
+    .card.sortable-drag {
+      opacity: 0.8;
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
 
     .drag-handle {
       position: absolute;
@@ -229,7 +246,10 @@
       padding: 10px;
       user-select: none;
       z-index: 2;
-      touch-action: none; /* mobil için önemli */
+      touch-action: none;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
     }
     @media (max-width: 768px) {
       .drag-handle {
@@ -246,6 +266,7 @@
       font-size: 1.2rem;
       margin-bottom: 10px;
       cursor: pointer;
+      padding-right: 80px;
     }
     .card pre {
       font-family: 'Poppins', sans-serif;
@@ -254,53 +275,39 @@
       white-space: pre-wrap;
       overflow-wrap: break-word;
       display: none;
+      margin-top: 10px;
     }
     .card-actions {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  display: flex;
-  gap: 10px;
-  z-index: 2;
-}
-    .card .favorite-star {
       position: absolute;
       top: 15px;
       right: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 2;
+    }
+    .card .favorite-star {
       font-size: 24px;
       cursor: pointer;
       color: var(--favorite);
-      z-index: 2;
-       font-size: 24px;
+      transition: transform 0.2s;
+    }
+    .card .favorite-star:hover {
+      transform: scale(1.2);
     }
     .card .share-btn {
       background: transparent;
       border: none;
-      color: var(--favorite);
-      font-size: 1rem;
+      font-size: 20px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 10px;
-      padding: 5px 10px;
-      border-radius: 20px;
-      transition: 0.2s;
-      background: transparent;
-  border: none;
-  font-size: 24px; /* ikon boyutu */
-  cursor: pointer;
-  color: var(--favorite);
-  padding: 0;
-  margin: 0;
-  line-height: 1;
-  transition: transform 0.2s;
+      color: var(--sub);
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+      transition: transform 0.2s, color 0.2s;
     }
     .card .share-btn:hover {
-      background: rgba(154, 129, 164, 0.2);
-    }
-    .card .share-btn i {
-      font-size: 1.2rem;
+      transform: scale(1.2);
+      color: var(--text);
     }
 
     .actions {
@@ -310,16 +317,28 @@
     }
     .actions button {
       flex: 1;
-      padding: 8px;
+      padding: 10px;
       border: none;
       border-radius: 30px;
       font-weight: 600;
       cursor: pointer;
+      transition: 0.2s;
     }
-    .actions .edit { background: var(--accent1); color: var(--text); }
-    .actions .del { background: var(--accent2); color: var(--text); }
+    .actions .edit { 
+      background: var(--accent1); 
+      color: var(--text); 
+    }
+    .actions .edit:hover {
+      opacity: 0.8;
+    }
+    .actions .del { 
+      background: var(--accent2); 
+      color: var(--text); 
+    }
+    .actions .del:hover {
+      opacity: 0.8;
+    }
 
-    /* Arama modu */
     .search-mode .card {
       background-color: #DCD0FF;
       transition: 0.2s;
@@ -328,7 +347,6 @@
       background-color: #4B3A6B;
     }
 
-    /* MODALLAR */
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -352,6 +370,7 @@
     .modal h3 {
       font-family: "Playfair Display", serif;
       margin-bottom: 20px;
+      font-size: 1.5rem;
     }
     .modal textarea, .modal input {
       width: 100%;
@@ -379,10 +398,21 @@
       border: none;
       font-weight: 600;
       cursor: pointer;
+      transition: 0.2s;
     }
-    #alertInput { display: none; }
+    .modal .btns button:first-child {
+      background: var(--sub);
+      color: white;
+    }
+    .modal .btns button:last-child {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .modal .btns button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
 
-    /* TOAST */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -393,28 +423,25 @@
       padding: 14px 22px;
       border-radius: 999px;
       opacity: 0;
-      animation: toast 2.5s ease forwards;
+      pointer-events: none;
       z-index: 40;
+      transition: opacity 0.3s;
     }
-    @keyframes toast {
-      0% { opacity: 0; transform: translate(-50%, 20px); }
-      15% { opacity: 1; transform: translate(-50%, 0); }
-      85% { opacity: 1; }
-      100% { opacity: 0; }
+    .toast.show {
+      opacity: 1;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 600px) {
       .search-section { flex-direction: column; align-items: stretch; }
       .badge-group { justify-content: space-between; }
       .card pre { font-size: 16px; }
-      .card .share-btn { font-size: 0.9rem; padding: 5px; }
-      .clear-search { font-size: 1.6rem; width: 40px; height: 40px; }
+      .card h2 { padding-right: 60px; }
     }
     @media (max-width: 480px) {
       .card pre { font-size: 15px; }
-      .drag-handle { font-size: 28px; }
-      .card h2 { font-size: 1.1rem; }
+      .drag-handle { font-size: 28px; left: 5px; }
+      .card h2 { font-size: 1.1rem; margin-left: 35px; }
+      .card-content { margin-left: 0; }
     }
     @media (max-width: 360px) {
       .card pre { font-size: 14px; }
@@ -426,22 +453,21 @@
 <div id="intro">Kalpten Gelen Dualar…</div>
 
 <div class="topbar">
-  <strong>Dualarım</strong>
+  <strong style="font-family: 'Playfair Display', serif; font-size: 1.3rem;">Dualarım</strong>
   <div class="menu-btn" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
 </div>
 
 <div class="menu" id="menu">
-  <div class="close" onclick="toggleMenu()">X</div>
-  <button id="updateModeBtn" onclick="toggleSurprise()">🛠️ Güncelleme Kapalı</button>
+  <div class="close" onclick="toggleMenu()">✕</div>
+  <button id="updateModeBtn" onclick="toggleSurprise()">🛠️ Güncelleme: Kapalı</button>
   <button class="menu-item" onclick="goVideos()">📺 Media Bölümü</button>
   <button onclick="openAdd()">➕ Yeni Dua</button>
   <button onclick="toggleDark()">🌙 Gece Modu</button>
 </div>
 
 <div class="main-content">
-  <!-- Arama ve sayaç grubu -->
   <div class="search-section">
     <div class="search-wrapper">
       <input type="text" id="searchInput" placeholder="Ara... (başlık veya içerik)">
@@ -449,15 +475,13 @@
     </div>
     <div class="badge-group">
       <span class="count-badge" id="duaCount">0 dua</span>
-      <span class="update-badge" id="updateStatus">🛠️ Kapalı</span>
+      <span class="update-badge" id="updateStatus" onclick="toggleSurprise()">🛠️ Kapalı</span>
     </div>
   </div>
 
-  <!-- Kartların listeleneceği container -->
   <div class="container" id="siirler"></div>
 </div>
 
-<!-- ADD MODAL -->
 <div class="modal-bg" id="addModal">
   <div class="modal">
     <h3>Yeni Dua 🤍</h3>
@@ -470,7 +494,6 @@
   </div>
 </div>
 
-<!-- CONFIRM / EDIT MODAL -->
 <div class="modal-bg" id="alertModal">
   <div class="modal">
     <h3 id="alertTitle"></h3>
@@ -485,50 +508,6 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
-  function openAdd() {
-    document.getElementById('addModal').classList.add('active');
-    toggleMenu();
-  }
-  function closeAdd() { document.getElementById('addModal').classList.remove('active'); }
-  function alertCancel() {
-    document.getElementById('alertModal').classList.remove('active');
-    document.getElementById('alertInput').style.display = 'none';
-    document.getElementById('alertBaslik').style.display = 'none';
-  }
-  function goVideos() { window.location.href = "duavideolari.html"; }
-  function toggleDark() {
-    document.body.classList.toggle('dark');
-    localStorage.setItem('dark', document.body.classList.contains('dark'));
-  }
-  if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
-
-  window.toast = (msg) => {
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-  };
-
-  // Menü dışına tıklanınca kapat
-document.addEventListener('click', function(event) {
-  const menu = document.getElementById('menu');
-  const menuBtn = document.querySelector('.menu-btn');
-  
-  // Eğer menü aktifse ve tıklanan yer menü değilse ve menü butonu değilse menüyü kapat
-  if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
-    menu.classList.remove('active');
-  }
-});
-</script>
-
 <script type="module" src="firebase.js"></script>
 </body>
 </html>
-
-
-
-
-
-
