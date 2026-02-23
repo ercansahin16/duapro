@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   query,
+  orderBy
   orderBy,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
@@ -44,18 +45,18 @@ let sortableInstance = null;
 function updateSurpriseUI() {
   const statusText = surprise ? "🛠️ Açık" : "🛠️ Kapalı";
   const btnText = surprise ? "🛠️ Güncelleme: Açık" : "🛠️ Güncelleme: Kapalı";
-  
+
   if (updateBadge) updateBadge.innerText = statusText;
   if (updateModeBtn) updateModeBtn.innerText = btnText;
-  
+
   document.querySelectorAll('.drag-handle').forEach(handle => {
     handle.style.display = surprise ? 'none' : 'block';
   });
-  
+
   document.querySelectorAll('.actions').forEach(action => {
     action.style.display = 'none';
   });
-  
+
   initSortable();
 }
 
@@ -112,6 +113,7 @@ let tumDualar = [];
 
 async function listele() {
   try {
+    const q = query(colRef, orderBy("tarih", "desc"));
     // Sıralama önce sira alanına göre, sonra tarihe göre
     const q = query(colRef, orderBy("sira", "asc"), orderBy("tarih", "desc"));
     const snap = await getDocs(q);
@@ -133,6 +135,7 @@ async function listele() {
       siirlerDiv.classList.remove("search-mode");
     }
 
+    filtrelenmis.sort((a, b) => (b.favorite === true ? 1 : 0) - (a.favorite === true ? 1 : 0));
     // Arama yoksa favorileri üste al, arama varsa mevcut sıralamayı koru
     if (!arama) {
       filtrelenmis.sort((a, b) => {
@@ -157,7 +160,7 @@ async function listele() {
       const card = document.createElement("div");
       card.className = "card";
       card.dataset.id = s.id;
-      
+
       const safeBaslik = (s.baslik || '').replace(/`/g, '\\`').replace(/${/g, '\\${');
       const safeIcerik = (s.icerik || '').replace(/`/g, '\\`').replace(/${/g, '\\${');
 
@@ -187,7 +190,7 @@ async function listele() {
     });
 
     initSortable();
-    
+
   } catch (error) {
     console.error("Listeleme hatası:", error);
     window.toast("❌ Dualar yüklenirken hata oluştu");
@@ -214,8 +217,12 @@ function initSortable() {
       onStart: function(evt) {
         evt.item.classList.add('dragging');
       },
+      onEnd: function(evt) {
       onEnd: async function(evt) {
         evt.item.classList.remove('dragging');
+        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
+        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
+        window.toast("📍 Sıra güncellendi");
         
         // Yeni sırayı al
         const cards = Array.from(siirlerDiv.children);
@@ -266,6 +273,7 @@ window.ekle = async () => {
       baslik: baslikInput.value.trim(),
       icerik: icerikInput.value.trim(),
       tarih: new Date(),
+      favorite: false
       favorite: false,
       sira: maxSira
     });
@@ -334,7 +342,7 @@ window.siirDuzenle = (id, eskiBaslik, eskiIcerik) => {
       window.toast("🤍 Boş dua olmaz");
       return;
     }
-    
+
     try {
       await updateDoc(doc(db, "siirler", id), {
         baslik: alertBaslik.value.trim(),
@@ -426,7 +434,7 @@ aramaInput.addEventListener("input", listele);
 document.addEventListener('click', function(event) {
   const menu = document.getElementById('menu');
   const menuBtn = document.querySelector('.menu-btn');
-  
+
   if (menu.classList.contains('active') && !menu.contains(event.target) && !menuBtn.contains(event.target)) {
     menu.classList.remove('active');
   }
