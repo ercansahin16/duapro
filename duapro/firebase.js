@@ -8,7 +8,8 @@ import {
   doc,
   updateDoc,
   query,
-  orderBy
+  orderBy,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 /* 🔥 CONFIG */
@@ -111,7 +112,8 @@ let tumDualar = [];
 
 async function listele() {
   try {
-    const q = query(colRef, orderBy("tarih", "desc"));
+    // Sıralama önce sira alanına göre, sonra tarihe göre
+    const q = query(colRef, orderBy("sira", "asc"), orderBy("tarih", "desc"));
     const snap = await getDocs(q);
 
     tumDualar = [];
@@ -131,7 +133,17 @@ async function listele() {
       siirlerDiv.classList.remove("search-mode");
     }
 
-    filtrelenmis.sort((a, b) => (b.favorite === true ? 1 : 0) - (a.favorite === true ? 1 : 0));
+    // Arama yoksa favorileri üste al, arama varsa mevcut sıralamayı koru
+    if (!arama) {
+      filtrelenmis.sort((a, b) => {
+        // Önce favoriler (favorite true olanlar üstte)
+        if (b.favorite !== a.favorite) {
+          return (b.favorite === true ? 1 : 0) - (a.favorite === true ? 1 : 0);
+        }
+        // Sonra sira numarası
+        return (a.sira || 0) - (b.sira || 0);
+      });
+    }
 
     duaCountSpan.innerText = `${filtrelenmis.length} dua`;
     siirlerDiv.innerHTML = "";
@@ -202,11 +214,33 @@ function initSortable() {
       onStart: function(evt) {
         evt.item.classList.add('dragging');
       },
-      onEnd: function(evt) {
+      onEnd: async function(evt) {
         evt.item.classList.remove('dragging');
-        const newOrder = Array.from(siirlerDiv.children).map(card => card.dataset.id);
-        localStorage.setItem('kartSirasi', JSON.stringify(newOrder));
-        window.toast("📍 Sıra güncellendi");
+        
+        // Yeni sırayı al
+        const cards = Array.from(siirlerDiv.children);
+        const newOrder = cards.map((card, index) => ({
+          id: card.dataset.id,
+          sira: index
+        }));
+        
+        // Firebase'de toplu güncelleme (batch)
+        try {
+          const batch = writeBatch(db);
+          
+          newOrder.forEach(item => {
+            const docRef = doc(db, "siirler", item.id);
+            batch.update(docRef, { sira: item.sira });
+          });
+          
+          await batch.commit();
+          window.toast("📍 Sıra kaydedildi");
+        } catch (error) {
+          console.error("Sıra kaydetme hatası:", error);
+          window.toast("❌ Sıra kaydedilemedi");
+          // Hata olursa listeyi yenile
+          listele();
+        }
       }
     });
   }
@@ -220,11 +254,20 @@ window.ekle = async () => {
   }
 
   try {
+    // Mevcut en yüksek sira numarasını bul
+    const q = query(colRef, orderBy("sira", "desc"));
+    const snap = await getDocs(q);
+    let maxSira = 0;
+    if (!snap.empty) {
+      maxSira = (snap.docs[0].data().sira || 0) + 1;
+    }
+
     await addDoc(colRef, {
       baslik: baslikInput.value.trim(),
       icerik: icerikInput.value.trim(),
       tarih: new Date(),
-      favorite: false
+      favorite: false,
+      sira: maxSira
     });
 
     baslikInput.value = "";
